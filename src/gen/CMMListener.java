@@ -71,18 +71,6 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitTypeDouble(CMMParser.TypeDoubleContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ToArray}
-	 * labeled alternative in {@link CMMParser#type}.
-	 * @param ctx the parse tree
-	 */
-	void enterToArray(CMMParser.ToArrayContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ToArray}
-	 * labeled alternative in {@link CMMParser#type}.
-	 * @param ctx the parse tree
-	 */
-	void exitToArray(CMMParser.ToArrayContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link CMMParser#array}.
 	 * @param ctx the parse tree
 	 */
@@ -220,6 +208,16 @@ public interface CMMListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAssignStmt(CMMParser.AssignStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CMMParser#delassign}.
+	 * @param ctx the parse tree
+	 */
+	void enterDelassign(CMMParser.DelassignContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CMMParser#delassign}.
+	 * @param ctx the parse tree
+	 */
+	void exitDelassign(CMMParser.DelassignContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CMMParser#value}.
 	 * @param ctx the parse tree

@@ -19,14 +19,14 @@ varDecl : type varList SEMICOLON;
 
 type : INT #TypeInt
     |DOUBLE #TypeDouble
-    |array #ToArray
     ;
+//    |array #ToArray
+//    ;
 
-array : (DOUBLE|INT) LMBRACKET INTCONSTANT RMBRACKET ;
-// double[3];
+//array : (DOUBLE|INT) LMBRACKET INTCONSTANT RMBRACKET ;
+array : IDENT LMBRACKET (INTCONSTANT| expr) RMBRACKET ;
 
-varList : IDENT (COMMA IDENT)* ;
-
+varList : (IDENT | delassign | array)(COMMA (IDENT | delassign | array))* ;
 
 
 elseiflist : elseif+  ;
@@ -42,10 +42,11 @@ ifStmt : IF LSBRACKET expr RSBRACKET stmtBlock #ONLYIF
 whileStmt : WHILE LSBRACKET expr RSBRACKET  (stmtBlock | stmt)  ;
 breakStmt : BREAK SEMICOLON ;
 
-readStmt : READ ((IDENT) | (IDENT LMBRACKET INTCONSTANT RMBRACKET) ) SEMICOLON;
+readStmt : READ ((IDENT) | (array) ) SEMICOLON;
 writeStmt : WRITE LSBRACKET expr RSBRACKET SEMICOLON;
 assignStmt : value EQUAL expr SEMICOLON;
-value : (IDENT)|(IDENT LMBRACKET INTCONSTANT RMBRACKET) ;
+delassign: IDENT EQUAL expr ;
+value : (IDENT)|(array) ;
 constant : (INTCONSTANT | DOUBLECONSTANT) #NUM
          | (TRUE | FALSE) #BOOL
         ;

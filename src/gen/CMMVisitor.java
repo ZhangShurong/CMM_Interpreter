@@ -48,13 +48,6 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTypeDouble(CMMParser.TypeDoubleContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ToArray}
-	 * labeled alternative in {@link CMMParser#type}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitToArray(CMMParser.ToArrayContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link CMMParser#array}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -136,6 +129,12 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAssignStmt(CMMParser.AssignStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CMMParser#delassign}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDelassign(CMMParser.DelassignContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CMMParser#value}.
 	 * @param ctx the parse tree
