@@ -180,8 +180,103 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
     public ExprReturnVal visitIdentifier(CMMParser.IdentifierContext ctx)
     {
         Token indent = ctx.IDENT().getSymbol();
+        String varname = indent.getText();
+        Symbol varSymbol = currentScope.resolve(varname);
+        if(varSymbol != null ){
+            return new ExprReturnVal(varSymbol.getType(), varSymbol.getValue());
+        }else{
+            io.output("ERROR");
+            return null;
+        }
+        //// TODO: 2016/12/8
+    }
+
+    public ExprReturnVal visitToConstant(CMMParser.ToConstantContext ctx)
+    {
+        if(ctx.constant().INTCONSTANT() != null){
+            return new ExprReturnVal(Type.tInt,
+                    Integer.valueOf(ctx.constant().INTCONSTANT().getText()));
+        }
+        else if(ctx.constant().DOUBLECONSTANT() != null) {
+            return new ExprReturnVal(Type.tDouble,
+                    Double.valueOf(ctx.constant().INTCONSTANT().getText()));
+        }
+        else if(ctx.constant().FALSE() != null) {
+            return new ExprReturnVal(Type.tInt,0);
+        }
+        else if(ctx.constant().TRUE() != null) {
+            return new ExprReturnVal(Type.tInt,1);
+        }
+        else{
+            io.output("ERROR");
+            return new ExprReturnVal(Type.tInt,0);
+        }
+    }
+    public ExprReturnVal visitToArray(CMMParser.ToArrayContext ctx)
+    {
+        Token token = ctx.array().IDENT().getSymbol();
+        String varname = token.getText();
+        int varIndex;
+
+        //like a[3]
+        if(ctx.array().INTCONSTANT() != null){
+            varIndex = Integer.parseInt(ctx.array().INTCONSTANT().getText());
+        }else{//like a[3+b]
+            ExprComputeVisitor indexComputeVisitor = new ExprComputeVisitor(currentScope, io);
+            ExprReturnVal indexValue = indexComputeVisitor.visit(ctx.array().expr());
+            varIndex = (Integer) indexValue.getValue();
+        }
+
+        Symbol varSymbol = currentScope.resolve(varname);
+        if(varSymbol != null ){
+            if(varSymbol.getType() == Type.tIntArray){ // int数组
+                int[] varArray = (int[]) varSymbol.getValue();
+                if(varIndex < varArray.length){
+                    return new ExprReturnVal(Type.tInt, varArray[varIndex]);
+                }else{
+                    io.output("ERROR");
+                    return null;
+                }
+
+            }else{ // double数组
+
+                double[] varArray = (double[]) varSymbol.getValue();
+
+                // 数组越界检查
+                if(varIndex < varArray.length){
+                    return new ExprReturnVal(Type.tDouble, varArray[varIndex]);
+                }else{
+                    io.output("ERROR");
+                    return null;
+                }
+
+            }
+        }else{
+            io.output("ERROR");
+            return null;
+        }
+    }
+    public ExprReturnVal visitToExpr(CMMParser.ToExprContext ctx)
+    {
+        ExprComputeVisitor indexComputeVisitor = new ExprComputeVisitor(currentScope, io);
+        ExprReturnVal returnvalue = indexComputeVisitor.visit(ctx.expr());
+        return returnvalue;
+    }
+
+    public ExprReturnVal  visitToAddminExpr(CMMParser.ToAddminExprContext ctx)
+    {
+        //// TODO: 2016/12/8  
+        return null;
+        /*
+        ctx.addMin().
+        Token op = ctx.MULT().getSymbol();
+        ExprReturnVal leftValue = visit(ctx.mulDiv());
+        ExprReturnVal rightValue = visit(ctx.unaryMinus());
+        ExprReturnVal returnVal = new ExprReturnVal();
+        */
 
     }
+    /*
     @Override
     public ExprReturnVal visitAddMinExpr(CmmParser.AddMinExprContext ctx) {
 
@@ -382,4 +477,5 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
         }
     }
+    */
 }

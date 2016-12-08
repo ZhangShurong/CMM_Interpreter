@@ -2,8 +2,11 @@ package gen;// Generated from D:/GitOSChina/CMM_Interpreter/src\CMM.g4 by ANTLR 
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class CMMParser extends Parser {
@@ -1416,49 +1419,25 @@ public class CMMParser extends Parser {
 	}
 
 	public static class ConstantContext extends ParserRuleContext {
+		public TerminalNode INTCONSTANT() { return getToken(CMMParser.INTCONSTANT, 0); }
+		public TerminalNode DOUBLECONSTANT() { return getToken(CMMParser.DOUBLECONSTANT, 0); }
+		public TerminalNode TRUE() { return getToken(CMMParser.TRUE, 0); }
+		public TerminalNode FALSE() { return getToken(CMMParser.FALSE, 0); }
 		public ConstantContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_constant; }
-	 
-		public ConstantContext() { }
-		public void copyFrom(ConstantContext ctx) {
-			super.copyFrom(ctx);
-		}
-	}
-	public static class BOOLContext extends ConstantContext {
-		public TerminalNode TRUE() { return getToken(CMMParser.TRUE, 0); }
-		public TerminalNode FALSE() { return getToken(CMMParser.FALSE, 0); }
-		public BOOLContext(ConstantContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CMMListener ) ((CMMListener)listener).enterBOOL(this);
+			if ( listener instanceof CMMListener ) ((CMMListener)listener).enterConstant(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CMMListener ) ((CMMListener)listener).exitBOOL(this);
+			if ( listener instanceof CMMListener ) ((CMMListener)listener).exitConstant(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CMMVisitor ) return ((CMMVisitor<? extends T>)visitor).visitBOOL(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class NUMContext extends ConstantContext {
-		public TerminalNode INTCONSTANT() { return getToken(CMMParser.INTCONSTANT, 0); }
-		public TerminalNode DOUBLECONSTANT() { return getToken(CMMParser.DOUBLECONSTANT, 0); }
-		public NUMContext(ConstantContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CMMListener ) ((CMMListener)listener).enterNUM(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CMMListener ) ((CMMListener)listener).exitNUM(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CMMVisitor ) return ((CMMVisitor<? extends T>)visitor).visitNUM(this);
+			if ( visitor instanceof CMMVisitor ) return ((CMMVisitor<? extends T>)visitor).visitConstant(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1472,7 +1451,6 @@ public class CMMParser extends Parser {
 			switch (_input.LA(1)) {
 			case INTCONSTANT:
 			case DOUBLECONSTANT:
-				_localctx = new NUMContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(181);
@@ -1486,7 +1464,6 @@ public class CMMParser extends Parser {
 				break;
 			case TRUE:
 			case FALSE:
-				_localctx = new BOOLContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(182);
@@ -1705,78 +1682,29 @@ public class CMMParser extends Parser {
 	}
 
 	public static class AddMinContext extends ParserRuleContext {
-		public AddMinContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_addMin; }
-	 
-		public AddMinContext() { }
-		public void copyFrom(AddMinContext ctx) {
-			super.copyFrom(ctx);
-		}
-	}
-	public static class TomulDivContext extends AddMinContext {
 		public MulDivContext mulDiv() {
 			return getRuleContext(MulDivContext.class,0);
 		}
-		public TomulDivContext(AddMinContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CMMListener ) ((CMMListener)listener).enterTomulDiv(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CMMListener ) ((CMMListener)listener).exitTomulDiv(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CMMVisitor ) return ((CMMVisitor<? extends T>)visitor).visitTomulDiv(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class PlusContext extends AddMinContext {
 		public AddMinContext addMin() {
 			return getRuleContext(AddMinContext.class,0);
 		}
 		public TerminalNode PLUS() { return getToken(CMMParser.PLUS, 0); }
-		public MulDivContext mulDiv() {
-			return getRuleContext(MulDivContext.class,0);
-		}
-		public PlusContext(AddMinContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CMMListener ) ((CMMListener)listener).enterPlus(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CMMListener ) ((CMMListener)listener).exitPlus(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CMMVisitor ) return ((CMMVisitor<? extends T>)visitor).visitPlus(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class MinusContext extends AddMinContext {
-		public AddMinContext addMin() {
-			return getRuleContext(AddMinContext.class,0);
-		}
 		public TerminalNode MINUS() { return getToken(CMMParser.MINUS, 0); }
-		public MulDivContext mulDiv() {
-			return getRuleContext(MulDivContext.class,0);
+		public AddMinContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
 		}
-		public MinusContext(AddMinContext ctx) { copyFrom(ctx); }
+		@Override public int getRuleIndex() { return RULE_addMin; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CMMListener ) ((CMMListener)listener).enterMinus(this);
+			if ( listener instanceof CMMListener ) ((CMMListener)listener).enterAddMin(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CMMListener ) ((CMMListener)listener).exitMinus(this);
+			if ( listener instanceof CMMListener ) ((CMMListener)listener).exitAddMin(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CMMVisitor ) return ((CMMVisitor<? extends T>)visitor).visitMinus(this);
+			if ( visitor instanceof CMMVisitor ) return ((CMMVisitor<? extends T>)visitor).visitAddMin(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1797,10 +1725,6 @@ public class CMMParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			_localctx = new TomulDivContext(_localctx);
-			_ctx = _localctx;
-			_prevctx = _localctx;
-
 			setState(203);
 			mulDiv(0);
 			}
@@ -1818,7 +1742,7 @@ public class CMMParser extends Parser {
 					switch ( getInterpreter().adaptivePredict(_input,16,_ctx) ) {
 					case 1:
 						{
-						_localctx = new PlusContext(new AddMinContext(_parentctx, _parentState));
+						_localctx = new AddMinContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_addMin);
 						setState(205);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
@@ -1830,7 +1754,7 @@ public class CMMParser extends Parser {
 						break;
 					case 2:
 						{
-						_localctx = new MinusContext(new AddMinContext(_parentctx, _parentState));
+						_localctx = new AddMinContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_addMin);
 						setState(208);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");

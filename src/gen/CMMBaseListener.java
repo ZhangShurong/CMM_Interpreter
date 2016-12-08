@@ -267,25 +267,13 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNUM(CMMParser.NUMContext ctx) { }
+	@Override public void enterConstant(CMMParser.ConstantContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNUM(CMMParser.NUMContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBOOL(CMMParser.BOOLContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBOOL(CMMParser.BOOLContext ctx) { }
+	@Override public void exitConstant(CMMParser.ConstantContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -339,37 +327,13 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTomulDiv(CMMParser.TomulDivContext ctx) { }
+	@Override public void enterAddMin(CMMParser.AddMinContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTomulDiv(CMMParser.TomulDivContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterPlus(CMMParser.PlusContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPlus(CMMParser.PlusContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterMinus(CMMParser.MinusContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitMinus(CMMParser.MinusContext ctx) { }
+	@Override public void exitAddMin(CMMParser.AddMinContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

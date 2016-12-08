@@ -47,8 +47,8 @@ writeStmt : WRITE LSBRACKET expr RSBRACKET SEMICOLON;
 assignStmt : value EQUAL expr SEMICOLON;
 delassign: IDENT EQUAL expr ;
 value : (IDENT)|(array) ;
-constant : (INTCONSTANT | DOUBLECONSTANT) #NUM
-         | (TRUE | FALSE) #BOOL
+constant : (INTCONSTANT | DOUBLECONSTANT) //#NUM
+         | (TRUE | FALSE) //#BOOL
         ;
 
 
@@ -61,9 +61,9 @@ expr : expr SEQUAL addMin #SmallThExpr
     ;
 
 addMin :
-    addMin PLUS mulDiv #Plus
-    | addMin MINUS mulDiv  #Minus
-    | mulDiv                #TomulDiv
+    addMin PLUS mulDiv //#Plus
+    | addMin MINUS mulDiv  //#Minus
+    | mulDiv                //#TomulDiv
     ;
 
 mulDiv :

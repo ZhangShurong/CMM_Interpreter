@@ -142,19 +142,11 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitValue(CMMParser.ValueContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code NUM}
-	 * labeled alternative in {@link CMMParser#constant}.
+	 * Visit a parse tree produced by {@link CMMParser#constant}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNUM(CMMParser.NUMContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code BOOL}
-	 * labeled alternative in {@link CMMParser#constant}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBOOL(CMMParser.BOOLContext ctx);
+	T visitConstant(CMMParser.ConstantContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code EqualExpr}
 	 * labeled alternative in {@link CMMParser#expr}.
@@ -184,26 +176,11 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGrateThanExpr(CMMParser.GrateThanExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code TomulDiv}
-	 * labeled alternative in {@link CMMParser#addMin}.
+	 * Visit a parse tree produced by {@link CMMParser#addMin}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTomulDiv(CMMParser.TomulDivContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Plus}
-	 * labeled alternative in {@link CMMParser#addMin}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPlus(CMMParser.PlusContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Minus}
-	 * labeled alternative in {@link CMMParser#addMin}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMinus(CMMParser.MinusContext ctx);
+	T visitAddMin(CMMParser.AddMinContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code TounaryMinus}
 	 * labeled alternative in {@link CMMParser#mulDiv}.
