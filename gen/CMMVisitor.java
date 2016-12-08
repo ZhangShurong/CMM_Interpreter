@@ -254,6 +254,13 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitToConstant(CMMParser.ToConstantContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code ToArray}
+	 * labeled alternative in {@link CMMParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitToArray(CMMParser.ToArrayContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code ToExpr}
 	 * labeled alternative in {@link CMMParser#atom}.
 	 * @param ctx the parse tree

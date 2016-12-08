@@ -5,8 +5,8 @@ package com.vergil.Interpreter;
  */
 public enum Type {
     tInt,
-    tReal,
+    tDouble,
     tIntArray,
-    tRealArray,
+    tDoubleArray,
     tBool
 }

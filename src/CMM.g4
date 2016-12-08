@@ -78,6 +78,7 @@ unaryMinus : MINUS unaryMinus #ChangeSign
 
 atom : IDENT #Identifier
     | constant #ToConstant
+    | array #ToArray
     | LSBRACKET expr RSBRACKET #ToExpr
     ;
 

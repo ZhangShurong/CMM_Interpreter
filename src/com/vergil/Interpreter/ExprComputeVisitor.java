@@ -24,8 +24,16 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         ExprReturnVal rightValue = visit(ctx.unaryMinus());
 
         ExprReturnVal returnVal = new ExprReturnVal();
-        if(leftValue.getType() == Type.tReal && rightValue.getType() == Type.tInt){
-            returnVal.setType(Type.tReal);
+
+        assert (op.getText().equals("*"));
+
+        if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tInt){
+            returnVal.setType(Type.tDouble);
+
+            returnVal.setValue((Double)leftValue.getValue() * (Integer) rightValue.getValue());
+
+
+            /*
             if(op.getText().equals("*")){
                 returnVal.setValue((Double)leftValue.getValue() * (Integer) rightValue.getValue());
             }else if(op.getText().equals("/")){
@@ -48,9 +56,13 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     return null;
                 }
                 returnVal.setValue((Double)leftValue.getValue() % (Integer) rightValue.getValue());
-            }
-        }else if(leftValue.getType() == Type.tInt && rightValue.getType() == Type.tReal){
-            returnVal.setType(Type.tReal);
+            }*/
+        }else if(leftValue.getType() == Type.tInt && rightValue.getType() == Type.tDouble){
+
+            returnVal.setType(Type.tDouble);
+            returnVal.setValue((Integer)leftValue.getValue() * (Double) rightValue.getValue());
+
+            /*
             if(op.getText().equals("*")){
                 returnVal.setValue((Integer)leftValue.getValue() * (Double) rightValue.getValue());
             }else if(op.getText().equals("/")){
@@ -58,8 +70,12 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
             }else if(op.getText().equals("%")){
                 returnVal.setValue((Integer)leftValue.getValue() % (Double) rightValue.getValue());
             }
-        }else if(leftValue.getType() == Type.tReal && rightValue.getType() == Type.tReal){
-            returnVal.setType(Type.tReal);
+            */
+        }else if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tDouble){
+            returnVal.setType(Type.tDouble);
+            returnVal.setValue((Double)leftValue.getValue() * (Double) rightValue.getValue());
+
+            /*
             if(op.getText().equals("*")){
                 returnVal.setValue((Double)leftValue.getValue() * (Double) rightValue.getValue());
             }else if(op.getText().equals("/")){
@@ -67,8 +83,11 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
             }else if(op.getText().equals("%")){
                 returnVal.setValue((Double)leftValue.getValue() % (Double) rightValue.getValue());
             }
+            */
         }else if(leftValue.getType() == Type.tInt && rightValue.getType() == Type.tInt){
             returnVal.setType(Type.tInt);
+            returnVal.setValue((Integer)leftValue.getValue() * (Integer) rightValue.getValue());
+            /*
             if(op.getText().equals("*")){
                 returnVal.setValue((Integer)leftValue.getValue() * (Integer) rightValue.getValue());
             }else if(op.getText().equals("/")){
@@ -92,6 +111,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 }
                 returnVal.setValue((Integer)leftValue.getValue() % (Integer) rightValue.getValue());
             }
+            */
         }else{
             io.output("ERROR: unmatched or uncast type on two side of <"
                     + op.getText()
@@ -104,6 +124,64 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         return returnVal;
     }
 
+    public ExprReturnVal visitDivision(CMMParser.DivisionContext ctx)
+    {
+        Token op = ctx.DIV().getSymbol();
+        ExprReturnVal leftValue = visit(ctx.mulDiv());
+        ExprReturnVal rightValue = visit(ctx.unaryMinus());
+        ExprReturnVal returnVal = new ExprReturnVal();
+
+        if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tInt){
+            returnVal.setType(Type.tDouble);
+            returnVal.setValue((Double)leftValue.getValue() / (Integer) rightValue.getValue());
+        }else if(leftValue.getType() == Type.tInt && rightValue.getType() == Type.tDouble){
+            returnVal.setType(Type.tDouble);
+            returnVal.setValue((Integer)leftValue.getValue() / (Double) rightValue.getValue());
+        }else if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tDouble){
+            returnVal.setType(Type.tDouble);
+            returnVal.setValue((Double)leftValue.getValue() / (Double) rightValue.getValue());
+        }else if(leftValue.getType() == Type.tInt && rightValue.getType() == Type.tInt){
+            returnVal.setType(Type.tInt);
+            returnVal.setValue((Integer)leftValue.getValue() / (Integer) rightValue.getValue());
+        }else{
+            io.output("ERROR: unmatched or uncast type on two side of <"
+                    + op.getText()
+                    + "> in line "
+                    + op.getLine()
+                    +":"
+                    + op.getCharPositionInLine());
+        }
+
+        return returnVal;
+    }
+
+    public ExprReturnVal visitTounaryMinus(CMMParser.TounaryMinusContext ctx)
+    {
+        return visit(ctx.unaryMinus());
+    }
+
+    public ExprReturnVal visitChangeSign(CMMParser.ChangeSignContext ctx) {
+        ExprReturnVal rightvalue = visit(ctx.unaryMinus());
+        if(rightvalue.getType() == Type.tDouble)
+            rightvalue.setValue(-(Double)rightvalue.getValue());
+        else if(rightvalue.getType() == Type.tInt) {
+            rightvalue.setValue(-(Integer) rightvalue.getValue());
+        }
+        else{
+            io.output("ERROR");
+        }
+        return rightvalue;
+    }
+    public ExprReturnVal visitToAtom(CMMParser.ToAtomContext ctx)
+    {
+        return visit(ctx.atom());
+    }
+
+    public ExprReturnVal visitIdentifier(CMMParser.IdentifierContext ctx)
+    {
+        Token indent = ctx.IDENT().getSymbol();
+
+    }
     @Override
     public ExprReturnVal visitAddMinExpr(CmmParser.AddMinExprContext ctx) {
 
