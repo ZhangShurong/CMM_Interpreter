@@ -58,11 +58,12 @@ public class Interpreter {
         DefPhaseListener defPhaseListener = new DefPhaseListener();
         walker.walk(defPhaseListener, parseTree);
 
+        //// TODO: 2016/12/8  
 
-        RefPhaseVisitor refPhaseVisitor = new RefPhaseVisitor(defPhaseListener.globals,
-                defPhaseListener.scopes,
-                consoleIo);
-        refPhaseVisitor.visit(parseTree);
+//        RefPhaseVisitor refPhaseVisitor = new RefPhaseVisitor(defPhaseListener.globals,
+//                defPhaseListener.scopes,
+//                consoleIo);
+//        refPhaseVisitor.visit(parseTree);
     }
 
 }

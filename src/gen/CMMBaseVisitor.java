@@ -170,14 +170,42 @@ public class CMMBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CM
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitEqualExpr(CMMParser.EqualExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSTExpr(CMMParser.STExprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSmallThExpr(CMMParser.SmallThExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitGEExpr(CMMParser.GEExprContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitEExpr(CMMParser.EExprContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitSEExpr(CMMParser.SEExprContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitGTExpr(CMMParser.GTExprContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitNEExpr(CMMParser.NEExprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -191,14 +219,21 @@ public class CMMBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CM
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitGrateThanExpr(CMMParser.GrateThanExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTomulDiv(CMMParser.TomulDivContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAddMin(CMMParser.AddMinContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPlus(CMMParser.PlusContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitMinus(CMMParser.MinusContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -54,16 +54,19 @@ constant : (INTCONSTANT | DOUBLECONSTANT) //#NUM
 
 //优先级： Comp < addMin < mulDiv < unaryMinus < Atom
 
-expr : expr SEQUAL addMin #SmallThExpr
-    | expr GEQUAL addMin  #GrateThanExpr
-    | expr DEQUAL addMin  #EqualExpr
+expr : expr SEQUAL addMin #SEExpr
+    | expr GEQUAL addMin  #GEExpr
+    | expr GREATER addMin #GTExpr
+    | expr SMALLER addMin #STExpr
+    | expr DEQUAL addMin  #EExpr
+    | expr NEQUAL addMin  #NEExpr
     | addMin              #ToAddminExpr
     ;
 
 addMin :
-    addMin PLUS mulDiv //#Plus
-    | addMin MINUS mulDiv  //#Minus
-    | mulDiv                //#TomulDiv
+    addMin PLUS mulDiv #Plus
+    | addMin MINUS mulDiv  #Minus
+    | mulDiv              #TomulDiv
     ;
 
 mulDiv :
@@ -113,8 +116,11 @@ LSBRACKET : '(' ;
 RSBRACKET : ')' ;
 
 SEQUAL : '<=' ;
+SMALLER : '<' ;
 GEQUAL : '>=' ;
+GREATER : '>' ;
 DEQUAL : '==' ;
+NEQUAL :'!=';
 EQUAL : '=' ;
 PLUS  : '+' ;
 MINUS : '-' ;

@@ -239,29 +239,77 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitConstant(CMMParser.ConstantContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code EqualExpr}
+	 * Enter a parse tree produced by the {@code STExpr}
 	 * labeled alternative in {@link CMMParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterEqualExpr(CMMParser.EqualExprContext ctx);
+	void enterSTExpr(CMMParser.STExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code EqualExpr}
+	 * Exit a parse tree produced by the {@code STExpr}
 	 * labeled alternative in {@link CMMParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitEqualExpr(CMMParser.EqualExprContext ctx);
+	void exitSTExpr(CMMParser.STExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code SmallThExpr}
+	 * Enter a parse tree produced by the {@code GEExpr}
 	 * labeled alternative in {@link CMMParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterSmallThExpr(CMMParser.SmallThExprContext ctx);
+	void enterGEExpr(CMMParser.GEExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code SmallThExpr}
+	 * Exit a parse tree produced by the {@code GEExpr}
 	 * labeled alternative in {@link CMMParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitSmallThExpr(CMMParser.SmallThExprContext ctx);
+	void exitGEExpr(CMMParser.GEExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code EExpr}
+	 * labeled alternative in {@link CMMParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterEExpr(CMMParser.EExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code EExpr}
+	 * labeled alternative in {@link CMMParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitEExpr(CMMParser.EExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code SEExpr}
+	 * labeled alternative in {@link CMMParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSEExpr(CMMParser.SEExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code SEExpr}
+	 * labeled alternative in {@link CMMParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSEExpr(CMMParser.SEExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code GTExpr}
+	 * labeled alternative in {@link CMMParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterGTExpr(CMMParser.GTExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code GTExpr}
+	 * labeled alternative in {@link CMMParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitGTExpr(CMMParser.GTExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code NEExpr}
+	 * labeled alternative in {@link CMMParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterNEExpr(CMMParser.NEExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code NEExpr}
+	 * labeled alternative in {@link CMMParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitNEExpr(CMMParser.NEExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ToAddminExpr}
 	 * labeled alternative in {@link CMMParser#expr}.
@@ -275,27 +323,41 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitToAddminExpr(CMMParser.ToAddminExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code GrateThanExpr}
-	 * labeled alternative in {@link CMMParser#expr}.
+	 * Enter a parse tree produced by the {@code TomulDiv}
+	 * labeled alternative in {@link CMMParser#addMin}.
 	 * @param ctx the parse tree
 	 */
-	void enterGrateThanExpr(CMMParser.GrateThanExprContext ctx);
+	void enterTomulDiv(CMMParser.TomulDivContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code GrateThanExpr}
-	 * labeled alternative in {@link CMMParser#expr}.
+	 * Exit a parse tree produced by the {@code TomulDiv}
+	 * labeled alternative in {@link CMMParser#addMin}.
 	 * @param ctx the parse tree
 	 */
-	void exitGrateThanExpr(CMMParser.GrateThanExprContext ctx);
+	void exitTomulDiv(CMMParser.TomulDivContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CMMParser#addMin}.
+	 * Enter a parse tree produced by the {@code Plus}
+	 * labeled alternative in {@link CMMParser#addMin}.
 	 * @param ctx the parse tree
 	 */
-	void enterAddMin(CMMParser.AddMinContext ctx);
+	void enterPlus(CMMParser.PlusContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CMMParser#addMin}.
+	 * Exit a parse tree produced by the {@code Plus}
+	 * labeled alternative in {@link CMMParser#addMin}.
 	 * @param ctx the parse tree
 	 */
-	void exitAddMin(CMMParser.AddMinContext ctx);
+	void exitPlus(CMMParser.PlusContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Minus}
+	 * labeled alternative in {@link CMMParser#addMin}.
+	 * @param ctx the parse tree
+	 */
+	void enterMinus(CMMParser.MinusContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Minus}
+	 * labeled alternative in {@link CMMParser#addMin}.
+	 * @param ctx the parse tree
+	 */
+	void exitMinus(CMMParser.MinusContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code TounaryMinus}
 	 * labeled alternative in {@link CMMParser#mulDiv}.

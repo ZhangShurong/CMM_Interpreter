@@ -279,25 +279,73 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEqualExpr(CMMParser.EqualExprContext ctx) { }
+	@Override public void enterSTExpr(CMMParser.STExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEqualExpr(CMMParser.EqualExprContext ctx) { }
+	@Override public void exitSTExpr(CMMParser.STExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSmallThExpr(CMMParser.SmallThExprContext ctx) { }
+	@Override public void enterGEExpr(CMMParser.GEExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSmallThExpr(CMMParser.SmallThExprContext ctx) { }
+	@Override public void exitGEExpr(CMMParser.GEExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEExpr(CMMParser.EExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEExpr(CMMParser.EExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSEExpr(CMMParser.SEExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSEExpr(CMMParser.SEExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGTExpr(CMMParser.GTExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGTExpr(CMMParser.GTExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNEExpr(CMMParser.NEExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNEExpr(CMMParser.NEExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -315,25 +363,37 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGrateThanExpr(CMMParser.GrateThanExprContext ctx) { }
+	@Override public void enterTomulDiv(CMMParser.TomulDivContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGrateThanExpr(CMMParser.GrateThanExprContext ctx) { }
+	@Override public void exitTomulDiv(CMMParser.TomulDivContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAddMin(CMMParser.AddMinContext ctx) { }
+	@Override public void enterPlus(CMMParser.PlusContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAddMin(CMMParser.AddMinContext ctx) { }
+	@Override public void exitPlus(CMMParser.PlusContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMinus(CMMParser.MinusContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMinus(CMMParser.MinusContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -4,6 +4,7 @@ import com.vergil.Utils.IOInterface;
 import gen.CMMBaseVisitor;
 import gen.CMMParser;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.DoubleKeyMap;
 
 /**
  * Created by vergil on 2016/12/7.
@@ -12,6 +13,39 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
     Scope currentScope;
     private IOInterface io;
 
+    private double btod(ExprReturnVal boolExpr)
+    {
+        if(boolExpr.getValue().equals("false"))
+            return 0.0;
+        else
+            return 1.0;
+    }
+    private int comp(ExprReturnVal left, ExprReturnVal right)
+    {
+        double leftvalue = 0.0;
+        double rightvalue = 0.0;
+        if(left.getType() == Type.tBool)
+        {
+            leftvalue = btod(left);
+        }
+        else
+        {
+            leftvalue = (Double)left.getValue();
+        }
+        if(right.getType() == Type.tBool)
+        {
+            rightvalue = btod(right);
+        }
+        else
+            rightvalue = (Double)right.getValue();
+
+        if(leftvalue == rightvalue)
+            return 0;
+        else if(leftvalue > rightvalue)
+            return 1;
+        else
+            return -1;
+    }
     public ExprComputeVisitor(Scope currentScope, IOInterface io) {
         this.currentScope = currentScope;
         this.io = io;
@@ -188,7 +222,6 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
             io.output("ERROR");
             return null;
         }
-        //// TODO: 2016/12/8
     }
 
     public ExprReturnVal visitToConstant(CMMParser.ToConstantContext ctx)
@@ -263,19 +296,142 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         return returnvalue;
     }
 
-    public ExprReturnVal  visitToAddminExpr(CMMParser.ToAddminExprContext ctx)
-    {
-        //// TODO: 2016/12/8  
-        return null;
-        /*
-        ctx.addMin().
-        Token op = ctx.MULT().getSymbol();
-        ExprReturnVal leftValue = visit(ctx.mulDiv());
-        ExprReturnVal rightValue = visit(ctx.unaryMinus());
-        ExprReturnVal returnVal = new ExprReturnVal();
-        */
-
+    public ExprReturnVal visitPlus(CMMParser.PlusContext ctx) {
+        Token op = ctx.PLUS().getSymbol();
+        ExprReturnVal left = visit(ctx.addMin());
+        ExprReturnVal right = visit(ctx.mulDiv());
+        ExprReturnVal returnVal = null;
+        if(left.getType() != Type.tBool && right.getType() != Type.tBool) {
+            returnVal = new ExprReturnVal();
+            if (left.getType() == Type.tDouble || right.getType() == Type.tDouble) {
+                returnVal.setType(Type.tDouble);
+                returnVal.setValue((Double) left.getValue() + (Double) right.getValue());
+            }
+            else {
+                returnVal.setType(Type.tInt);
+                returnVal.setValue((Integer) left.getValue() + (Integer) right.getValue());
+            }
+        }
+        else {
+            io.output("Bool error");
+        }
+        if(returnVal == null)
+        {
+            io.output("Error");
+        }
+        return  returnVal;
     }
+
+    public ExprReturnVal visitMinus(CMMParser.MinusContext ctx)
+    {
+        Token op = ctx.MINUS().getSymbol();
+        ExprReturnVal left = visit(ctx.addMin());
+        ExprReturnVal right = visit(ctx.mulDiv());
+        ExprReturnVal returnVal = null;
+        if(left.getType() != Type.tBool && right.getType() != Type.tBool) {
+            returnVal = new ExprReturnVal();
+            if (left.getType() == Type.tDouble || right.getType() == Type.tDouble) {
+                returnVal.setType(Type.tDouble);
+                returnVal.setValue((Double) left.getValue() - (Double) right.getValue());
+            }
+            else {
+                returnVal.setType(Type.tInt);
+                returnVal.setValue((Integer) left.getValue() - (Integer) right.getValue());
+            }
+        }
+        else {
+            io.output("Bool error");
+        }
+        if(returnVal == null)
+        {
+            io.output("Error");
+        }
+        return  returnVal;
+    }
+
+    //相等
+    public  ExprReturnVal visitEExpr(CMMParser.EExprContext ctx) {
+        ExprReturnVal left = visit(ctx.expr());
+        ExprReturnVal right  = visit(ctx.addMin());
+        ExprReturnVal returnVal = new ExprReturnVal();
+        returnVal.setValue(Type.tBool);
+        int res = comp(left,right);
+        if(res == 0)
+            returnVal.setValue(1);
+        else
+            returnVal.setValue(0);
+        return returnVal;
+    }
+    //小于等于
+    public ExprReturnVal visitSEExpr(CMMParser.SEExprContext ctx)
+    {
+        ExprReturnVal left = visit(ctx.expr());
+        ExprReturnVal right  = visit(ctx.addMin());
+        ExprReturnVal returnVal = new ExprReturnVal();
+        returnVal.setValue(Type.tBool);
+        int res = comp(left,right);
+        if(res == 0 || res == -1)
+            returnVal.setValue(1);
+        else
+            returnVal.setValue(0);
+        return returnVal;
+    }
+    //小于
+    public ExprReturnVal visitSTExpr(CMMParser.STExprContext ctx) {
+        ExprReturnVal left = visit(ctx.expr());
+        ExprReturnVal right  = visit(ctx.addMin());
+        ExprReturnVal returnVal = new ExprReturnVal();
+        returnVal.setValue(Type.tBool);
+        int res = comp(left,right);
+        if(res == -1 )
+            returnVal.setValue(1);
+        else
+            returnVal.setValue(0);
+        return returnVal;
+    }
+    //大于
+    public ExprReturnVal visitGTExpr(CMMParser.GTExprContext ctx) {
+        ExprReturnVal left = visit(ctx.expr());
+        ExprReturnVal right  = visit(ctx.addMin());
+        ExprReturnVal returnVal = new ExprReturnVal();
+        returnVal.setValue(Type.tBool);
+        int res = comp(left,right);
+        if(res == 1)
+            returnVal.setValue(1);
+        else
+            returnVal.setValue(0);
+        return returnVal;
+    }
+    //大于等于
+    public ExprReturnVal visitGEExpr(CMMParser.GEExprContext ctx) {
+        ExprReturnVal left = visit(ctx.expr());
+        ExprReturnVal right  = visit(ctx.addMin());
+        ExprReturnVal returnVal = new ExprReturnVal();
+        returnVal.setValue(Type.tBool);
+        int res = comp(left,right);
+        if(res == 1 || res == 1)
+            returnVal.setValue(1);
+        else
+            returnVal.setValue(0);
+        return returnVal;
+    }
+
+    //不等于
+    public ExprReturnVal visitNEExpr(CMMParser.NEExprContext ctx) {
+        ExprReturnVal left = visit(ctx.expr());
+        ExprReturnVal right  = visit(ctx.addMin());
+        ExprReturnVal returnVal = new ExprReturnVal();
+        returnVal.setValue(Type.tBool);
+        int res = comp(left,right);
+        if(res == 0 )
+            returnVal.setValue(0);
+        else
+            returnVal.setValue(1);
+        return returnVal; }
+
+
+    /**
+
     /*
     @Override
     public ExprReturnVal visitAddMinExpr(CmmParser.AddMinExprContext ctx) {

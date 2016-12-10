@@ -148,19 +148,47 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitConstant(CMMParser.ConstantContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code EqualExpr}
+	 * Visit a parse tree produced by the {@code STExpr}
 	 * labeled alternative in {@link CMMParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitEqualExpr(CMMParser.EqualExprContext ctx);
+	T visitSTExpr(CMMParser.STExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code SmallThExpr}
+	 * Visit a parse tree produced by the {@code GEExpr}
 	 * labeled alternative in {@link CMMParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSmallThExpr(CMMParser.SmallThExprContext ctx);
+	T visitGEExpr(CMMParser.GEExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code EExpr}
+	 * labeled alternative in {@link CMMParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEExpr(CMMParser.EExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code SEExpr}
+	 * labeled alternative in {@link CMMParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSEExpr(CMMParser.SEExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code GTExpr}
+	 * labeled alternative in {@link CMMParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGTExpr(CMMParser.GTExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code NEExpr}
+	 * labeled alternative in {@link CMMParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNEExpr(CMMParser.NEExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ToAddminExpr}
 	 * labeled alternative in {@link CMMParser#expr}.
@@ -169,18 +197,26 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitToAddminExpr(CMMParser.ToAddminExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code GrateThanExpr}
-	 * labeled alternative in {@link CMMParser#expr}.
+	 * Visit a parse tree produced by the {@code TomulDiv}
+	 * labeled alternative in {@link CMMParser#addMin}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGrateThanExpr(CMMParser.GrateThanExprContext ctx);
+	T visitTomulDiv(CMMParser.TomulDivContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CMMParser#addMin}.
+	 * Visit a parse tree produced by the {@code Plus}
+	 * labeled alternative in {@link CMMParser#addMin}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAddMin(CMMParser.AddMinContext ctx);
+	T visitPlus(CMMParser.PlusContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Minus}
+	 * labeled alternative in {@link CMMParser#addMin}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMinus(CMMParser.MinusContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code TounaryMinus}
 	 * labeled alternative in {@link CMMParser#mulDiv}.
