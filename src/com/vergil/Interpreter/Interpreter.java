@@ -57,9 +57,8 @@ public class Interpreter {
 
         DefPhaseListener defPhaseListener = new DefPhaseListener();
         walker.walk(defPhaseListener, parseTree);
-
-        //// TODO: 2016/12/8  
-
+        //// TODO: 2016/12/10 完成RefPahaseVisitir的编写 
+//
 //        RefPhaseVisitor refPhaseVisitor = new RefPhaseVisitor(defPhaseListener.globals,
 //                defPhaseListener.scopes,
 //                consoleIo);

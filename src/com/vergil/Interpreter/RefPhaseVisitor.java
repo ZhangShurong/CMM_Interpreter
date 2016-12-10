@@ -1,5 +1,6 @@
 package com.vergil.Interpreter;
 
+import com.vergil.Utils.IOInterface;
 import gen.CMMBaseVisitor;
 import gen.CMMParser;
 import org.antlr.v4.runtime.Token;
@@ -10,11 +11,14 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
  */
 public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
+    private IOInterface io;
+
     ParseTreeProperty<Scope> scopes;
     GlobalScope globals;
     Scope currentScope;
 
-    public RefPhaseVisitor(GlobalScope globals, ParseTreeProperty<Scope> scopes) {
+    public RefPhaseVisitor(GlobalScope globals, ParseTreeProperty<Scope> scopes, IOInterface io) {
+        this.io = io;
         this.globals = globals;
         this.scopes = scopes;
     }
@@ -25,8 +29,6 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         super.visitProgram(ctx);
         return null;
     }
-
-
 
     @Override
     public ExprReturnVal visitStmtBlock(CMMParser.StmtBlockContext ctx) {
@@ -40,12 +42,12 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     public ExprReturnVal visitAssignStmt(CMMParser.AssignStmtContext ctx) {
         super.visitAssignStmt(ctx);
 
-        if(ctx.value().IDENT() == null){ // 数组
+        if(ctx.value().IDENT() == null){
             Token token = ctx.value().array().IDENT().getSymbol();
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                System.out.printf("ERROR: no such variable <"
+                io.output("ERROR: no such variable <"
                         + varName
                         + "> in line "
                         + token.getLine()
@@ -55,13 +57,13 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
                 ExprReturnVal value = exprComputeVisitor.visit(ctx.expr()); // 右边表达式计算得到的值
                 int varIndex;
-                if(ctx.value().array().IntConstant() != null){ // 索引为int常量
-                    varIndex = Integer.parseInt(ctx.value().array().IntConstant().getText());
+                if(ctx.value().array().INTCONSTANT() != null){ // 索引为int常量
+                    varIndex = Integer.parseInt(ctx.value().array().INTCONSTANT().getText());
                 }else{ // 索引为表达式
                     ExprComputeVisitor indexComputeVisitor = new ExprComputeVisitor(currentScope, io);
                     ExprReturnVal indexValue = indexComputeVisitor.visit(ctx.value().array().expr());
                     if(indexValue.getType() != Type.tInt){
-                        System.out.printf("ERROR: invalid index for <"
+                        io.output("ERROR: invalid index for <"
                                 + varName
                                 + "> in line "
                                 + token.getLine()
@@ -77,7 +79,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                         if(value.getValue() instanceof  Integer){
                             varArray[varIndex] = (Integer) value.getValue();
                         }else{
-                            System.out.printf("ERROR: unmatched or uncast type during assignment of <"
+                            io.output("ERROR: unmatched or uncast type during assignment of <"
                                     + varName
                                     + "> in line "
                                     + token.getLine()
@@ -86,7 +88,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                             return null;
                         }
                     }else{
-                        System.out.printf("ERROR: index out of boundary of array <"
+                        io.output("ERROR: index out of boundary of array <"
                                 + varName
                                 + "> in line "
                                 + token.getLine()
@@ -103,7 +105,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                         }else if(value.getValue() instanceof  Integer){
                             varArray[varIndex] = (Integer) value.getValue();
                         }else{
-                            System.out.printf("ERROR: unmatched or uncast type during assignment of <"
+                            io.output("ERROR: unmatched or uncast type during assignment of <"
                                     + varName
                                     + "> in line "
                                     + token.getLine()
@@ -112,7 +114,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                             return null;
                         }
                     }else{
-                        System.out.printf("ERROR: index out of boundary of array <"
+                        io.output("ERROR: index out of boundary of array <"
                                 + varName
                                 + "> in line "
                                 + token.getLine()
@@ -123,11 +125,11 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 }
             }
         }else{ // 普通变量
-            Token token = ctx.value().Ident().getSymbol();
+            Token token = ctx.value().IDENT().getSymbol();
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                System.out.printf("ERROR: no such variable <"
+                io.output("ERROR: no such variable <"
                         + varName
                         + "> in line "
                         + token.getLine()
@@ -138,8 +140,8 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 ExprReturnVal value = exprComputeVisitor.visit(ctx.expr());
 
                 if(var.getType() != value.getType()){
-                    Token assign = ctx.Assign().getSymbol(); // 找到等号方便定位错误
-                    System.out.printf("ERROR: unmatched type on two side of <"
+                    Token assign = ctx.EQUAL().getSymbol(); // 找到等号方便定位错误
+                    io.output("ERROR: unmatched type on two side of <"
                             + assign.getText()
                             + "> in line "
                             + assign.getLine()
@@ -156,22 +158,22 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     }
 
     @Override
-    public ExprReturnVal visitRead_stmt(CMMParser.Read_stmtContext ctx) {
-        super.visitRead_stmt(ctx);
+    public ExprReturnVal visitReadStmt(CMMParser.ReadStmtContext ctx) {
+        super.visitReadStmt(ctx);
         Token token = null;
-        if(ctx.Ident() == null){ // 数组
-            token = ctx.array().Ident().getSymbol();
+        if(ctx.IDENT() == null){
+            token = ctx.array().IDENT().getSymbol();
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                System.out.printf("ERROR: no such variable <"
+                io.output("ERROR: no such variable <"
                         + varName
                         + "> in line "
                         + token.getLine()
                         + ":" + token.getCharPositionInLine());
                 return null;
             }
-            int varIndex = Integer.parseInt(ctx.array().IntConstant().getText());
+            int varIndex = Integer.parseInt(ctx.array().INTCONSTANT().getText());
             if(var.getType() == Type.tIntArray){ // int数组
 
                 int[] varArray = (int[]) var.getValue();
@@ -181,7 +183,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     int in = Integer.parseInt(io.input());
                     varArray[varIndex] = in;
                 }else{
-                    System.out.printf("ERROR: index out of boundary of array <"
+                    io.output("ERROR: index out of boundary of array <"
                             + varName
                             + "> in line "
                             + token.getLine()
@@ -197,7 +199,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     Double in = Double.parseDouble(io.input());
                     varArray[varIndex] = in;
                 }else{
-                    System.out.printf("ERROR: index out of boundary of array <"
+                    io.output("ERROR: index out of boundary of array <"
                             + varName
                             + "> in line "
                             + token.getLine()
@@ -206,11 +208,11 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
             }
         }else{ // 普通变量
-            token = ctx.Ident().getSymbol();
+            token = ctx.IDENT().getSymbol();
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                System.out.printf("ERROR: no such variable <"
+                io.output("ERROR: no such variable <"
                         + varName
                         + "> in line "
                         + token.getLine()
@@ -230,11 +232,11 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     }
 
     @Override
-    public ExprReturnVal visitWrite_stmt(CMMParser.Write_stmtContext ctx) {
-        super.visitWrite_stmt(ctx);
+    public ExprReturnVal visitWriteStmt(CMMParser.WriteStmtContext ctx) {
+        super.visitWriteStmt(ctx);
         ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
         Object value = exprComputeVisitor.visit(ctx.expr()).getValue();
-        System.out.printf(value);
+        io.output(value);
         return null;
     }
 
@@ -326,4 +328,6 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     public ExprReturnVal visitBreak_stmt(CMMParser.Break_stmtContext ctx) {
         return super.visitBreak_stmt(ctx);
     }
+
+
 }

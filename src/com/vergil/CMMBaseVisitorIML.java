@@ -11,9 +11,5 @@ import java.util.HashMap;
 public class CMMBaseVisitorIML extends CMMBaseVisitor<Double> {
     private HashMap<String, Double> variables = new HashMap<String, Double>();
 
-    @Override
-    public Double visitSmallThExpr(CMMParser.SmallThExprContext ctx) {
-        return super.visitSmallThExpr(ctx);
-    }
 }
 
