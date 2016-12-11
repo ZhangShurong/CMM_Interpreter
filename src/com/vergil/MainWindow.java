@@ -99,18 +99,6 @@ public class MainWindow extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 infoArea.setText("");
-                ANTLRInputStream inputStream
-                        = new ANTLRInputStream((codeArea.getText()));
-                CMMLexer lexer = new CMMLexer(inputStream);
-                CommonTokenStream tokens = new CommonTokenStream(lexer);
-                CMMParser parser = new CMMParser(tokens);
-                ParseTree tree = parser.program();
-                Trees.inspect(tree, parser);
-
-                ParseTreeWalker parseTreeWalker = new ParseTreeWalker();
-                CMMBaseListenerIML cmmBaseListenerIML= new CMMBaseListenerIML(parser);
-                cmmBaseListenerIML.setArea(infoArea);
-                parseTreeWalker.walk(cmmBaseListenerIML,tree);
 
                 Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(codeArea), new EditorIO(infoArea));
                 interpreter.run();
