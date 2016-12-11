@@ -30,14 +30,15 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         }
         else
         {
-            leftvalue = (Double)left.getValue();
+            //todo 强转有bug
+            leftvalue = (double)left.getValue();
         }
         if(right.getType() == Type.tBool)
         {
             rightvalue = btod(right);
         }
         else
-            rightvalue = (Double)right.getValue();
+            rightvalue = (double)right.getValue();
 
         if(leftvalue == rightvalue)
             return 0;
