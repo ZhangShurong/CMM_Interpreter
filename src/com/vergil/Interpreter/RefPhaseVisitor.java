@@ -271,80 +271,38 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
             visit(ctx.elseiflist());
         }
         return null;
-
     }
 
+    public ExprReturnVal visitIFELSELISTELSE(CMMParser.IFELSELISTELSEContext ctx)
+    {
+        if(isExprTrue(ctx.expr()))
+        {
+            visit(ctx.stmtBlock(0));
+        }
+        else {
+            if(visit(ctx.elseiflist()).getValue().equals((int)0))
+            {
+                visit(ctx.stmtBlock(1));
+            }
+        }
+        return null;
+    }
     public  ExprReturnVal visitElseiflist(CMMParser.ElseiflistContext ctx)
     {
+        ExprReturnVal exprReturnVal = new ExprReturnVal();
+        exprReturnVal.setType(Type.tBool);
+        exprReturnVal.setValue((int)0);
         for(int i = 0; i < ctx.elseif().size(); i++)
         {
             if(isExprTrue(ctx.elseif(i).expr()))
             {
                 visit(ctx.elseif(i).stmtBlock());
-                return null;
+                exprReturnVal.setValue((int)1);
+                break;
             }
         }
-        return null;
+        return exprReturnVal;
     }
-
-
-/*
-    @Override
-    public ExprReturnVal visitI_S(CMMParser.I_SContext ctx) { // if stmt
-        if(isExprTrue(ctx.expr())){
-            visit(ctx.stmt());
-        }
-        return null;
-    }
-
-    @Override
-    public ExprReturnVal visitI_SB(CMMParser.I_SBContext ctx) {
-        if(isExprTrue(ctx.expr())){
-            visit(ctx.stmt_block());
-        }
-        return null;
-    }
-
-    @Override
-    public ExprReturnVal visitI_S_E_S(CMMParser.I_S_E_SContext ctx) {
-        if(isExprTrue(ctx.expr())){
-            visit(ctx.stmt(0));
-        }else{
-            visit(ctx.stmt(1));
-        }
-        return null;
-    }
-
-    @Override
-    public ExprReturnVal visitI_S_E_SB(CMMParser.I_S_E_SBContext ctx) {
-        if(isExprTrue(ctx.expr())){
-            visit(ctx.stmt());
-        }else{
-            visit(ctx.stmt_block());
-        }
-        return null;
-    }
-
-    @Override
-    public ExprReturnVal visitI_SB_E_S(CMMParser.I_SB_E_SContext ctx) {
-        if(isExprTrue(ctx.expr())){
-            visit(ctx.stmt_block());
-        }else{
-            visit(ctx.stmt());
-        }
-        return null;
-    }
-
-    @Override
-    public ExprReturnVal visitI_SB_E_SB(CMMParser.I_SB_E_SBContext ctx) {
-        if(isExprTrue(ctx.expr())){
-            visit(ctx.stmt_block(0));
-        }else{
-            visit(ctx.stmt_block(1));
-        }
-        return null;
-    }
-*/
     private boolean isExprTrue(CMMParser.ExprContext ctx){
         ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
         ExprReturnVal value = exprComputeVisitor.visit(ctx);
