@@ -309,8 +309,10 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         if(value.getType() == Type.tBool){
             return (Boolean) value.getValue();
         }else{
-            //非零值为真
-            return (Double)value.getValue() != 0;
+            if(value.getType() == Type.tDouble)
+                return (Double)value.getValue() != 0;
+            else
+                return (Integer)value.getValue() != 0;
         }
     }
 
