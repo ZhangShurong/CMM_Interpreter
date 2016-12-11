@@ -1,5 +1,6 @@
 package com.vergil.Interpreter;
 
+import com.vergil.Utils.IOInterface;
 import gen.CMMLexer;
 import gen.CMMParser;
 import org.antlr.v4.gui.Trees;
@@ -19,7 +20,7 @@ public class Interpreter {
     private String sourcecode;
     private boolean showtree = true;
     private boolean showlexres = true;
-
+    private IOInterface consoleIo;
     public Interpreter(String sourcecode)
     {
         this.sourcecode = sourcecode;
@@ -55,7 +56,7 @@ public class Interpreter {
         }
         ParseTreeWalker walker = new ParseTreeWalker();
 
-        DefPhaseListener defPhaseListener = new DefPhaseListener();
+        DefPhaseListener defPhaseListener = new DefPhaseListener(consoleIo);
         walker.walk(defPhaseListener, parseTree);
 
 
