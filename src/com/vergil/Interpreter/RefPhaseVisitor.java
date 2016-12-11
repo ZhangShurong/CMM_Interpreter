@@ -314,6 +314,23 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         }
     }
 
+    public ExprReturnVal visitWhileStmt(CMMParser.WhileStmtContext ctx)
+    {
+        while (isExprTrue(ctx.expr()))
+        {
+            if(ctx.stmt() != null){ // while后面紧跟stmt
+                visit(ctx.stmt());
+            }else{ // while后面紧跟stmt_block
+                visit(ctx.stmtBlock());
+            }
+        }
+        return null;
+    }
+    public ExprReturnVal visitBreakStmt(CMMParser.BreakStmtContext ctx)
+    {
+        return visitChildren(ctx);
+    }
+
     /*
     @Override
     public ExprReturnVal visitWhile_stmt(CMMParser.While_stmtContext ctx) {
