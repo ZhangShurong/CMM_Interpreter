@@ -115,11 +115,11 @@ public class DefPhaseListener extends CMMBaseListener {
         }
 
         // 普通变量在声明时赋值
-        for(CMMParser.Decl_assignContext decl_assignContext : ctx.decl_assign()){
-            Token token = decl_assignContext.Ident().getSymbol();
+        for(CMMParser.DelassignContext decl_assignContext : ctx.delassign()){
+            Token token = decl_assignContext.IDENT().getSymbol();
             ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
             ExprReturnVal value = exprComputeVisitor.visit(decl_assignContext.expr());
-            if(value.getType() != (typeStr.equals("int")? Type.tInt : Type.tReal)){
+            if(value.getType() != (typeStr.equals("int")? Type.tInt : Type.tDouble)){
                 io.output("ERROR: unmatched type on two side of <"
                         + token.getText()
                         + "> in line "
@@ -146,7 +146,7 @@ public class DefPhaseListener extends CMMBaseListener {
                 return;
             }else{
                 currentScope.define(new Symbol(token.getText(),
-                        typeStr.equals("int")? Type.tInt : Type.tReal,
+                        typeStr.equals("int")? Type.tInt : Type.tDouble,
                         value.getValue()));
             }
         }

@@ -1,5 +1,7 @@
 package com.vergil;
 
+import com.vergil.Interpreter.Interpreter;
+import com.vergil.Utils.EditorIO;
 import gen.CMMLexer;
 import gen.CMMParser;
 import org.antlr.v4.gui.Trees;
@@ -109,6 +111,10 @@ public class MainWindow extends JFrame {
                 CMMBaseListenerIML cmmBaseListenerIML= new CMMBaseListenerIML(parser);
                 cmmBaseListenerIML.setArea(infoArea);
                 parseTreeWalker.walk(cmmBaseListenerIML,tree);
+
+                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(codeArea), new EditorIO(infoArea));
+                interpreter.run();
+
             }
             catch (Exception ex) {
                 infoArea.append(ex.getMessage());

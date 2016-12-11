@@ -21,9 +21,12 @@ public class Interpreter {
     private boolean showtree = true;
     private boolean showlexres = true;
     private IOInterface consoleIo;
-    public Interpreter(String sourcecode)
+    private IOInterface lexIo;
+    public Interpreter(String sourcecode,IOInterface lexIo, IOInterface consoleIo)
     {
         this.sourcecode = sourcecode;
+        this.lexIo = lexIo;
+        this.consoleIo = consoleIo;
     }
     public void interpret()
     {
