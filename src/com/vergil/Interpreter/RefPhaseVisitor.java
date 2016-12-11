@@ -240,8 +240,55 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         return null;
     }
 
-   
 
+
+    public ExprReturnVal visitONLYIF(CMMParser.ONLYIFContext ctx)
+    {
+        if(isExprTrue(ctx.expr())){
+            visit(ctx.stmtBlock());
+        }
+        return null;
+    }
+
+    public ExprReturnVal visitIFELSE(CMMParser.IFELSEContext ctx)
+    {
+        if(isExprTrue(ctx.expr())) {
+            visit(ctx.stmtBlock(0));
+        }
+        else {
+            visit(ctx.stmtBlock(1));
+        }
+        return null;
+    }
+
+    public ExprReturnVal visitIFELSELIST(CMMParser.IFELSELISTContext ctx)
+    {
+        if(isExprTrue(ctx.expr()))
+        {
+            visit(ctx.stmtBlock());
+        }
+        else {
+            visit(ctx.elseiflist());
+        }
+        return null;
+
+    }
+
+    public  ExprReturnVal visitElseiflist(CMMParser.ElseiflistContext ctx)
+    {
+        for(int i = 0; i < ctx.elseif().size(); i++)
+        {
+            if(isExprTrue(ctx.elseif(i).expr()))
+            {
+                visit(ctx.elseif(i).stmtBlock());
+                return null;
+            }
+        }
+        return null;
+    }
+
+
+/*
     @Override
     public ExprReturnVal visitI_S(CMMParser.I_SContext ctx) { // if stmt
         if(isExprTrue(ctx.expr())){
@@ -297,19 +344,19 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         }
         return null;
     }
-
+*/
     private boolean isExprTrue(CMMParser.ExprContext ctx){
         ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
         ExprReturnVal value = exprComputeVisitor.visit(ctx);
         if(value.getType() == Type.tBool){
             return (Boolean) value.getValue();
         }else{
-            return (Double) value.getValue() > 0;
+            //非零值为真
+            return (Double)value.getValue() != 0;
         }
     }
 
-    // ============================= end if else ==========================
-
+    /*
     @Override
     public ExprReturnVal visitWhile_stmt(CMMParser.While_stmtContext ctx) {
 
@@ -328,6 +375,6 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     public ExprReturnVal visitBreak_stmt(CMMParser.Break_stmtContext ctx) {
         return super.visitBreak_stmt(ctx);
     }
-
+*/
 
 }
