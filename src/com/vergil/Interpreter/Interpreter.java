@@ -18,15 +18,15 @@ import java.util.List;
 public class Interpreter {
 
     private String sourcecode;
-    private boolean showtree = true;
-    private boolean showlexres = true;
-    private IOInterface consoleIo;
-    private IOInterface lexIo;
-    public Interpreter(String sourcecode,IOInterface lexIo, IOInterface consoleIo)
+    //private boolean showtree = true;
+
+    private IOInterface ioInterface;
+    private IOInterface debugIO;
+    public Interpreter(String sourcecode,IOInterface ioInterface, IOInterface debugIO)
     {
         this.sourcecode = sourcecode;
-        this.lexIo = lexIo;
-        this.consoleIo = consoleIo;
+        this.ioInterface = ioInterface;
+        this.debugIO = debugIO;
     }
     public void interpret()
     {
@@ -34,38 +34,30 @@ public class Interpreter {
     }
     public void showtree()
     {
+        CMMLexer lexer = new CMMLexer(new ANTLRInputStream(sourcecode));
+        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+        CMMParser parser = new CMMParser(tokenStream);
+        ParseTree parseTree = parser.program();
+        Trees.inspect(parseTree, parser);
 
     }
     public void run()
     {
-        System.out.print("Start ");
-
-        //1. lexical analysis
         CMMLexer lexer = new CMMLexer(new ANTLRInputStream(sourcecode));
-        if(showlexres){
-            System.out.println("Token  |  Line  |  Type");
-            List<Token> tokenList = (List<Token>) lexer.getAllTokens();
-            for(Token token : tokenList){
-                System.out.println(token.getText() + "\t" + token.getLine() + "\t" + token.getType());
-            }
-            lexer.reset();
-        }
-        //2.  grammatical analysis
+
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         CMMParser parser = new CMMParser(tokenStream);
         ParseTree parseTree = parser.program();
-        if(showtree){
-            Trees.inspect(parseTree, parser);
-        }
+
         ParseTreeWalker walker = new ParseTreeWalker();
 
-        DefPhaseListener defPhaseListener = new DefPhaseListener(consoleIo);
+        DefPhaseListener defPhaseListener = new DefPhaseListener(ioInterface);
         walker.walk(defPhaseListener, parseTree);
 
 
         RefPhaseVisitor refPhaseVisitor = new RefPhaseVisitor(defPhaseListener.globals,
                 defPhaseListener.scopes,
-                consoleIo);
+                ioInterface);
         refPhaseVisitor.visit(parseTree);
     }
 

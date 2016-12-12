@@ -41,7 +41,8 @@ public class MainWindow extends JFrame {
 
         Action [] actions = {
                 new OpenAction(),
-                new StartAction()
+                new StartAction(),
+                new ShowTreeAction()
         };
         toolBar = new JToolBar();
         for(int i = 0; i < actions.length; i++) {
@@ -68,7 +69,7 @@ public class MainWindow extends JFrame {
         infoScrollPane = new JScrollPane(infoArea);
         infoPanel.add(infoScrollPane, BorderLayout.CENTER);
         infoPanel.setSize(800,200);
-        //add(infoPanel,BorderLayout.SOUTH);
+
         infoPanel.setPreferredSize(new Dimension(800, 150));
         add(infoPanel,BorderLayout.SOUTH);
         fileChooser = new JFileChooser();
@@ -79,7 +80,8 @@ public class MainWindow extends JFrame {
         public OpenAction() {
             super("文件");
         }
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e)
+        {
             int i = fileChooser.showOpenDialog(MainWindow.this);
                 File f = fileChooser.getSelectedFile();
                 try {
@@ -96,13 +98,26 @@ public class MainWindow extends JFrame {
         public StartAction() {
             super("运行");
         }
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e)
+        {
             try {
                 infoArea.setText("");
-
-                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(codeArea), new EditorIO(infoArea));
+                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(codeArea));
                 interpreter.run();
 
+            } catch (Exception ex) {
+                infoArea.append(ex.getMessage());
+            }
+        }
+    }
+    class ShowTreeAction extends  AbstractAction {
+        public ShowTreeAction() {
+            super("语法树");
+        }
+        public void actionPerformed(ActionEvent e) {
+            try {
+                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(codeArea));
+                interpreter.showtree();
             }
             catch (Exception ex) {
                 infoArea.append(ex.getMessage());
