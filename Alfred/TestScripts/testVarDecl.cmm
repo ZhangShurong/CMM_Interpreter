@@ -1,6 +1,0 @@
-int i;
-int a,b,c,d;
-int[1] i;
-double j;
-double m,n;
-double[8] j,k,l;
