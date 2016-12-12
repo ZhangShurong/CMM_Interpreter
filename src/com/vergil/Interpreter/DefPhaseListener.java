@@ -66,7 +66,7 @@ public class DefPhaseListener extends CMMBaseListener {
             String name = arrayContext.IDENT().getSymbol().getText();
             int size = Integer.parseInt(arrayContext.INTCONSTANT().getText());
             if(Constant.DEBUG){
-                io.output("DEBUG: <"
+                io.stdout("DEBUG: <"
                         + typeStr + " "
                         + name + " size="
                         + size
@@ -74,7 +74,7 @@ public class DefPhaseListener extends CMMBaseListener {
             }
             // 在当前作用域内定义，名称，类型，值
             if(currentScope.redundant(name)){
-                io.output("ERROR: redundant definition of <"
+                io.stderr("ERROR: redundant definition of <"
                         + name
                         + "> in same scope in line "
                         + arrayContext.IDENT().getSymbol().getLine()
@@ -94,14 +94,14 @@ public class DefPhaseListener extends CMMBaseListener {
         // 普通变量声明
         for(TerminalNode node : ctx.getTokens(CMMParser.IDENT)){
             if(Constant.DEBUG){
-                io.output("DEBUG: <"
+                io.stdout("DEBUG: <"
                         + typeStr + " "
                         + node.getSymbol().getText()
                         + " >");
             }
             // 在当前作用域内定义，这里往符号表里只是添加了变量名和类型，没有值
             if(currentScope.redundant(node.getSymbol().getText())){
-                io.output("ERROR: redundant definition of <"
+                io.stderr("ERROR: redundant definition of <"
                         + node.getSymbol().getText()
                         + "> in same scope in line "
                         + node.getSymbol().getLine()
@@ -120,7 +120,7 @@ public class DefPhaseListener extends CMMBaseListener {
             ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
             ExprReturnVal value = exprComputeVisitor.visit(decl_assignContext.expr());
             if(value.getType() != (typeStr.equals("int")? Type.tInt : Type.tDouble)){
-                io.output("ERROR: unmatched type on two side of <"
+                io.stderr("ERROR: unmatched type on two side of <"
                         + token.getText()
                         + "> in line "
                         + token.getLine()
@@ -129,7 +129,7 @@ public class DefPhaseListener extends CMMBaseListener {
                 return;
             }
             if(Constant.DEBUG){
-                io.output("DEBUG: <"
+                io.stdout("DEBUG: <"
                         + typeStr + " "
                         + token.getText() + " value="
                         + value.getValue()
@@ -137,7 +137,7 @@ public class DefPhaseListener extends CMMBaseListener {
             }
             // 在当前作用域内定义，这里往符号表里只是添加了变量名和类型，没有值
             if(currentScope.redundant(token.getText())){
-                io.output("ERROR: redundant definition of <"
+                io.stderr("ERROR: redundant definition of <"
                         + token.getText()
                         + "> in same scope in line "
                         + token.getLine()
@@ -156,7 +156,7 @@ public class DefPhaseListener extends CMMBaseListener {
     @Override
     public void visitErrorNode(ErrorNode node) {
         super.visitErrorNode(node);
-        io.output("ERROR: " + node.getText()
+        io.stderr("ERROR: " + node.getText()
                 +" in line " + node.getSymbol().getLine()
                 +":" +node.getSymbol().getCharPositionInLine());
     }

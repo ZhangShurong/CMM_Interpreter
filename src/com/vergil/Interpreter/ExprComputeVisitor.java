@@ -85,7 +85,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
             returnVal.setType(Type.tInt);
             returnVal.setValue((Integer)leftValue.getValue() * (Integer) rightValue.getValue());
         }else{
-            io.output("ERROR: unmatched or uncast type on two side of <"
+            io.stderr("ERROR: unmatched or uncast type on two side of <"
                     + op.getText()
                     + "> in line "
                     + op.getLine()
@@ -116,7 +116,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
             returnVal.setType(Type.tInt);
             returnVal.setValue((Integer)leftValue.getValue() / (Integer) rightValue.getValue());
         }else{
-            io.output("ERROR: unmatched or uncast type on two side of <"
+            io.stderr("ERROR: unmatched or uncast type on two side of <"
                     + op.getText()
                     + "> in line "
                     + op.getLine()
@@ -140,7 +140,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
             rightvalue.setValue(-(Integer) rightvalue.getValue());
         }
         else{
-            io.output("ERROR");
+            io.stderr("ERROR");
         }
         return rightvalue;
     }
@@ -157,7 +157,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         if(varSymbol != null ){
             return new ExprReturnVal(varSymbol.getType(), varSymbol.getValue());
         }else{
-            io.output("ERROR");
+            io.stderr("ERROR");
             return null;
         }
     }
@@ -179,7 +179,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
             return new ExprReturnVal(Type.tInt,1);
         }
         else{
-            io.output("ERROR");
+            io.stderr("ERROR");
             return new ExprReturnVal(Type.tInt,0);
         }
     }
@@ -205,7 +205,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 if(varIndex < varArray.length){
                     return new ExprReturnVal(Type.tInt, varArray[varIndex]);
                 }else{
-                    io.output("ERROR");
+                    io.stderr("ERROR");
                     return null;
                 }
 
@@ -217,13 +217,13 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 if(varIndex < varArray.length){
                     return new ExprReturnVal(Type.tDouble, varArray[varIndex]);
                 }else{
-                    io.output("ERROR");
+                    io.stderr("ERROR");
                     return null;
                 }
 
             }
         }else{
-            io.output("ERROR");
+            io.stderr("ERROR");
             return null;
         }
     }
@@ -251,11 +251,11 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
             }
         }
         else {
-            io.output("Bool error");
+            io.stderr("Bool error");
         }
         if(returnVal == null)
         {
-            io.output("Error");
+            io.stderr("Error");
         }
         return  returnVal;
     }
@@ -278,11 +278,11 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
             }
         }
         else {
-            io.output("Bool error");
+            io.stderr("Bool error");
         }
         if(returnVal == null)
         {
-            io.output("Error");
+            io.stderr("Error");
         }
         return  returnVal;
     }

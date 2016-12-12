@@ -13,13 +13,18 @@ public class EditorIO implements IOInterface {
         this.outputArea = outputArea;
     }
 
-    @Override
-    public String input() {
-        return JOptionPane.showInputDialog(null, "Please Input Here!");
+    public  String stdin()
+    {
+        return null;
     }
 
-    @Override
-    public void output(Object out) {
-        outputArea.append(out.toString()+"\n");
+    public void stdout(Object out)
+    {
+        outputArea.append(out.toString());
     }
+    public void stderr(Object out)
+    {
+        outputArea.append(out.toString());
+    }
+
 }

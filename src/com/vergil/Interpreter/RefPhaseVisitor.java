@@ -47,7 +47,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                io.output("ERROR: no such variable <"
+                io.stderr("ERROR: no such variable <"
                         + varName
                         + "> in line "
                         + token.getLine()
@@ -63,7 +63,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     ExprComputeVisitor indexComputeVisitor = new ExprComputeVisitor(currentScope, io);
                     ExprReturnVal indexValue = indexComputeVisitor.visit(ctx.value().array().expr());
                     if(indexValue.getType() != Type.tInt){
-                        io.output("ERROR: invalid index for <"
+                        io.stderr("ERROR: invalid index for <"
                                 + varName
                                 + "> in line "
                                 + token.getLine()
@@ -79,7 +79,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                         if(value.getValue() instanceof  Integer){
                             varArray[varIndex] = (Integer) value.getValue();
                         }else{
-                            io.output("ERROR: unmatched or uncast type during assignment of <"
+                            io.stderr("ERROR: unmatched or uncast type during assignment of <"
                                     + varName
                                     + "> in line "
                                     + token.getLine()
@@ -88,7 +88,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                             return null;
                         }
                     }else{
-                        io.output("ERROR: index out of boundary of array <"
+                        io.stderr("ERROR: index out of boundary of array <"
                                 + varName
                                 + "> in line "
                                 + token.getLine()
@@ -105,7 +105,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                         }else if(value.getValue() instanceof  Integer){
                             varArray[varIndex] = (Integer) value.getValue();
                         }else{
-                            io.output("ERROR: unmatched or uncast type during assignment of <"
+                            io.stderr("ERROR: unmatched or uncast type during assignment of <"
                                     + varName
                                     + "> in line "
                                     + token.getLine()
@@ -114,7 +114,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                             return null;
                         }
                     }else{
-                        io.output("ERROR: index out of boundary of array <"
+                        io.stderr("ERROR: index out of boundary of array <"
                                 + varName
                                 + "> in line "
                                 + token.getLine()
@@ -129,7 +129,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                io.output("ERROR: no such variable <"
+                io.stderr("ERROR: no such variable <"
                         + varName
                         + "> in line "
                         + token.getLine()
@@ -141,7 +141,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
                 if(var.getType() != value.getType()){
                     Token assign = ctx.EQUAL().getSymbol(); // 找到等号方便定位错误
-                    io.output("ERROR: unmatched type on two side of <"
+                    io.stderr("ERROR: unmatched type on two side of <"
                             + assign.getText()
                             + "> in line "
                             + assign.getLine()
@@ -166,7 +166,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                io.output("ERROR: no such variable <"
+                io.stderr("ERROR: no such variable <"
                         + varName
                         + "> in line "
                         + token.getLine()
@@ -180,10 +180,10 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
                 // 数组越界检查
                 if(0 <= varIndex && varIndex < varArray.length){
-                    int in = Integer.parseInt(io.input());
+                    int in = Integer.parseInt(io.stdin());
                     varArray[varIndex] = in;
                 }else{
-                    io.output("ERROR: index out of boundary of array <"
+                    io.stderr("ERROR: index out of boundary of array <"
                             + varName
                             + "> in line "
                             + token.getLine()
@@ -196,10 +196,10 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
                 // 数组越界检查
                 if(0 <= varIndex && varIndex < varArray.length){
-                    Double in = Double.parseDouble(io.input());
+                    Double in = Double.parseDouble(io.stdin());
                     varArray[varIndex] = in;
                 }else{
-                    io.output("ERROR: index out of boundary of array <"
+                    io.stderr("ERROR: index out of boundary of array <"
                             + varName
                             + "> in line "
                             + token.getLine()
@@ -212,7 +212,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                io.output("ERROR: no such variable <"
+                io.stderr("ERROR: no such variable <"
                         + varName
                         + "> in line "
                         + token.getLine()
@@ -220,10 +220,10 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 return null;
             }
             if(var.getType() == Type.tInt){
-                int in = Integer.parseInt(io.input());
+                int in = Integer.parseInt(io.stdin());
                 var.setValue(in);
             }else{
-                Double in = Double.parseDouble(io.input());
+                Double in = Double.parseDouble(io.stdin());
                 var.setValue(in);
             }
 
@@ -236,7 +236,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         super.visitWriteStmt(ctx);
         ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
         Object value = exprComputeVisitor.visit(ctx.expr()).getValue();
-        io.output(value);
+        io.stderr(value);
         return null;
     }
 
