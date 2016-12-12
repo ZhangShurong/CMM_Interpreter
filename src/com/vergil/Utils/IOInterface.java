@@ -10,8 +10,6 @@ public interface IOInterface {
     void stderr(Object out);
     /*
     String input();
-
     void output(Object out);
     */
-
 }
