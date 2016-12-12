@@ -15,12 +15,13 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class DefPhaseListener extends CMMBaseListener {
 
     private IOInterface io;
+    private IOInterface debugIO;
 
-    public DefPhaseListener(IOInterface io){
+    public DefPhaseListener(IOInterface io,IOInterface debugIO){
         this.io = io;
+        this.debugIO = debugIO;
     }
 
-    // 是一个IdentityHashMap<ParseTree,T>
     ParseTreeProperty<Scope> scopes = new ParseTreeProperty<Scope>();
     GlobalScope globals;
     Scope currentScope;
@@ -66,7 +67,7 @@ public class DefPhaseListener extends CMMBaseListener {
             String name = arrayContext.IDENT().getSymbol().getText();
             int size = Integer.parseInt(arrayContext.INTCONSTANT().getText());
             if(Constant.DEBUG){
-                io.stdout("DEBUG: <"
+                debugIO.stdout("DEBUG: <"
                         + typeStr + " "
                         + name + " size="
                         + size

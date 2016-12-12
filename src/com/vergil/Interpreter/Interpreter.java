@@ -22,15 +22,12 @@ public class Interpreter {
 
     private IOInterface ioInterface;
     private IOInterface debugIO;
+
     public Interpreter(String sourcecode,IOInterface ioInterface, IOInterface debugIO)
     {
         this.sourcecode = sourcecode;
         this.ioInterface = ioInterface;
         this.debugIO = debugIO;
-    }
-    public void interpret()
-    {
-
     }
     public void showtree()
     {
@@ -44,16 +41,13 @@ public class Interpreter {
     public void run()
     {
         CMMLexer lexer = new CMMLexer(new ANTLRInputStream(sourcecode));
-
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         CMMParser parser = new CMMParser(tokenStream);
         ParseTree parseTree = parser.program();
-
         ParseTreeWalker walker = new ParseTreeWalker();
 
-        DefPhaseListener defPhaseListener = new DefPhaseListener(ioInterface);
+        DefPhaseListener defPhaseListener = new DefPhaseListener(ioInterface, debugIO);
         walker.walk(defPhaseListener, parseTree);
-
 
         RefPhaseVisitor refPhaseVisitor = new RefPhaseVisitor(defPhaseListener.globals,
                 defPhaseListener.scopes,

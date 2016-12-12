@@ -2,13 +2,7 @@ package com.vergil;
 
 import com.vergil.Interpreter.Interpreter;
 import com.vergil.Utils.EditorIO;
-import gen.CMMLexer;
-import gen.CMMParser;
-import org.antlr.v4.gui.Trees;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,12 +19,16 @@ import java.util.Scanner;
 public class MainWindow extends JFrame {
 
     JToolBar toolBar;
+
     JPanel codePanel;
     JPanel infoPanel;
+
     JTextArea codeArea;
+    JTextArea infoArea;
+
     JScrollPane codeScrollPane;
     JScrollPane infoScrollPane;
-    JTextArea infoArea;
+
     JFileChooser fileChooser;
     public MainWindow()
     {
