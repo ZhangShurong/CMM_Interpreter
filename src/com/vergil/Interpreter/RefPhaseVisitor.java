@@ -328,9 +328,11 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         }
         return null;
     }
+    //todo
     public ExprReturnVal visitBreakStmt(CMMParser.BreakStmtContext ctx)
     {
-        return visitChildren(ctx);
-    }
 
+        //return visitChildren(ctx);
+        return super.visitBreakStmt(ctx);
+    }
 }
