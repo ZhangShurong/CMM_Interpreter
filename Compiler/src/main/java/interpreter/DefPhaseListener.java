@@ -23,7 +23,7 @@ public class DefPhaseListener extends CMMBaseListener {
     }
 
     ParseTreeProperty<Scope> scopes = new ParseTreeProperty<Scope>();
-    GlobalScope globals;
+    Scope globals;
     Scope currentScope;
 
     public void saveScope(ParserRuleContext ctx, Scope scope){
@@ -33,7 +33,7 @@ public class DefPhaseListener extends CMMBaseListener {
     @Override
     public void enterProgram(CMMParser.ProgramContext ctx) {
         super.enterProgram(ctx);
-        globals = new GlobalScope(null);
+        globals = new Scope(null);
         currentScope = globals;
     }
 
@@ -45,7 +45,7 @@ public class DefPhaseListener extends CMMBaseListener {
     @Override
     public void enterStmtBlock(CMMParser.StmtBlockContext ctx) {
         super.enterStmtBlock(ctx);
-        currentScope = new LocalScope(currentScope);
+        currentScope = new Scope(currentScope);
         saveScope(ctx, currentScope);
     }
 

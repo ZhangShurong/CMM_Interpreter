@@ -38,39 +38,48 @@ public class Scope {
 
     private Scope enclosingScope;
     private Map<String, Symbol> symbols = new LinkedHashMap<String, Symbol>();
-
+    private String scopename;
     public Scope(Scope enclosingScope)
     {
         this.enclosingScope =enclosingScope;
     }
-
-    String getScopeName()
+    public void setScopeName(String scopename)
     {
-        return null;
+        this.scopename  = scopename;
+    }
+    public String getScopeName()
+    {
+        return scopename;
     }
 
     /** Where to look next for symbols */
-    Scope getEnclosingScope()
+    public Scope getEnclosingScope()
     {
-        return null;
+        return enclosingScope;
     }
 
     /** Define a symbol in the current scope */
-    void define(Symbol sym)
+    public void define(Symbol sym)
     {
-
+        symbols.put(sym.name, sym);
+        sym.scope = this; // track the scope in each symbol
     }
 
     /** Determine redundant definition in same scope */
-    boolean redundant(String name)
+    public boolean redundant(String name)
     {
-        return false;
+        return symbols.get(name) != null;
     }
 
     /** Look up name in this scope or in enclosing scope if not here */
-    Symbol resolve(String name)
+    public Symbol resolve(String name)
     {
-        return null;
+        Symbol s = symbols.get(name);
+        if ( s!=null ) return s;
+        // if not here, check any enclosing scope
+        if ( enclosingScope != null ) return enclosingScope.resolve(name);
+        return null; // not found
     }
+    public String toString() { return getScopeName()+":"+symbols.values().toString(); }
 
 }

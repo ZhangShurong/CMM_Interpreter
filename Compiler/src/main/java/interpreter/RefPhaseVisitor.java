@@ -15,10 +15,10 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     private IOInterface io;
 
     ParseTreeProperty<Scope> scopes;
-    GlobalScope globals;
+    Scope globals;
     Scope currentScope;
 
-    public RefPhaseVisitor(GlobalScope globals, ParseTreeProperty<Scope> scopes, IOInterface io) {
+    public RefPhaseVisitor(Scope globals, ParseTreeProperty<Scope> scopes, IOInterface io) {
         this.io = io;
         this.globals = globals;
         this.scopes = scopes;
