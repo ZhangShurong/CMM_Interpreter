@@ -1,6 +1,9 @@
 package ui;
 
+import interpreter.Interpreter;
+import io.ConsoleIO;
 import util.FileUtil;
+import util.StringUtil;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -15,12 +18,15 @@ public class Compiler extends JFrame {
     public static final String APP_NAME = "Text Editor Demo";
 
     private TextEditor textEditor;
-    private JFileChooser fileChooser = new JFileChooser();
+    private JFileChooser fileChooser;
 
     public Compiler(){
         CompilerMenu menuBar = new CompilerMenu();
 
         textEditor = new TextEditor();
+        fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File("."));
+
 
         //file operation
         menuBar.addMenuFileListener(new MenuInterface.MenuFileListener() {
@@ -78,7 +84,11 @@ public class Compiler extends JFrame {
         menuBar.addMenuRunListener(new MenuInterface.MenuRunListener() {
             @Override
             public void setRunListener(ActionEvent event) {
-
+                String str = textEditor.textArea.getText();
+                if (!StringUtil.isEmpty(str)){
+                    Interpreter interpreter = new Interpreter(str, new ConsoleIO(), new ConsoleIO());
+                    interpreter.run();
+                }
             }
 
             @Override

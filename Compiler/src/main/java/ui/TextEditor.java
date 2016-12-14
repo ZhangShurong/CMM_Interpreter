@@ -1,9 +1,11 @@
 package ui;
 
 import io.IOInterface;
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import rsyntax.CmmTokenMaker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,12 +15,16 @@ import java.awt.*;
  */
 public class TextEditor extends JPanel implements IOInterface {
     RSyntaxTextArea textArea;
+    private static final String SYNTAX_STYLE = "text/myLanguage";
 
     public TextEditor(){
         setLayout(new BorderLayout());
 
         textArea = new RSyntaxTextArea(40, 120);
-        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+        AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
+        //传入class全名，内部是反射
+        atmf.putMapping(SYNTAX_STYLE, CmmTokenMaker.class.getName());
+        textArea.setSyntaxEditingStyle(SYNTAX_STYLE);
         textArea.setCodeFoldingEnabled(true);
         RTextScrollPane sp = new RTextScrollPane(textArea);
         add(sp);
