@@ -3,7 +3,3 @@
 *.iws
 .idea/
 out/
-build/
-gradle/
-.gradle/
-
