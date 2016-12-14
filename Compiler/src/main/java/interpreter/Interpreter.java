@@ -13,9 +13,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
  * Created by vergil on 2016/12/7.
  */
 public class Interpreter {
-
     private String sourcecode;
-    //private boolean showtree = true;
 
     private IOInterface ioInterface;
     private IOInterface debugIO;
@@ -33,7 +31,6 @@ public class Interpreter {
         CMMParser parser = new CMMParser(tokenStream);
         ParseTree parseTree = parser.program();
         Trees.inspect(parseTree, parser);
-
     }
     public void run()
     {
@@ -42,10 +39,8 @@ public class Interpreter {
         CMMParser parser = new CMMParser(tokenStream);
         ParseTree parseTree = parser.program();
         ParseTreeWalker walker = new ParseTreeWalker();
-
         DefPhaseListener defPhaseListener = new DefPhaseListener(ioInterface, debugIO);
         walker.walk(defPhaseListener, parseTree);
-
         RefPhaseVisitor refPhaseVisitor = new RefPhaseVisitor(defPhaseListener.globals,
                 defPhaseListener.scopes,
                 ioInterface);
