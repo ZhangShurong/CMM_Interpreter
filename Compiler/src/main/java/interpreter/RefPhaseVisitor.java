@@ -43,150 +43,152 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     public ExprReturnVal visitAssignStmt(CMMParser.AssignStmtContext ctx) {
         super.visitAssignStmt(ctx);
 
-        if(ctx.value().IDENT() == null){
+        if(ctx.value().IDENT() == null){//非数组
             Token token = ctx.value().array().IDENT().getSymbol();
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                io.stderr("ERROR: no such variable <"
-                        + varName
-                        + "> in line "
+                io.stderr("error:'"+varName+"' undeclared "
+                        + "\n\tline:"
                         + token.getLine()
                         + ":" + token.getCharPositionInLine());
                 return null;
-            }else{
+            }else{//数组
                 ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
-                ExprReturnVal value = exprComputeVisitor.visit(ctx.expr()); // 右边表达式计算得到的值
+                ExprReturnVal value = exprComputeVisitor.visit(ctx.expr());
+
                 int varIndex;
-                if(ctx.value().array().INTCONSTANT() != null){ // 索引为int常量
+                if(ctx.value().array().INTCONSTANT() != null){
                     varIndex = Integer.parseInt(ctx.value().array().INTCONSTANT().getText());
-                }else{ // 索引为表达式
+                }else{
                     ExprComputeVisitor indexComputeVisitor = new ExprComputeVisitor(currentScope, io);
                     ExprReturnVal indexValue = indexComputeVisitor.visit(ctx.value().array().expr());
                     if(indexValue.getType() != Type.tInt){
-                        io.stderr("ERROR: invalid index for <"
+                        io.stderr(" error: invalid types for array "
                                 + varName
-                                + "> in line "
+                                + " subscipt"+
+                                "\n\tin line "
                                 + token.getLine()
                                 + ":" + token.getCharPositionInLine());
                         return null;
                     }
                     varIndex = (Integer) indexValue.getValue();
                 }
-                if(var.getType() == Type.tIntArray){ // int数组
+
+                if(var.getType() == Type.tIntArray){
                     int[] varArray = (int[]) var.getValue();
-                    // 数组越界检查
                     if(0 <= varIndex && varIndex < varArray.length){
                         if(value.getValue() instanceof  Integer){
                             varArray[varIndex] = (Integer) value.getValue();
                         }else{
-                            io.stderr("ERROR: unmatched or uncast type during assignment of <"
+                            io.stderr("error: unmatched or uncast type during assignment of '"
                                     + varName
-                                    + "> in line "
+                                    + "'"
+                                    + "\n\tin line "
                                     + token.getLine()
                                     +":"
                                     + token.getCharPositionInLine());
                             return null;
                         }
                     }else{
-                        io.stderr("ERROR: index out of boundary of array <"
+                        io.stderr("error: index out of boundary of array '"
                                 + varName
-                                + "> in line "
+                                + "'"
+                                +"\n\tin line "
                                 + token.getLine()
                                 + ":" + token.getCharPositionInLine());
                         return null;
                     }
 
-                }else{ // double数组
+                }else if(var.getType() == Type.tDoubleArray){
                     double[] varArray = (double[]) var.getValue();
-                    // 数组越界检查
                     if(0 <= varIndex && varIndex < varArray.length){
                         if(value.getValue() instanceof  Double){
                             varArray[varIndex] = (Double) value.getValue();
                         }else if(value.getValue() instanceof  Integer){
                             varArray[varIndex] = (Integer) value.getValue();
                         }else{
-                            io.stderr("ERROR: unmatched or uncast type during assignment of <"
+                            io.stderr("error: unmatched or uncast type during assignment of '"
                                     + varName
-                                    + "> in line "
+                                    + "'"
+                                    + "\n\tin line "
                                     + token.getLine()
                                     +":"
                                     + token.getCharPositionInLine());
                             return null;
                         }
                     }else{
-                        io.stderr("ERROR: index out of boundary of array <"
+                        io.stderr("error: index out of boundary of array '"
                                 + varName
-                                + "> in line "
+                                + "'"
+                                +"\n\tin line "
                                 + token.getLine()
                                 + ":" + token.getCharPositionInLine());
                         return null;
                     }
+                }
+                else {
 
                 }
             }
-        }else{ // 普通变量
+        }else{
             Token token = ctx.value().IDENT().getSymbol();
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                io.stderr("ERROR: no such variable <"
-                        + varName
-                        + "> in line "
+                io.stderr("error:'"+varName+"' undeclared "
+                        + "\n\tline:"
                         + token.getLine()
                         + ":" + token.getCharPositionInLine());
                 return null;
-            }else{ // 变量存在
+            }else{
                 ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
                 ExprReturnVal value = exprComputeVisitor.visit(ctx.expr());
-
                 if(var.getType() != value.getType()){
-                    Token assign = ctx.EQUAL().getSymbol(); // 找到等号方便定位错误
-                    io.stderr("ERROR: unmatched type on two side of <"
+                    Token assign = ctx.EQUAL().getSymbol();
+                    io.stderr("error: unmatched type '"
                             + assign.getText()
-                            + "> in line "
+                            + "'"
+                            +"\n\tin line "
                             + assign.getLine()
                             +":"
                             + assign.getCharPositionInLine());
                     return null;
-                }else{ // 新值覆盖旧值
+                }else{
                     var.setValue(value.getValue());
                 }
             }
         }
-
         return null;
     }
 
     @Override
     public ExprReturnVal visitReadStmt(CMMParser.ReadStmtContext ctx) {
         super.visitReadStmt(ctx);
-        Token token = null;
+        Token token;
         if(ctx.IDENT() == null){
             token = ctx.array().IDENT().getSymbol();
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                io.stderr("ERROR: no such variable <"
-                        + varName
-                        + "> in line "
+                io.stderr("error:'"+varName+"' undeclared "
+                        + "\n\tin line "
                         + token.getLine()
                         + ":" + token.getCharPositionInLine());
                 return null;
             }
             int varIndex = Integer.parseInt(ctx.array().INTCONSTANT().getText());
-            if(var.getType() == Type.tIntArray){ // int数组
-
+            if(var.getType() == Type.tIntArray){
                 int[] varArray = (int[]) var.getValue();
 
-                // 数组越界检查
                 if(0 <= varIndex && varIndex < varArray.length){
                     int in = Integer.parseInt(io.stdin());
                     varArray[varIndex] = in;
                 }else{
-                    io.stderr("ERROR: index out of boundary of array <"
+                    io.stderr("error: index out of boundary of array '"
                             + varName
-                            + "> in line "
+                            + "'"
+                            +"\n\tin line "
                             + token.getLine()
                             + ":" + token.getCharPositionInLine());
                 }
@@ -200,9 +202,10 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     Double in = Double.parseDouble(io.stdin());
                     varArray[varIndex] = in;
                 }else{
-                    io.stderr("ERROR: index out of boundary of array <"
+                    io.stderr("error: index out of boundary of array '"
                             + varName
-                            + "> in line "
+                            + "'"
+                            +"\n\tin line "
                             + token.getLine()
                             + ":" + token.getCharPositionInLine());
                 }
