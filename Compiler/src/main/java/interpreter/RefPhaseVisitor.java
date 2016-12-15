@@ -47,7 +47,6 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     @Override
     public ExprReturnVal visitAssignStmt(CMMParser.AssignStmtContext ctx) {
         super.visitAssignStmt(ctx);
-
         if(ctx.value().IDENT() == null){
             Token token = ctx.value().array().IDENT().getSymbol();
             String varName = token.getText();
