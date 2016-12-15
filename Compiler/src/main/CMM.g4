@@ -100,7 +100,10 @@ INT : 'int' ;
 DOUBLE : 'double' ;
 
 COMMA : ',' ;
+
+//----------------------------
 SEMICOLON : ';' ;
+
 IDENT : [A-Za-z_][A-Za-z0-9_]* ;
 
 INTCONSTANT : '0' | [1-9][0-9]* ;
@@ -108,6 +111,7 @@ DOUBLECONSTANT : INTCONSTANT('.'([0-9]+))? ;
 TRUE : 'true' ;
 FALSE : 'false' ;
 
+//----------------------------
 LBBRACKET : '{' ;
 RBBRACKET : '}' ;
 LMBRACKET : '[' ;
@@ -121,6 +125,8 @@ GEQUAL : '>=' ;
 GREATER : '>' ;
 DEQUAL : '==' ;
 NEQUAL :'!=';
+
+//----------------------------
 EQUAL : '=' ;
 PLUS  : '+' ;
 MINUS : '-' ;
