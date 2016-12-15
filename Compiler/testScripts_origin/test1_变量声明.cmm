@@ -10,24 +10,24 @@
 
 //测试标识符是否合法
 int a_2;
-real r_2_r;
-real i,j=23,k;
+double r_2_r;
+double i,j=23,k;
 
 
 //测试不同作用域内同名变量隐藏
 int c = 23;
-real b[2];
+double b[2];
 b[0] = 23;
 b[1] = 0;
 if(b[1] == 0)
 {
-	real c = 23.5;
+	double c = 23.5;
 	if(c == 23.5)
 		write(1);
 	else
 		write(0);
 
-	real b[1];
+	double b[1];
 	b[0] = 0.05;
 	if(b[0] == 0.05)
 		write(1);
