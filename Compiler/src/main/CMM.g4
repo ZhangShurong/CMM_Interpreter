@@ -42,7 +42,7 @@ ifStmt : IF LSBRACKET expr RSBRACKET (stmt|stmtBlock) #ONLYIF
 whileStmt : WHILE LSBRACKET expr RSBRACKET  (stmtBlock | stmt)  ;
 breakStmt : BREAK SEMICOLON ;
 
-readStmt : READ ((IDENT) | (array) ) SEMICOLON;
+readStmt : READ LSBRACKET ((IDENT) | (array) ) RSBRACKET SEMICOLON;
 writeStmt : WRITE LSBRACKET expr RSBRACKET SEMICOLON;
 assignStmt : value EQUAL expr SEMICOLON;
 delassign: IDENT EQUAL expr ;
