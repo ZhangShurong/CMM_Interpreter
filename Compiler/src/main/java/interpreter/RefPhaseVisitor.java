@@ -7,6 +7,8 @@ import io.IOInterface;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
+import java.util.Stack;
+
 /**
  * Created by vergil on 2016/12/7.
  */
@@ -18,10 +20,13 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     Scope globals;
     Scope currentScope;
 
+    Stack whilestack;
+
     public RefPhaseVisitor(Scope globals, ParseTreeProperty<Scope> scopes, IOInterface io) {
         this.io = io;
         this.globals = globals;
         this.scopes = scopes;
+        whilestack = new Stack();
     }
 
     @Override
@@ -322,6 +327,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
     public ExprReturnVal visitWhileStmt(CMMParser.WhileStmtContext ctx)
     {
+        whilestack.push(true);
         while (isExprTrue(ctx.expr()))
         {
             if(ctx.stmt() != null){
@@ -329,14 +335,17 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
             }else{
                 visit(ctx.stmtBlock());
             }
+            if(!(boolean)whilestack.peek())
+                break;
         }
+        whilestack.pop();
         return null;
     }
     //todo
     public ExprReturnVal visitBreakStmt(CMMParser.BreakStmtContext ctx)
     {
-
-        //return visitChildren(ctx);
+        whilestack.pop();
+        whilestack.push(false);
         return super.visitBreakStmt(ctx);
     }
 }
