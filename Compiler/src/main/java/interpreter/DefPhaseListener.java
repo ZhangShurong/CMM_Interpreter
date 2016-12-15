@@ -65,13 +65,7 @@ public class DefPhaseListener extends CMMBaseListener {
             int size = Integer.parseInt(arrayContext.INTCONSTANT().getText());
 
             if(currentScope.redundant(name)){
-                io.stderr("error: conflicting declaration '"
-                        + name
-                        + "'"
-                        +"\n\tin line "
-                        + arrayContext.IDENT().getSymbol().getLine()
-                        + ":"
-                        + arrayContext.IDENT().getSymbol().getCharPositionInLine());
+                Error.conflict_declar_error(io, name, arrayContext.IDENT().getSymbol().getLine(),arrayContext.IDENT().getSymbol().getCharPositionInLine());
                 return;
             }else{
                 if(typeStr.equals("int")){
@@ -85,13 +79,7 @@ public class DefPhaseListener extends CMMBaseListener {
 
         for(TerminalNode node : ctx.getTokens(CMMParser.IDENT)){
             if(currentScope.redundant(node.getSymbol().getText())){
-                io.stderr("error: conflicting declaration '"
-                        + node.getSymbol().getText()
-                        + "'"+
-                        "\n\tin line "
-                        + node.getSymbol().getLine()
-                        + ":"
-                        + node.getSymbol().getCharPositionInLine());
+                Error.conflict_declar_error(io, node.getSymbol().getText(), + node.getSymbol().getLine(),+ node.getSymbol().getCharPositionInLine());
                 return;
             }else{
                 currentScope.define(new Symbol(node.getSymbol().getText(),
@@ -105,25 +93,12 @@ public class DefPhaseListener extends CMMBaseListener {
             ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
             ExprReturnVal value = exprComputeVisitor.visit(decl_assignContext.expr());
             if(value.getType() != (typeStr.equals("int")? Type.tInt : Type.tDouble)){
-                io.stderr("worning: unmatched type in '"
-                        + token.getText()
-                        + "'"
-                        +"\n\tin line "
-                        + token.getLine()
-                        +":"
-                        + token.getCharPositionInLine());
-                io.stderr("\n");
+                Warning.unmatched_type_warning(io, token.getText(), token.getLine(),token.getCharPositionInLine());
                 if(typeStr.equals("int"))
                 {
                     if(value.getValue(Type.tInt) == null)
                     {
-                        io.stderr("error: unmatched type in '"
-                                + token.getText()
-                                + "'"
-                                +"\n\tin line "
-                                + token.getLine()
-                                +":"
-                                + token.getCharPositionInLine());
+                        Warning.unmatched_type_warning(io, token.getText(), token.getLine(),token.getCharPositionInLine());
                         return;
                     }
                     currentScope.define(new Symbol(token.getText(), Type.tInt,
@@ -133,13 +108,7 @@ public class DefPhaseListener extends CMMBaseListener {
                 {
                     if(value.getValue(Type.tDouble) == null)
                     {
-                        io.stderr("error: unmatched type in '"
-                                + token.getText()
-                                + "'"
-                                +"\n\tin line "
-                                + token.getLine()
-                                +":"
-                                + token.getCharPositionInLine());
+                        Warning.unmatched_type_warning(io, token.getText(), token.getLine(),token.getCharPositionInLine());
                         return;
                     }
                     currentScope.define(new Symbol(token.getText(), Type.tDouble,
@@ -149,13 +118,7 @@ public class DefPhaseListener extends CMMBaseListener {
             }
 //todo 顺序不对
             if(currentScope.redundant(token.getText())){
-                io.stderr("error: conflicting declaration '"
-                        + token.getText()
-                        + "'"
-                        +"\n\tin line "
-                        + token.getLine()
-                        + ":"
-                        + token.getCharPositionInLine());
+                Error.conflict_declar_error(io, token.getText(), token.getLine(),token.getCharPositionInLine());
                 return;
             }else{
                 currentScope.define(new Symbol(token.getText(),

@@ -5,11 +5,10 @@ import io.IOInterface;
 /**
  * Created by vergil on 2016/12/15.
  */
-public class Error {
-
-    public static void conflict_declar_error(IOInterface io, String varname, int line, int offset)
+public class Warning {
+    public static void unmatched_type_warning(IOInterface io, String varname, int line, int offset)
     {
-        io.stderr("error:conflicting declaration variable in '"
+        io.stderr("warning: unmatched type in '"
                 + varname
                 + "'\n\tin line "
                 + line
@@ -17,5 +16,4 @@ public class Error {
                 + offset
                 +"\n");
     }
-
 }
