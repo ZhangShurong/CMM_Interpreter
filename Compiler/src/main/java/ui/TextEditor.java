@@ -17,7 +17,7 @@ public class TextEditor extends JPanel implements IOInterface {
     RSyntaxTextArea textArea;
     private static final String SYNTAX_STYLE = "text/myLanguage";
 
-    public TextEditor(){
+    TextEditor(){
         setLayout(new BorderLayout());
 
         textArea = new RSyntaxTextArea(40, 120);

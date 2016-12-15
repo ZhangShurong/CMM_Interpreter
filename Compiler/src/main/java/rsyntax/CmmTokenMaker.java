@@ -4,9 +4,7 @@ import org.fife.ui.rsyntaxtextarea.*;
 
 import javax.swing.text.Segment;
 
-import static org.fife.ui.rsyntaxtextarea.TokenTypes.COMMENT_EOL;
-import static org.fife.ui.rsyntaxtextarea.TokenTypes.COMMENT_MULTILINE;
-import static org.fife.ui.rsyntaxtextarea.TokenTypes.LITERAL_NUMBER_DECIMAL_INT;
+import static org.fife.ui.rsyntaxtextarea.TokenTypes.*;
 
 /**
  * Created by pendragon on 16-12-14.
@@ -33,7 +31,6 @@ public class CmmTokenMaker extends AbstractTokenMaker {
         int reservedWord = Token.RESERVED_WORD;
         tokenMap.put("if", reservedWord);
         tokenMap.put("else", reservedWord);
-        tokenMap.put("else if", reservedWord);
 
         tokenMap.put("while", reservedWord);
         tokenMap.put("break", reservedWord);
@@ -41,34 +38,8 @@ public class CmmTokenMaker extends AbstractTokenMaker {
         tokenMap.put("int", reservedWord);
         tokenMap.put("double", reservedWord);
 
-//        tokenMap.put(",", reservedWord);
-//        tokenMap.put(";", reservedWord);
-
-//        tokenMap.put(",", reservedWord);
         tokenMap.put("true", reservedWord);
         tokenMap.put("false", reservedWord);
-
-//        tokenMap.put(")", reservedWord);
-//        tokenMap.put("(", reservedWord);
-//        tokenMap.put("}", reservedWord);
-//        tokenMap.put("{", reservedWord);
-//        tokenMap.put("]", reservedWord);
-//        tokenMap.put("[", reservedWord);
-
-//        tokenMap.put("<=", reservedWord);
-//        tokenMap.put("<", reservedWord);
-//        tokenMap.put(">=", reservedWord);
-//        tokenMap.put(">", reservedWord);
-//        tokenMap.put("==", reservedWord);
-//        tokenMap.put("!=", reservedWord);
-//        tokenMap.put("=", reservedWord);
-//        tokenMap.put("+", reservedWord);
-//        tokenMap.put("-", reservedWord);
-//        tokenMap.put("*", reservedWord);
-//        tokenMap.put("/", reservedWord);
-//        tokenMap.put("%", reservedWord);
-//        tokenMap.put("]", reservedWord);
-//        tokenMap.put("[", reservedWord);
 
         return tokenMap;
     }
@@ -76,12 +47,11 @@ public class CmmTokenMaker extends AbstractTokenMaker {
     //这个方法接收来自getTokenList方法返回的所有 Token, 如果这个token 在 之前定义的 tokenMap 里的话，高亮它
     @Override
     public void addToken(Segment segment, int start, int end, int tokenType, int startOffset) {
-        // This assumes all keywords, etc. were parsed as "identifiers."
         // 处理一些比较难在 getTokenList里面进行判断的保留词。通过这种方式可以将已
         // 标识成identifier的key words 转换成 keyWords
         if (tokenType == Token.IDENTIFIER) {
             int value = wordsToHighlight.get(segment, start, end);
-            //-1 表示什么没取到，相当于一个 检查过程
+            //-1 表示什么没取到
             if (value != -1) {
                 tokenType = value;
             }
@@ -91,7 +61,7 @@ public class CmmTokenMaker extends AbstractTokenMaker {
     }
 
     /**
-     * Returns a list of tokens representing the given text.
+     * 核心方法.
      *
      * @param text             The text to break into tokens.
      * @param initialTokenType The token with which to start tokenizing.
@@ -119,7 +89,6 @@ public class CmmTokenMaker extends AbstractTokenMaker {
             char c = array[i];
             switch (currentTokenType) {
                 case Token.NULL:
-                    System.out.println("NULL");
                     currentTokenStart = i;   // Starting a new token here.
                     switch (c) {
                         //whiteSpace直接忽略，不浪费空间存储
@@ -156,11 +125,11 @@ public class CmmTokenMaker extends AbstractTokenMaker {
                         case '>':
                         case '<':
                         case '!':
-                            currentTokenType = TokenTypes.OPERATOR;
+                            currentTokenType = OPERATOR;
                             break;
 
                         case '/':
-                            currentTokenType = TokenTypes.OPERATOR;
+                            currentTokenType = OPERATOR;
                             isSlash = true;
                             break;
 
@@ -179,7 +148,6 @@ public class CmmTokenMaker extends AbstractTokenMaker {
                     break;
 
                 case Token.WHITESPACE:
-                    System.out.println("WHITESPACE");
                     switch (c) {
                         case ' ':
                         case '\t':
@@ -216,14 +184,14 @@ public class CmmTokenMaker extends AbstractTokenMaker {
                         case '!':
                             addToken(text, currentTokenStart, i - 1, Token.WHITESPACE, newStartOffset + currentTokenStart);
                             currentTokenStart = i;
-                            currentTokenType = TokenTypes.OPERATOR;
+                            currentTokenType = OPERATOR;
                             isSlash = false;
                             break;
 
                         case '/':
                             addToken(text, currentTokenStart, i - 1, Token.WHITESPACE, newStartOffset + currentTokenStart);
                             currentTokenStart = i;
-                            currentTokenType = TokenTypes.OPERATOR;
+                            currentTokenType = OPERATOR;
                             isSlash = true;
                             break;
 
@@ -244,32 +212,86 @@ public class CmmTokenMaker extends AbstractTokenMaker {
                     break;
 
                 case Token.LITERAL_STRING_DOUBLE_QUOTE:
-                    System.out.println("STRING");
                     if (c == '"') {
                         addToken(text, currentTokenStart, i, Token.LITERAL_STRING_DOUBLE_QUOTE, newStartOffset + currentTokenStart);
                         currentTokenType = Token.NULL;
                     }
                     break;
 
-                case Token.OPERATOR:
-                    System.out.println("OPERATOR");
-                    if (c == '/'){
-                        if (isSlash){
-                            currentTokenType = COMMENT_EOL;
-                            isSlash = false;
-                        } else {
-                            isSlash = true;
-                        }
-                    } else if (c == '*'){
-                        if (isSlash){
-                            addToken(text, currentTokenStart, i - 1, Token.COMMENT_MULTILINE, newStartOffset + currentTokenStart);
+                case OPERATOR:
+                    switch (c){
+                        case ' ':
+                        case '\t':
+                            addToken(text, currentTokenStart, i - 1, OPERATOR, newStartOffset + currentTokenStart);
                             currentTokenStart = i;
-                            currentTokenType = COMMENT_MULTILINE;
-                        } else {
+                            currentTokenType = Token.WHITESPACE;
+                            break;
+
+                        case '"':
+                            addToken(text, currentTokenStart, i - 1, OPERATOR, newStartOffset + currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
+                            break;
+
+                        case '{':
+                        case '}':
+                        case '[':
+                        case ']':
+                        case '(':
+                        case ')':
+                            addToken(text, currentTokenStart, i - 1, Token.OPERATOR, newStartOffset + currentTokenStart);
+                            addToken(text, i, i, Token.SEPARATOR, newStartOffset + i);
+                            currentTokenType = Token.NULL;
+                            break;
+                        case ';':
+                            addToken(text, currentTokenStart, i - 1, Token.OPERATOR, newStartOffset + currentTokenStart);
+                            addToken(text, i, i, Token.IDENTIFIER, newStartOffset + currentTokenStart);
+                            currentTokenType = Token.NULL;
+                            break;
+
+                        case '/':
+                            if (isSlash){
+                                currentTokenType = COMMENT_EOL;
+                                isSlash = false;
+                            } else {
+                                isSlash = true;
+                            }
+                            break;
+                        case '*':
+                            if (isSlash){
+                                addToken(text, currentTokenStart, i - 1, Token.COMMENT_MULTILINE, newStartOffset + currentTokenStart);
+                                currentTokenStart = i;
+                                currentTokenType = COMMENT_MULTILINE;
+                            } else {
+                                isSlash = false;
+                            }
+                            break;
+                        case '.':
+                        case '+':
+                        case '-':
+                        case '%':
+                        case '=':
+                        case '>':
+                        case '<':
+                        case '!':
+                            break;
+
+                        default:
                             isSlash = false;
-                        }
-                    } else {
-                        isSlash = false;
+
+                            addToken(text, currentTokenStart, i - 1, OPERATOR, newStartOffset + currentTokenStart);
+                            currentTokenStart = i;
+
+                            if (RSyntaxUtilities.isDigit(c)) {
+                                currentTokenType = LITERAL_NUMBER_DECIMAL_INT;
+                                break;
+                            } else if (RSyntaxUtilities.isLetter(c) || c == '_') {
+                                currentTokenType = Token.IDENTIFIER;
+                                break;
+                            }
+                            //没有匹配到的进入 identifier 中去查字典.
+                            currentTokenType = Token.IDENTIFIER;
+                            break;
                     }
                     break;
 
@@ -280,7 +302,6 @@ public class CmmTokenMaker extends AbstractTokenMaker {
                     break;
 
                 case COMMENT_MULTILINE:
-                    System.out.println("MULTILINE");
                     if (c == '*'){
                         isCommentStar = true;
                     } else if (c == '/'){
@@ -292,12 +313,10 @@ public class CmmTokenMaker extends AbstractTokenMaker {
                         isCommentStar = false;
                     } else {
                         isCommentStar = false;
-//                        addToken(text, currentTokenStart, i, currentTokenType, newStartOffset + currentTokenStart);
                     }
                     break;
 
                 case Token.LITERAL_NUMBER_DECIMAL_INT:
-                    System.out.println("LITERAL_NUMBER");
                     switch (c) {
                         case ' ':
                         case '\t':
@@ -312,32 +331,48 @@ public class CmmTokenMaker extends AbstractTokenMaker {
                             currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
                             break;
 
-                        case '/':
-                            i = end - 1;
-                            addToken(text, currentTokenStart, i, currentTokenType, newStartOffset + currentTokenStart);
-                            // We need to set token type to null so at the bottom we don't add one more token.
+                        case '{':
+                        case '}':
+                        case '[':
+                        case ']':
+                        case '(':
+                        case ')':
+                            addToken(text, currentTokenStart, i - 1, Token.LITERAL_NUMBER_DECIMAL_INT, newStartOffset + currentTokenStart);
+                            addToken(text, i, i, Token.SEPARATOR, newStartOffset + i);
                             currentTokenType = Token.NULL;
                             break;
-                        case '*':
+                        case ';':
+                            addToken(text, currentTokenStart, i - 1, Token.LITERAL_NUMBER_DECIMAL_INT, newStartOffset + currentTokenStart);
+                            addToken(text, i, i, Token.IDENTIFIER, newStartOffset + currentTokenStart);
+                            currentTokenType = Token.NULL;
                             break;
 
                         case '.':
                         case '+':
                         case '-':
+                        case '*':
                         case '%':
                         case '=':
                         case '>':
                         case '<':
                         case '!':
+                            addToken(text, currentTokenStart, i - 1, Token.LITERAL_NUMBER_DECIMAL_INT, newStartOffset + currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = OPERATOR;
+                            isSlash = false;
+                            break;
 
+                        case '/':
+                            addToken(text, currentTokenStart, i - 1, Token.LITERAL_NUMBER_DECIMAL_INT, newStartOffset + currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = OPERATOR;
+                            isSlash = true;
                             break;
 
                         default:
                             if (RSyntaxUtilities.isDigit(c)) {
-                                // 这里要 分支 注释 代码  和 普通 的 除法
                                 break;   // Still a literal number.
                             }
-
                             // Otherwise, remember this was a number and start over.
                             addToken(text, currentTokenStart, i - 1, LITERAL_NUMBER_DECIMAL_INT, newStartOffset + currentTokenStart);
                             i--;
@@ -346,105 +381,68 @@ public class CmmTokenMaker extends AbstractTokenMaker {
                     break;
 
                 case Token.IDENTIFIER:
-                    System.out.println("IDENTIFIER");
+                    switch (c){
+                        case ' ':
+                        case '\t':
+                            addToken(text, currentTokenStart, i - 1, Token.IDENTIFIER, newStartOffset + currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = Token.WHITESPACE;
+                            break;   // Still whitespace.
+                        case '"':
+                            addToken(text, currentTokenStart, i - 1, Token.IDENTIFIER, newStartOffset + currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
+                            break;
+                        case '{':
+                        case '}':
+                        case '[':
+                        case ']':
+                        case '(':
+                        case ')':
+                            addToken(text, currentTokenStart, i - 1, Token.IDENTIFIER, newStartOffset + currentTokenStart);
+                            addToken(text, i, i, Token.SEPARATOR, newStartOffset + i);
+                            currentTokenType = Token.NULL;
+                            break;
+                        case ';':
+                            addToken(text, currentTokenStart, i - 1, Token.IDENTIFIER, newStartOffset + currentTokenStart);
+                            addToken(text, i, i, Token.IDENTIFIER, newStartOffset + currentTokenStart);
+                            currentTokenType = Token.NULL;
+                            break;
+
+                        case '.':
+                        case '+':
+                        case '-':
+                        case '*':
+                        case '%':
+                        case '=':
+                        case '>':
+                        case '<':
+                        case '!':
+                            addToken(text, currentTokenStart, i - 1, Token.IDENTIFIER, newStartOffset + currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = OPERATOR;
+                            isSlash = false;
+                            break;
+
+                        case '/':
+                            addToken(text, currentTokenStart, i - 1, Token.IDENTIFIER, newStartOffset + currentTokenStart);
+                            currentTokenStart = i;
+                            currentTokenType = OPERATOR;
+                            isSlash = true;
+                            break;
+
+                        default:
+                            if (RSyntaxUtilities.isLetterOrDigit(c) || c == '_') {
+                                break;
+                            }
+                    }
                     break;
-//                case TokenTypes.COMMENT_KEYWORD:
-//                    switch (c){
-//                        case '/':
-//                            currentTokenType = Token.COMMENT_EOL;
-//                            break;
-//                        case '*':
-//                            currentTokenType = Token.COMMENT_MULTILINE;
-//                            // ????
-//                            break;
-//                        default:
-//                    }
-//                    break;
-//
-//                case Token.COMMENT_EOL:
-//                    i = end - 1;
-//                    addToken(text, currentTokenStart,i, currentTokenType, newStartOffset+currentTokenStart);
-//                    // We need to set token type to null so at the bottom we don't add one more token.
-//                    currentTokenType = Token.NULL;
-//                    break;
-//
-//                case Token.COMMENT_MULTILINE:
-//                    if (c == '*'){
-//                    } else {
-//                        i = end - 1;
-//                        addToken(text, currentTokenStart,i, currentTokenType, newStartOffset+currentTokenStart);
-//                        // We need to set token type to null so at the bottom we don't add one more token.
-//                        currentTokenType = Token.NULL;
-//                        break;
-//                    }
-
-
-//                default: // Should never happen
-//                case Token.IDENTIFIER:
-//
-//                    switch (c) {
-//
-//                        case ' ':
-//                        case '\t':
-//                            addToken(text, currentTokenStart, i - 1, Token.IDENTIFIER, newStartOffset + currentTokenStart);
-//                            currentTokenStart = i;
-//                            currentTokenType = Token.WHITESPACE;
-//                            break;
-//
-//                        case '"':
-//                            addToken(text, currentTokenStart, i - 1, Token.IDENTIFIER, newStartOffset + currentTokenStart);
-//                            currentTokenStart = i;
-//                            currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
-//                            break;
-//
-//                        default:
-//                            if (RSyntaxUtilities.isLetterOrDigit(c) || c == '/' || c == '_') {
-//                                break;   // Still an identifier of some type.
-//                            }
-//                            // Otherwise, we're still an identifier (?).
-//
-//                    } // End of switch (c).
-//
-//                    break;
-//
-//                case LITERAL_NUMBER_DECIMAL_INT:
-//
-//                    switch (c) {
-//
-//                        case ' ':
-//                        case '\t':
-//                            addToken(text, currentTokenStart, i - 1, LITERAL_NUMBER_DECIMAL_INT, newStartOffset + currentTokenStart);
-//                            currentTokenStart = i;
-//                            currentTokenType = Token.WHITESPACE;
-//                            break;
-//
-//                        case '"':
-//                            addToken(text, currentTokenStart, i - 1, LITERAL_NUMBER_DECIMAL_INT, newStartOffset + currentTokenStart);
-//                            currentTokenStart = i;
-//                            currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
-//                            break;
-//
-//                        default:
-//
-//                            if (RSyntaxUtilities.isDigit(c)) {
-//                                break;   // Still a literal number.
-//                            }
-//
-//                            // Otherwise, remember this was a number and start over.
-//                            addToken(text, currentTokenStart, i - 1, LITERAL_NUMBER_DECIMAL_INT, newStartOffset + currentTokenStart);
-//                            i--;
-//                            currentTokenType = Token.NULL;
-//
-//                    } // End of switch (c).
-//
-//                    break;
-
 
             } // End of switch (currentTokenType).
 
         } // End of for (int i=offset; i<end; i++).
 
-        // 处理上一行为 那种可以跨行的 token 的情况
+        // 处理跨行的情况，以及在这里统一添加Token
         switch (currentTokenType) {
 
             // 跨行字符串.
@@ -452,6 +450,10 @@ public class CmmTokenMaker extends AbstractTokenMaker {
                 addToken(text, currentTokenStart, end - 1, currentTokenType, newStartOffset + currentTokenStart);
                 break;
 
+            //跨行注释
+            case Token.COMMENT_MULTILINE:
+                addToken(text, currentTokenStart, end - 1, currentTokenType, newStartOffset + currentTokenStart);
+                break;
 
             // Do nothing if everything was okay.
             case Token.NULL:
