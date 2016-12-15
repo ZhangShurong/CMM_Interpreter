@@ -216,7 +216,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 }
 
             }
-        }else{ // 普通变量
+        }else{
             token = ctx.IDENT().getSymbol();
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
