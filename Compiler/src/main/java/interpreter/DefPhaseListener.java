@@ -112,6 +112,7 @@ public class DefPhaseListener extends CMMBaseListener {
                         + token.getLine()
                         +":"
                         + token.getCharPositionInLine());
+                io.stderr("\n");
                 if(typeStr.equals("int"))
                 {
                     if(value.getValue(Type.tInt) == null)
@@ -146,7 +147,7 @@ public class DefPhaseListener extends CMMBaseListener {
                 }
                 return;
             }
-
+//todo 顺序不对
             if(currentScope.redundant(token.getText())){
                 io.stderr("error: conflicting declaration '"
                         + token.getText()
