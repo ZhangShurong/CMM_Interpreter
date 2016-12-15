@@ -48,20 +48,16 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     public ExprReturnVal visitAssignStmt(CMMParser.AssignStmtContext ctx) {
         super.visitAssignStmt(ctx);
 
-        if(ctx.value().IDENT() == null){//非数组
+        if(ctx.value().IDENT() == null){
             Token token = ctx.value().array().IDENT().getSymbol();
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                io.stderr("error:'"+varName+"' undeclared "
-                        + "\n\tline:"
-                        + token.getLine()
-                        + ":" + token.getCharPositionInLine());
+                Error.undeclared_var_error(io, varName, token.getLine(), token.getCharPositionInLine());
                 return null;
-            }else{//数组
+            }else{
                 ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
                 ExprReturnVal value = exprComputeVisitor.visit(ctx.expr());
-
                 int varIndex;
                 if(ctx.value().array().INTCONSTANT() != null){
                     varIndex = Integer.parseInt(ctx.value().array().INTCONSTANT().getText());
@@ -69,39 +65,22 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     ExprComputeVisitor indexComputeVisitor = new ExprComputeVisitor(currentScope, io);
                     ExprReturnVal indexValue = indexComputeVisitor.visit(ctx.value().array().expr());
                     if(indexValue.getType() != Type.tInt){
-                        io.stderr(" error: invalid types for array "
-                                + varName
-                                + " subscipt"+
-                                "\n\tin line "
-                                + token.getLine()
-                                + ":" + token.getCharPositionInLine());
+                        Error.invalid_type_error(io, varName,token.getLine(),token.getCharPositionInLine());
                         return null;
                     }
                     varIndex = (Integer) indexValue.getValue();
                 }
-
                 if(var.getType() == Type.tIntArray){
                     int[] varArray = (int[]) var.getValue();
                     if(0 <= varIndex && varIndex < varArray.length){
                         if(value.getValue() instanceof  Integer){
                             varArray[varIndex] = (Integer) value.getValue();
                         }else{
-                            io.stderr("error: unmatched or uncast type during assignment of '"
-                                    + varName
-                                    + "'"
-                                    + "\n\tin line "
-                                    + token.getLine()
-                                    +":"
-                                    + token.getCharPositionInLine());
+                            Error.unmatched_type_error(io,varName,token.getLine(),token.getCharPositionInLine() );
                             return null;
                         }
                     }else{
-                        io.stderr("error: index out of boundary of array '"
-                                + varName
-                                + "'"
-                                +"\n\tin line "
-                                + token.getLine()
-                                + ":" + token.getCharPositionInLine());
+                        Error.out_of_boundary_error(io, varName,token.getLine(), token.getCharPositionInLine());
                         return null;
                     }
 
@@ -113,22 +92,11 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                         }else if(value.getValue() instanceof  Integer){
                             varArray[varIndex] = (Integer) value.getValue();
                         }else{
-                            io.stderr("error: unmatched or uncast type during assignment of '"
-                                    + varName
-                                    + "'"
-                                    + "\n\tin line "
-                                    + token.getLine()
-                                    +":"
-                                    + token.getCharPositionInLine());
+                            Error.unmatched_type_error(io, varName,token.getLine(), token.getCharPositionInLine());
                             return null;
                         }
                     }else{
-                        io.stderr("error: index out of boundary of array '"
-                                + varName
-                                + "'"
-                                +"\n\tin line "
-                                + token.getLine()
-                                + ":" + token.getCharPositionInLine());
+                        Error.out_of_boundary_error(io, varName, token.getLine(), token.getCharPositionInLine());
                         return null;
                     }
                 }
@@ -141,23 +109,14 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                io.stderr("error:'"+varName+"' undeclared "
-                        + "\n\tline:"
-                        + token.getLine()
-                        + ":" + token.getCharPositionInLine());
+                Error.undeclared_var_error(io, varName, token.getLine(),token.getCharPositionInLine());
                 return null;
             }else{
                 ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
                 ExprReturnVal value = exprComputeVisitor.visit(ctx.expr());
                 if(var.getType() != value.getType()){
                     Token assign = ctx.EQUAL().getSymbol();
-                    io.stderr("error: unmatched type '"
-                            + assign.getText()
-                            + "'"
-                            +"\n\tin line "
-                            + assign.getLine()
-                            +":"
-                            + assign.getCharPositionInLine());
+                    Error.unmatched_type_error(io, assign.getText(),assign.getLine(),assign.getCharPositionInLine());
                     return null;
                 }else{
                     var.setValue(value.getValue());
@@ -176,10 +135,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                io.stderr("error:'"+varName+"' undeclared "
-                        + "\n\tin line "
-                        + token.getLine()
-                        + ":" + token.getCharPositionInLine());
+                Error.undeclared_var_error(io, varName,token.getLine(),token.getCharPositionInLine());
                 return null;
             }
             int varIndex = Integer.parseInt(ctx.array().INTCONSTANT().getText());
@@ -190,12 +146,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     int in = Integer.parseInt(io.stdin());
                     varArray[varIndex] = in;
                 }else{
-                    io.stderr("error: index out of boundary of array '"
-                            + varName
-                            + "'"
-                            +"\n\tin line "
-                            + token.getLine()
-                            + ":" + token.getCharPositionInLine());
+                    Error.out_of_boundary_error(io,varName,token.getLine(),token.getCharPositionInLine());
                 }
 
             }else{ // double数组
@@ -207,12 +158,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     Double in = Double.parseDouble(io.stdin());
                     varArray[varIndex] = in;
                 }else{
-                    io.stderr("error: index out of boundary of array '"
-                            + varName
-                            + "'"
-                            +"\n\tin line "
-                            + token.getLine()
-                            + ":" + token.getCharPositionInLine());
+                    Error.out_of_boundary_error(io,varName,token.getLine(),token.getCharPositionInLine());
                 }
 
             }
@@ -221,11 +167,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
             if(var == null){
-                io.stderr("ERROR: no such variable <"
-                        + varName
-                        + "> in line "
-                        + token.getLine()
-                        + ":" + token.getCharPositionInLine());
+                Error.undeclared_var_error(io, varName, token.getLine(), token.getCharPositionInLine());
                 return null;
             }
             if(var.getType() == Type.tInt){
