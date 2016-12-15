@@ -254,7 +254,10 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     public ExprReturnVal visitONLYIF(CMMParser.ONLYIFContext ctx)
     {
         if(isExprTrue(ctx.expr())){
-            visit(ctx.stmtBlock());
+            if(ctx.stmtBlock() != null)
+                visit(ctx.stmtBlock());
+            else
+                visit(ctx.stmt());
         }
         return null;
     }
@@ -262,10 +265,16 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     public ExprReturnVal visitIFELSE(CMMParser.IFELSEContext ctx)
     {
         if(isExprTrue(ctx.expr())) {
-            visit(ctx.stmtBlock(0));
+            if(ctx.stmtBlock(0)!=null)
+                visit(ctx.stmtBlock(0));
+            else
+                visit(ctx.stmt(0));
         }
         else {
-            visit(ctx.stmtBlock(1));
+            if(visit(ctx.stmtBlock(1))!= null)
+                visit(ctx.stmtBlock(1));
+            else
+                visit(ctx.stmt(1));
         }
         return null;
     }
@@ -274,7 +283,10 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     {
         if(isExprTrue(ctx.expr()))
         {
-            visit(ctx.stmtBlock());
+            if(ctx.stmtBlock()!=null)
+                visit(ctx.stmtBlock());
+            else
+                visit(ctx.stmt());
         }
         else {
             visit(ctx.elseiflist());
@@ -286,12 +298,18 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     {
         if(isExprTrue(ctx.expr()))
         {
-            visit(ctx.stmtBlock(0));
+            if(ctx.stmtBlock(0)!=null)
+                visit(ctx.stmtBlock(0));
+            else
+                visit(ctx.stmt(0));
         }
         else {
             if(visit(ctx.elseiflist()).getValue().equals((int)0))
             {
-                visit(ctx.stmtBlock(1));
+                if(visit(ctx.stmtBlock(1))!= null)
+                    visit(ctx.stmtBlock(1));
+                else
+                    visit(ctx.stmt(1));
             }
         }
         return null;
@@ -305,7 +323,10 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         {
             if(isExprTrue(ctx.elseif(i).expr()))
             {
-                visit(ctx.elseif(i).stmtBlock());
+                if(ctx.elseif(i).stmtBlock()!=null)
+                    visit(ctx.elseif(i).stmtBlock());
+                else
+                    visit(ctx.elseif(i).stmt());
                 exprReturnVal.setValue((int)1);
                 break;
             }

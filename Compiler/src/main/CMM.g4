@@ -31,12 +31,12 @@ varList : (IDENT | delassign | array)(COMMA (IDENT | delassign | array))* ;
 
 elseiflist : elseif+  ;
 
-elseif : ELSEIF LSBRACKET expr RSBRACKET stmtBlock ;
+elseif : ELSEIF LSBRACKET expr RSBRACKET (stmtBlock|stmt) ;
 
-ifStmt : IF LSBRACKET expr RSBRACKET stmtBlock #ONLYIF
-    | IF LSBRACKET expr RSBRACKET stmtBlock ELSE stmtBlock #IFELSE
-    | IF LSBRACKET expr RSBRACKET stmtBlock elseiflist #IFELSELIST
-    | IF LSBRACKET expr RSBRACKET stmtBlock elseiflist ELSE stmtBlock #IFELSELISTELSE
+ifStmt : IF LSBRACKET expr RSBRACKET (stmt|stmtBlock) #ONLYIF
+    | IF LSBRACKET expr RSBRACKET (stmt|stmtBlock) ELSE (stmt|stmtBlock) #IFELSE
+    | IF LSBRACKET expr RSBRACKET (stmt|stmtBlock) elseiflist #IFELSELIST
+    | IF LSBRACKET expr RSBRACKET (stmt|stmtBlock) elseiflist ELSE (stmt|stmtBlock) #IFELSELISTELSE
     ;
 
 whileStmt : WHILE LSBRACKET expr RSBRACKET  (stmtBlock | stmt)  ;

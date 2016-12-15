@@ -105,13 +105,45 @@ public class DefPhaseListener extends CMMBaseListener {
             ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
             ExprReturnVal value = exprComputeVisitor.visit(decl_assignContext.expr());
             if(value.getType() != (typeStr.equals("int")? Type.tInt : Type.tDouble)){
-                io.stderr("error: unmatched type in '"
+                io.stderr("worning: unmatched type in '"
                         + token.getText()
                         + "'"
                         +"\n\tin line "
                         + token.getLine()
                         +":"
                         + token.getCharPositionInLine());
+                if(typeStr.equals("int"))
+                {
+                    if(value.getValue(Type.tInt) == null)
+                    {
+                        io.stderr("error: unmatched type in '"
+                                + token.getText()
+                                + "'"
+                                +"\n\tin line "
+                                + token.getLine()
+                                +":"
+                                + token.getCharPositionInLine());
+                        return;
+                    }
+                    currentScope.define(new Symbol(token.getText(), Type.tInt,
+                            value.getValue(Type.tInt)));
+                }
+                else
+                {
+                    if(value.getValue(Type.tDouble) == null)
+                    {
+                        io.stderr("error: unmatched type in '"
+                                + token.getText()
+                                + "'"
+                                +"\n\tin line "
+                                + token.getLine()
+                                +":"
+                                + token.getCharPositionInLine());
+                        return;
+                    }
+                    currentScope.define(new Symbol(token.getText(), Type.tDouble,
+                            value.getValue(Type.tDouble)));
+                }
                 return;
             }
 
