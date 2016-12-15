@@ -1,22 +1,52 @@
 package interpreter;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Created by vergil on 2016/12/7.
  */
-public interface Scope {
+public class Scope {
 
-    String getScopeName();
+    private Scope enclosingScope;
+    private Map<String, Symbol> symbols = new LinkedHashMap<String, Symbol>();
+    private String scopename;
+    public Scope(Scope enclosingScope)
+    {
+        this.enclosingScope =enclosingScope;
+    }
+    public void setScopeName(String scopename)
+    {
+        this.scopename  = scopename;
+    }
+    public String getScopeName()
+    {
+        return scopename;
+    }
 
-    /** Where to look next for symbols */
-    Scope getEnclosingScope();
+    public Scope getEnclosingScope()
+    {
+        return enclosingScope;
+    }
 
-    /** Define a symbol in the current scope */
-    void define(Symbol sym);
+    public void define(Symbol sym)
+    {
+        symbols.put(sym.name, sym);
+        sym.scope = this;
+    }
 
-    /** Determine redundant definition in same scope */
-    boolean redundant(String name);
+    public boolean redundant(String name)
+    {
+        return symbols.get(name) != null;
+    }
 
-    /** Look up name in this scope or in enclosing scope if not here */
-    Symbol resolve(String name);
+    public Symbol resolve(String name)
+    {
+        Symbol s = symbols.get(name);
+        if ( s!=null ) return s;
+        if ( enclosingScope != null ) return enclosingScope.resolve(name);
+        return null;
+    }
+    public String toString() { return getScopeName()+":"+symbols.values().toString(); }
 
 }

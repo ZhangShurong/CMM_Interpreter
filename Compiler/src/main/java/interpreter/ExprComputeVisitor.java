@@ -170,7 +170,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         }
         else if(ctx.constant().DOUBLECONSTANT() != null) {
             return new ExprReturnVal(Type.tDouble,
-                    Double.valueOf(ctx.constant().INTCONSTANT().getText()));
+                    Double.valueOf(ctx.constant().DOUBLECONSTANT().getText()));
         }
         else if(ctx.constant().FALSE() != null) {
             return new ExprReturnVal(Type.tInt,0);

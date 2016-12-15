@@ -17,7 +17,7 @@ if( a<> 8)
 else
 	write(1);
 
-real r ;
+double r ;
 r = 2 * (3.0 - 2.10) - 0.9 * (2.50 / 1.25 );	//r = 0.0
 
 if( r <> 0)
@@ -27,7 +27,7 @@ if( r <> 0)
 else
 	write(1);
 
-real b = 4.000001;
+double b = 4.000001;
 write(b);
 
 int x = 60 * 60 * 24 ;

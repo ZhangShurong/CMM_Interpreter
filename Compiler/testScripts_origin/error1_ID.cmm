@@ -12,7 +12,7 @@
 
 //测试标识符是否合法
 int _a;
-real 3_a;	//数字开头
+double 3_a;	//数字开头
 int a@com;	//非法字符
 
 int i=0;

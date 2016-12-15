@@ -13,7 +13,7 @@ int a;
 a=1;
 if(a * 5 == 5)
 {
-  real r ;
+  double r ;
   r = 2.0;
   if(r)
   {
