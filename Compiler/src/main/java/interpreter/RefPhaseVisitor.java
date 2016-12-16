@@ -48,6 +48,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     public ExprReturnVal visitAssignStmt(CMMParser.AssignStmtContext ctx) {
         super.visitAssignStmt(ctx);
         if(ctx.value().IDENT() == null){
+            //数组
             Token token = ctx.value().array().IDENT().getSymbol();
             String varName = token.getText();
             Symbol var = currentScope.resolve(varName);
@@ -56,7 +57,9 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 return null;
             }else{
                 ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
-                ExprReturnVal value = exprComputeVisitor.visit(ctx.expr());
+                ExprReturnVal value = exprComputeVisitor.visit(ctx.expr());//得到表达式右边的值
+
+                //计算数组index
                 int varIndex;
                 if(ctx.value().array().INTCONSTANT() != null){
                     varIndex = Integer.parseInt(ctx.value().array().INTCONSTANT().getText());
@@ -69,12 +72,22 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     }
                     varIndex = (Integer) indexValue.getValue();
                 }
+
+                //开始赋值
                 if(var.getType() == Type.tIntArray){
                     int[] varArray = (int[]) var.getValue();
                     if(0 <= varIndex && varIndex < varArray.length){
-                        if(value.getValue() instanceof  Integer){
-                            varArray[varIndex] = (Integer) value.getValue();
-                        }else{
+                        if(value.getValue(Type.tInt) != null)
+                        {
+                            varArray[varIndex] = (Integer) value.getValue(Type.tInt);
+                            if(!(value.getValue() instanceof  Integer)){
+                                Warning.unmatched_type_warning(io,varName,token.getLine(),token.getCharPositionInLine() );
+                            }
+                        }
+//                        if(value.getValue() instanceof  Integer){
+//                            varArray[varIndex] = (Integer) value.getValue();
+//                        }
+                        else{
                             Error.unmatched_type_error(io,varName,token.getLine(),token.getCharPositionInLine() );
                             return null;
                         }
@@ -86,11 +99,19 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 }else if(var.getType() == Type.tDoubleArray){
                     double[] varArray = (double[]) var.getValue();
                     if(0 <= varIndex && varIndex < varArray.length){
-                        if(value.getValue() instanceof  Double){
-                            varArray[varIndex] = (Double) value.getValue();
-                        }else if(value.getValue() instanceof  Integer){
-                            varArray[varIndex] = (Integer) value.getValue();
-                        }else{
+                        if(value.getValue(Type.tDouble) != null)
+                        {
+                            varArray[varIndex] = (Integer) value.getValue(Type.tDouble);
+                            if(!(value.getValue() instanceof  Double)){
+                                Warning.unmatched_type_warning(io,varName,token.getLine(),token.getCharPositionInLine() );
+                            }
+                        }
+//                        if(value.getValue() instanceof  Double){
+//                            varArray[varIndex] = (Double) value.getValue();
+//                        }else if(value.getValue() instanceof  Integer){
+//                            varArray[varIndex] = (Integer) value.getValue();
+//                        }
+                        else{
                             Error.unmatched_type_error(io, varName,token.getLine(), token.getCharPositionInLine());
                             return null;
                         }
@@ -113,13 +134,23 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
             }else{
                 ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
                 ExprReturnVal value = exprComputeVisitor.visit(ctx.expr());
-                if(var.getType() != value.getType()){
-                    Token assign = ctx.EQUAL().getSymbol();
+                Token assign = ctx.EQUAL().getSymbol();
+                if(value.getValue(value.getType()) == null)
+                {
                     Error.unmatched_type_error(io, assign.getText(),assign.getLine(),assign.getCharPositionInLine());
                     return null;
-                }else{
-                    var.setValue(value.getValue());
                 }
+                else {
+                    var.setValue(value.getValue(var.getType()));
+                }
+//
+//                if(var.getType() != value.getType()){
+//                    Token assign = ctx.EQUAL().getSymbol();
+//                    Error.unmatched_type_error(io, assign.getText(),assign.getLine(),assign.getCharPositionInLine());
+//                    return null;
+//                }else{
+//                    var.setValue(value.getValue());
+//                }
             }
         }
         return null;
@@ -186,7 +217,8 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         super.visitWriteStmt(ctx);
         ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
         Object value = exprComputeVisitor.visit(ctx.expr()).getValue();
-        io.stderr(value);
+        io.stdout(value);
+        io.stdout("\n");
         return null;
     }
 
