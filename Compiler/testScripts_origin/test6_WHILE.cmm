@@ -10,7 +10,7 @@
  */
 
 int a = 4;
-while(a <> 0)
+while(a != 0)
 {
 	write(a);
 	int j=a-1;
