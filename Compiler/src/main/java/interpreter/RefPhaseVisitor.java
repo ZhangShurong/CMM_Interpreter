@@ -244,7 +244,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 visit(ctx.stmt(0));
         }
         else {
-            if(visit(ctx.stmtBlock(1))!= null)
+            if(ctx.stmtBlock(1)!= null)
                 visit(ctx.stmtBlock(1));
             else
                 visit(ctx.stmt(1));
