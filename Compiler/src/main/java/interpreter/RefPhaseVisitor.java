@@ -101,7 +101,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     if(0 <= varIndex && varIndex < varArray.length){
                         if(value.getValue(Type.tDouble) != null)
                         {
-                            varArray[varIndex] = (Integer) value.getValue(Type.tDouble);
+                            varArray[varIndex] = (Double) value.getValue(Type.tDouble);
                             if(!(value.getValue() instanceof  Double)){
                                 Warning.unmatched_type_warning(io,varName,token.getLine(),token.getCharPositionInLine() );
                             }

@@ -270,7 +270,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
             returnVal = new ExprReturnVal();
             if (left.getType() == Type.tDouble || right.getType() == Type.tDouble) {
                 returnVal.setType(Type.tDouble);
-                returnVal.setValue((Double) left.getValue() - (Double) right.getValue());
+                returnVal.setValue((Double) left.getValue(Type.tDouble) - (Double) right.getValue(Type.tDouble));
             }
             else {
                 returnVal.setType(Type.tInt);
