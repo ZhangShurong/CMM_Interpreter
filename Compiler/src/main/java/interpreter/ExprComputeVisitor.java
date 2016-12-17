@@ -292,7 +292,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         ExprReturnVal left = visit(ctx.expr());
         ExprReturnVal right  = visit(ctx.addMin());
         ExprReturnVal returnVal = new ExprReturnVal();
-        returnVal.setValue(Type.tBool);
+        returnVal.setType(Type.tBool);
         int res = comp(left,right);
         if(res == 0)
             returnVal.setValue(1);
@@ -306,7 +306,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         ExprReturnVal left = visit(ctx.expr());
         ExprReturnVal right  = visit(ctx.addMin());
         ExprReturnVal returnVal = new ExprReturnVal();
-        returnVal.setValue(Type.tBool);
+        returnVal.setType(Type.tBool);
         int res = comp(left,right);
         if(res == 0 || res == -1)
             returnVal.setValue(1);
@@ -319,7 +319,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         ExprReturnVal left = visit(ctx.expr());
         ExprReturnVal right  = visit(ctx.addMin());
         ExprReturnVal returnVal = new ExprReturnVal();
-        returnVal.setValue(Type.tBool);
+        returnVal.setType(Type.tBool);
         int res = comp(left,right);
         if(res == -1 )
             returnVal.setValue(1);
@@ -332,7 +332,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         ExprReturnVal left = visit(ctx.expr());
         ExprReturnVal right  = visit(ctx.addMin());
         ExprReturnVal returnVal = new ExprReturnVal();
-        returnVal.setValue(Type.tBool);
+        returnVal.setType(Type.tBool);
         int res = comp(left,right);
         if(res == 1)
             returnVal.setValue(1);
@@ -345,7 +345,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         ExprReturnVal left = visit(ctx.expr());
         ExprReturnVal right  = visit(ctx.addMin());
         ExprReturnVal returnVal = new ExprReturnVal();
-        returnVal.setValue(Type.tBool);
+        returnVal.setType(Type.tBool);
         int res = comp(left,right);
         if(res == 1 || res == 1)
             returnVal.setValue(1);
@@ -359,7 +359,7 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         ExprReturnVal left = visit(ctx.expr());
         ExprReturnVal right  = visit(ctx.addMin());
         ExprReturnVal returnVal = new ExprReturnVal();
-        returnVal.setValue(Type.tBool);
+        returnVal.setType(Type.tBool);
         int res = comp(left,right);
         if(res == 0 )
             returnVal.setValue(0);

@@ -35,7 +35,16 @@ public class ExprReturnVal {
     public Object getValue(Type _type)
     {
         if(type == _type)
-            return this.value;
+        {
+            if(_type != Type.tBool)
+            {
+                return this.value;
+            }
+            else
+            {
+                return (Integer)this.value == 0?0:1;
+            }
+        }
         switch (_type)
         {
             case tBool:

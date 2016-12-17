@@ -226,7 +226,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
     public ExprReturnVal visitONLYIF(CMMParser.ONLYIFContext ctx)
     {
-        if(isExprTrue(ctx.expr())){
+        if(isExprTrue(ctx.expr()) == 1){
             if(ctx.stmtBlock() != null)
                 visit(ctx.stmtBlock());
             else
@@ -237,7 +237,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
     public ExprReturnVal visitIFELSE(CMMParser.IFELSEContext ctx)
     {
-        if(isExprTrue(ctx.expr())) {
+        if(isExprTrue(ctx.expr()) == 1) {
             if(ctx.stmtBlock(0)!=null)
                 visit(ctx.stmtBlock(0));
             else
@@ -254,7 +254,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
     public ExprReturnVal visitIFELSELIST(CMMParser.IFELSELISTContext ctx)
     {
-        if(isExprTrue(ctx.expr()))
+        if(isExprTrue(ctx.expr()) == 1)
         {
             if(ctx.stmtBlock()!=null)
                 visit(ctx.stmtBlock());
@@ -269,7 +269,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
     public ExprReturnVal visitIFELSELISTELSE(CMMParser.IFELSELISTELSEContext ctx)
     {
-        if(isExprTrue(ctx.expr()))
+        if(isExprTrue(ctx.expr()) == 1)
         {
             if(ctx.stmtBlock(0)!=null)
                 visit(ctx.stmtBlock(0));
@@ -294,7 +294,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         exprReturnVal.setValue((int)0);
         for(int i = 0; i < ctx.elseif().size(); i++)
         {
-            if(isExprTrue(ctx.elseif(i).expr()))
+            if(isExprTrue(ctx.elseif(i).expr()) == 1)
             {
                 if(ctx.elseif(i).stmtBlock()!=null)
                     visit(ctx.elseif(i).stmtBlock());
@@ -306,23 +306,23 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         }
         return exprReturnVal;
     }
-    private boolean isExprTrue(CMMParser.ExprContext ctx){
+    private Integer isExprTrue(CMMParser.ExprContext ctx){
         ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
         ExprReturnVal value = exprComputeVisitor.visit(ctx);
         if(value.getType() == Type.tBool){
-            return (Boolean) value.getValue();
+            return (Integer) value.getValue();
         }else{
             if(value.getType() == Type.tDouble)
-                return (Double)value.getValue() != 0;
+                return (Double)value.getValue() != 0?1:0;
             else
-                return (Integer)value.getValue() != 0;
+                return (Integer)value.getValue() != 0?1:0;
         }
     }
 
     public ExprReturnVal visitWhileStmt(CMMParser.WhileStmtContext ctx)
     {
         whilestack.push(true);
-        while (isExprTrue(ctx.expr()))
+        while (isExprTrue(ctx.expr()) == 1)
         {
             if(ctx.stmt() != null){
                 visit(ctx.stmt());
