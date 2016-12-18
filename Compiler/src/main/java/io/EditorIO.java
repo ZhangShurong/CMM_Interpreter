@@ -13,6 +13,11 @@ public class EditorIO implements IOInterface {
         this.outputArea = outputArea;
     }
 
+    @Override
+    public String stdin(String tips) {
+        return null;
+    }
+
     public  String stdin()
     {
         return null;

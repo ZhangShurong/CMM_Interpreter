@@ -5,7 +5,12 @@ package io;
  */
 public interface IOInterface {
 
+    String stdin(String tips);
+
     String stdin();
+
     void stdout(Object out);
+
     void stderr(Object out);
+
 }

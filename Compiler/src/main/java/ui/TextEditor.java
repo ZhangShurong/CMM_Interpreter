@@ -4,7 +4,9 @@ import io.IOInterface;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.folding.FoldParserManager;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import rsyntax.CmmFoldParser;
 import rsyntax.CmmTokenMaker;
 
 import javax.swing.*;
@@ -15,10 +17,12 @@ import java.awt.*;
  */
 public class TextEditor extends JPanel implements IOInterface {
     RSyntaxTextArea textArea;
-    private static final String SYNTAX_STYLE = "text/myLanguage";
+    private static final String SYNTAX_STYLE = "text/cmm";
 
     TextEditor(){
         setLayout(new BorderLayout());
+        //注册代码折叠
+        FoldParserManager.get().addFoldParserMapping(SYNTAX_STYLE, new CmmFoldParser());
 
         textArea = new RSyntaxTextArea(40, 120);
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
@@ -26,10 +30,16 @@ public class TextEditor extends JPanel implements IOInterface {
         atmf.putMapping(SYNTAX_STYLE, CmmTokenMaker.class.getName());
         textArea.setSyntaxEditingStyle(SYNTAX_STYLE);
         textArea.setCodeFoldingEnabled(true);
+
         RTextScrollPane sp = new RTextScrollPane(textArea);
         add(sp);
     }
 
+
+    @Override
+    public String stdin(String tips) {
+        return null;
+    }
 
     @Override
     public String stdin() {

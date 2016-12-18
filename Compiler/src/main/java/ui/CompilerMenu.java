@@ -44,19 +44,19 @@ public class CompilerMenu extends MenuBar {
         add(menuFile);add(menuRun);add(menuHelp);
     }
 
-    public void addMenuFileListener(MenuFileListener menuFileListener){
+    void addMenuFileListener(MenuFileListener menuFileListener){
         fileNew.addActionListener(menuFileListener::setNewFileListener);
         fileOpen.addActionListener(menuFileListener::setOpenFileListener);
         fileSave.addActionListener(menuFileListener::setSaveFileListener);
         fileExit.addActionListener(menuFileListener::setExitListener);
     }
 
-    public void addMenuRunListener(MenuRunListener menuRunListener){
+    void addMenuRunListener(MenuRunListener menuRunListener){
         runRun.addActionListener(menuRunListener::setRunListener);
         runDebug.addActionListener(menuRunListener::setDebugListener);
     }
 
-    public void addMenuHelpListener(MenuHelpListener menuHelpListener){
+    void addMenuHelpListener(MenuHelpListener menuHelpListener){
         helpAbout.addActionListener(menuHelpListener::setAboutListener);
     }
 }

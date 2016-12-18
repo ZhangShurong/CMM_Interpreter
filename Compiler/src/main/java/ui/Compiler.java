@@ -1,7 +1,6 @@
 package ui;
 
 import interpreter.Interpreter;
-import io.ConsoleIO;
 import util.FileUtil;
 import util.StringUtil;
 
@@ -22,11 +21,9 @@ public class Compiler extends JFrame {
 
     public Compiler(){
         CompilerMenu menuBar = new CompilerMenu();
-
         textEditor = new TextEditor();
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("."));
-
 
         //file operation
         menuBar.addMenuFileListener(new MenuInterface.MenuFileListener() {
@@ -86,7 +83,8 @@ public class Compiler extends JFrame {
             public void setRunListener(ActionEvent event) {
                 String str = textEditor.textArea.getText();
                 if (!StringUtil.isEmpty(str)){
-                    Interpreter interpreter = new Interpreter(str, new ConsoleIO(), new ConsoleIO());
+                    IOWindow ioWindow = new IOWindow(Compiler.this, "Console");
+                    Interpreter interpreter = new Interpreter(str, ioWindow, ioWindow);
                     interpreter.run();
                 }
             }
@@ -120,7 +118,7 @@ public class Compiler extends JFrame {
             UIManager.setLookAndFeel(UIManager.
                     getSystemLookAndFeelClassName());
         }
-        catch (Exception e) {
+        catch (Exception ignored) {
         }
         SwingUtilities.invokeLater(() -> new Compiler().setVisible(true));
     }

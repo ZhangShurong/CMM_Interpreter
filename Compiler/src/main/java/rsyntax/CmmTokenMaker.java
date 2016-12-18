@@ -306,7 +306,6 @@ public class CmmTokenMaker extends AbstractTokenMaker {
                         isCommentStar = true;
                     } else if (c == '/'){
                         if (isCommentStar){
-                            System.out.println(currentTokenStart + " " + i);
                             addToken(text, currentTokenStart, i, currentTokenType, newStartOffset + currentTokenStart);
                             currentTokenType = Token.NULL;
                         }
