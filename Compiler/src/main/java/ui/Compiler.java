@@ -116,6 +116,12 @@ public class Compiler extends JFrame {
 
     public static void main(String[] args) {
         // Start all Swing applications on the EDT.
+        try{
+            UIManager.setLookAndFeel(UIManager.
+                    getSystemLookAndFeelClassName());
+        }
+        catch (Exception e) {
+        }
         SwingUtilities.invokeLater(() -> new Compiler().setVisible(true));
     }
 }
