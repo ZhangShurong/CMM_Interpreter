@@ -97,9 +97,9 @@ public class DefPhaseListener extends CMMBaseListener {
                 if(typeStr.equals("int"))
                 {
                     if(value.getValue(Type.tInt) == null)
-                    {
-                        Warning.unmatched_type_warning(io, token.getText(), token.getLine(),token.getCharPositionInLine());
-                        return;
+                        {
+                            Warning.unmatched_type_warning(io, token.getText(), token.getLine(),token.getCharPositionInLine());
+                            return;
                     }
                     currentScope.define(new Symbol(token.getText(), Type.tInt,
                             value.getValue(Type.tInt)));

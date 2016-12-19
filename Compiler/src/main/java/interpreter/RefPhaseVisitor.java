@@ -141,7 +141,16 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     return null;
                 }
                 else {
-                    var.setValue(value.getValue(var.getType()));
+//                    if(!currentScope.redundant(assign.getText())){
+//                        return null;
+//                    }else{
+                     var.setValue(value.getValue(var.getType()));
+                 //   }
+//                    if(currentScope.redundant(assign.getText())){
+//                        var.setValue(value.getValue(var.getType()));
+//                    }
+
+                    //var.setValue(value.getValue(var.getType()));
                 }
 //
 //                if(var.getType() != value.getType()){

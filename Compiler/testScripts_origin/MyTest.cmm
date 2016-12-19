@@ -1,0 +1,7 @@
+int a=4;
+int a=3;
+write(a);
+
+int a=4;
+a=3;
+write(a0;
