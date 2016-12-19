@@ -112,15 +112,7 @@ INTCONSTANT : '0' | [1-9][0-9]* ;
 DOUBLECONSTANT : INTCONSTANT('.'([0-9]+))? ;
 
 STRINGCONSTANT
-        :   EncodingPrefix? '"' SCharSequence? '"'
-        ;
-
-    fragment
-    EncodingPrefix
-        :   'u8'
-        |   'u'
-        |   'U'
-        |   'L'
+        :QUOTE SCharSequence? QUOTE
         ;
 
     fragment
@@ -153,6 +145,7 @@ LMBRACKET : '[' ;
 RMBRACKET : ']' ;
 LSBRACKET : '(' ;
 RSBRACKET : ')' ;
+QUOTE:'"';
 
 SEQUAL : '<=' ;
 SMALLER : '<' ;

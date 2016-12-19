@@ -8,5 +8,6 @@ public enum Type {
     tDouble,
     tIntArray,
     tDoubleArray,
-    tBool
+    tBool,
+    tString
 }

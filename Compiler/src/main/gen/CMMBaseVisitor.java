@@ -1,4 +1,4 @@
-// Generated from /home/vergil/Projects/GitOSChina/CMM_Interpreter/Compiler/src/main/CMM.g4 by ANTLR 4.5.3
+// Generated from D:/GitOSChina/CMM_Interpreter/Compiler/src/main\CMM.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**

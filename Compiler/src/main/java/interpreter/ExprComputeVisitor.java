@@ -178,6 +178,10 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         else if(ctx.constant().TRUE() != null) {
             return new ExprReturnVal(Type.tInt,1);
         }
+        else if(ctx.constant().STRINGCONSTANT() != null)
+        {
+            return new ExprReturnVal(Type.tString, ctx.constant().STRINGCONSTANT().toString());
+        }
         else{
             io.stderr("ERROR");
             return new ExprReturnVal(Type.tInt,0);

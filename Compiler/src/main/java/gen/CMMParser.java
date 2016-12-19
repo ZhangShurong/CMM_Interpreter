@@ -1,4 +1,4 @@
-package gen;// Generated from /home/vergil/Projects/GitOSChina/CMM_Interpreter/Compiler/src/main/CMM.g4 by ANTLR 4.5.3
+package gen;// Generated from D:/GitOSChina/CMM_Interpreter/Compiler/src/main\CMM.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -19,9 +19,9 @@ public class CMMParser extends Parser {
 		READ=1, WRITE=2, IF=3, ELSE=4, ELSEIF=5, WHILE=6, BREAK=7, INT=8, DOUBLE=9, 
 		STRING=10, COMMA=11, SEMICOLON=12, IDENT=13, INTCONSTANT=14, DOUBLECONSTANT=15, 
 		STRINGCONSTANT=16, TRUE=17, FALSE=18, LBBRACKET=19, RBBRACKET=20, LMBRACKET=21, 
-		RMBRACKET=22, LSBRACKET=23, RSBRACKET=24, SEQUAL=25, SMALLER=26, GEQUAL=27, 
-		GREATER=28, DEQUAL=29, NEQUAL=30, EQUAL=31, PLUS=32, MINUS=33, MULT=34, 
-		DIV=35, MOD=36, WS=37, SL_COMMENT=38, MUL_COMMENT=39;
+		RMBRACKET=22, LSBRACKET=23, RSBRACKET=24, QUOTE=25, SEQUAL=26, SMALLER=27, 
+		GEQUAL=28, GREATER=29, DEQUAL=30, NEQUAL=31, EQUAL=32, PLUS=33, MINUS=34, 
+		MULT=35, DIV=36, MOD=37, WS=38, SL_COMMENT=39, MUL_COMMENT=40;
 	public static final int
 		RULE_program = 0, RULE_stmt = 1, RULE_stmtBlock = 2, RULE_varDecl = 3, 
 		RULE_type = 4, RULE_array = 5, RULE_varList = 6, RULE_elseiflist = 7, 
@@ -39,15 +39,15 @@ public class CMMParser extends Parser {
 	private static final String[] _LITERAL_NAMES = {
 		null, "'read'", "'write'", "'if'", "'else'", "'else if'", "'while'", "'break'", 
 		"'int'", "'double'", "'string'", "','", "';'", null, null, null, null, 
-		"'true'", "'false'", "'{'", "'}'", "'['", "']'", "'('", "')'", "'<='", 
-		"'<'", "'>='", "'>'", "'=='", "'!='", "'='", "'+'", "'-'", "'*'", "'/'", 
-		"'%'"
+		"'true'", "'false'", "'{'", "'}'", "'['", "']'", "'('", "')'", "'\"'", 
+		"'<='", "'<'", "'>='", "'>'", "'=='", "'!='", "'='", "'+'", "'-'", "'*'", 
+		"'/'", "'%'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, "READ", "WRITE", "IF", "ELSE", "ELSEIF", "WHILE", "BREAK", "INT", 
 		"DOUBLE", "STRING", "COMMA", "SEMICOLON", "IDENT", "INTCONSTANT", "DOUBLECONSTANT", 
 		"STRINGCONSTANT", "TRUE", "FALSE", "LBBRACKET", "RBBRACKET", "LMBRACKET", 
-		"RMBRACKET", "LSBRACKET", "RSBRACKET", "SEQUAL", "SMALLER", "GEQUAL", 
+		"RMBRACKET", "LSBRACKET", "RSBRACKET", "QUOTE", "SEQUAL", "SMALLER", "GEQUAL", 
 		"GREATER", "DEQUAL", "NEQUAL", "EQUAL", "PLUS", "MINUS", "MULT", "DIV", 
 		"MOD", "WS", "SL_COMMENT", "MUL_COMMENT"
 	};
@@ -2548,7 +2548,7 @@ public class CMMParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3)\u0114\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3*\u0114\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\3\2\6\2\62"+
@@ -2611,30 +2611,30 @@ public class CMMParser extends Parser {
 		"\u00b2\3\2\2\2\u00b4\u00b5\3\2\2\2\u00b5\u00b6\7\32\2\2\u00b6\u00b7\7"+
 		"\16\2\2\u00b7\33\3\2\2\2\u00b8\u00b9\7\4\2\2\u00b9\u00ba\7\31\2\2\u00ba"+
 		"\u00bb\5&\24\2\u00bb\u00bc\7\32\2\2\u00bc\u00bd\7\16\2\2\u00bd\35\3\2"+
-		"\2\2\u00be\u00bf\5\"\22\2\u00bf\u00c0\7!\2\2\u00c0\u00c1\5&\24\2\u00c1"+
-		"\u00c2\7\16\2\2\u00c2\37\3\2\2\2\u00c3\u00c4\7\17\2\2\u00c4\u00c5\7!\2"+
-		"\2\u00c5\u00c6\5&\24\2\u00c6!\3\2\2\2\u00c7\u00ca\7\17\2\2\u00c8\u00ca"+
+		"\2\2\u00be\u00bf\5\"\22\2\u00bf\u00c0\7\"\2\2\u00c0\u00c1\5&\24\2\u00c1"+
+		"\u00c2\7\16\2\2\u00c2\37\3\2\2\2\u00c3\u00c4\7\17\2\2\u00c4\u00c5\7\""+
+		"\2\2\u00c5\u00c6\5&\24\2\u00c6!\3\2\2\2\u00c7\u00ca\7\17\2\2\u00c8\u00ca"+
 		"\5\f\7\2\u00c9\u00c7\3\2\2\2\u00c9\u00c8\3\2\2\2\u00ca#\3\2\2\2\u00cb"+
 		"\u00ce\t\2\2\2\u00cc\u00ce\t\3\2\2\u00cd\u00cb\3\2\2\2\u00cd\u00cc\3\2"+
 		"\2\2\u00ce%\3\2\2\2\u00cf\u00d0\b\24\1\2\u00d0\u00d1\5(\25\2\u00d1\u00e6"+
-		"\3\2\2\2\u00d2\u00d3\f\t\2\2\u00d3\u00d4\7\33\2\2\u00d4\u00e5\5(\25\2"+
-		"\u00d5\u00d6\f\b\2\2\u00d6\u00d7\7\35\2\2\u00d7\u00e5\5(\25\2\u00d8\u00d9"+
-		"\f\7\2\2\u00d9\u00da\7\36\2\2\u00da\u00e5\5(\25\2\u00db\u00dc\f\6\2\2"+
-		"\u00dc\u00dd\7\34\2\2\u00dd\u00e5\5(\25\2\u00de\u00df\f\5\2\2\u00df\u00e0"+
-		"\7\37\2\2\u00e0\u00e5\5(\25\2\u00e1\u00e2\f\4\2\2\u00e2\u00e3\7 \2\2\u00e3"+
+		"\3\2\2\2\u00d2\u00d3\f\t\2\2\u00d3\u00d4\7\34\2\2\u00d4\u00e5\5(\25\2"+
+		"\u00d5\u00d6\f\b\2\2\u00d6\u00d7\7\36\2\2\u00d7\u00e5\5(\25\2\u00d8\u00d9"+
+		"\f\7\2\2\u00d9\u00da\7\37\2\2\u00da\u00e5\5(\25\2\u00db\u00dc\f\6\2\2"+
+		"\u00dc\u00dd\7\35\2\2\u00dd\u00e5\5(\25\2\u00de\u00df\f\5\2\2\u00df\u00e0"+
+		"\7 \2\2\u00e0\u00e5\5(\25\2\u00e1\u00e2\f\4\2\2\u00e2\u00e3\7!\2\2\u00e3"+
 		"\u00e5\5(\25\2\u00e4\u00d2\3\2\2\2\u00e4\u00d5\3\2\2\2\u00e4\u00d8\3\2"+
 		"\2\2\u00e4\u00db\3\2\2\2\u00e4\u00de\3\2\2\2\u00e4\u00e1\3\2\2\2\u00e5"+
 		"\u00e8\3\2\2\2\u00e6\u00e4\3\2\2\2\u00e6\u00e7\3\2\2\2\u00e7\'\3\2\2\2"+
 		"\u00e8\u00e6\3\2\2\2\u00e9\u00ea\b\25\1\2\u00ea\u00eb\5*\26\2\u00eb\u00f4"+
-		"\3\2\2\2\u00ec\u00ed\f\5\2\2\u00ed\u00ee\7\"\2\2\u00ee\u00f3\5*\26\2\u00ef"+
-		"\u00f0\f\4\2\2\u00f0\u00f1\7#\2\2\u00f1\u00f3\5*\26\2\u00f2\u00ec\3\2"+
+		"\3\2\2\2\u00ec\u00ed\f\5\2\2\u00ed\u00ee\7#\2\2\u00ee\u00f3\5*\26\2\u00ef"+
+		"\u00f0\f\4\2\2\u00f0\u00f1\7$\2\2\u00f1\u00f3\5*\26\2\u00f2\u00ec\3\2"+
 		"\2\2\u00f2\u00ef\3\2\2\2\u00f3\u00f6\3\2\2\2\u00f4\u00f2\3\2\2\2\u00f4"+
 		"\u00f5\3\2\2\2\u00f5)\3\2\2\2\u00f6\u00f4\3\2\2\2\u00f7\u00f8\b\26\1\2"+
 		"\u00f8\u00f9\5,\27\2\u00f9\u0102\3\2\2\2\u00fa\u00fb\f\5\2\2\u00fb\u00fc"+
-		"\7$\2\2\u00fc\u0101\5,\27\2\u00fd\u00fe\f\4\2\2\u00fe\u00ff\7%\2\2\u00ff"+
+		"\7%\2\2\u00fc\u0101\5,\27\2\u00fd\u00fe\f\4\2\2\u00fe\u00ff\7&\2\2\u00ff"+
 		"\u0101\5,\27\2\u0100\u00fa\3\2\2\2\u0100\u00fd\3\2\2\2\u0101\u0104\3\2"+
 		"\2\2\u0102\u0100\3\2\2\2\u0102\u0103\3\2\2\2\u0103+\3\2\2\2\u0104\u0102"+
-		"\3\2\2\2\u0105\u0106\7#\2\2\u0106\u0109\5,\27\2\u0107\u0109\5.\30\2\u0108"+
+		"\3\2\2\2\u0105\u0106\7$\2\2\u0106\u0109\5,\27\2\u0107\u0109\5.\30\2\u0108"+
 		"\u0105\3\2\2\2\u0108\u0107\3\2\2\2\u0109-\3\2\2\2\u010a\u0112\7\17\2\2"+
 		"\u010b\u0112\5$\23\2\u010c\u0112\5\f\7\2\u010d\u010e\7\31\2\2\u010e\u010f"+
 		"\5&\24\2\u010f\u0110\7\32\2\2\u0110\u0112\3\2\2\2\u0111\u010a\3\2\2\2"+
