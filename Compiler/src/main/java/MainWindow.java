@@ -24,7 +24,7 @@ public class MainWindow extends JFrame {
     JPanel infoPanel;
 
     JTextArea codeArea;
-    JTextArea infoArea;
+    JTextPane infoArea;
 
     JScrollPane codeScrollPane;
     JScrollPane infoScrollPane;
@@ -62,8 +62,8 @@ public class MainWindow extends JFrame {
 
         infoPanel = new JPanel();
         infoPanel.setLayout(new BorderLayout());
-        infoArea = new JTextArea();
-        infoArea.setLineWrap(true);
+        infoArea = new JTextPane();
+        //infoArea.setLineWrap(true);
         infoScrollPane = new JScrollPane(infoArea);
         infoPanel.add(infoScrollPane, BorderLayout.CENTER);
         infoPanel.setSize(800,200);
@@ -100,11 +100,11 @@ public class MainWindow extends JFrame {
         {
             try {
                 infoArea.setText("");
-                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(codeArea));
+                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(null));
                 interpreter.run();
 
             } catch (Exception ex) {
-                infoArea.append(ex.getMessage());
+                infoArea.setText(ex.getMessage());
             }
         }
     }
@@ -114,11 +114,11 @@ public class MainWindow extends JFrame {
         }
         public void actionPerformed(ActionEvent e) {
             try {
-                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(codeArea));
+                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(null));
                 interpreter.showtree();
             }
             catch (Exception ex) {
-                infoArea.append(ex.getMessage());
+                //infoArea.append(ex.getMessage());
             }
         }
     }
