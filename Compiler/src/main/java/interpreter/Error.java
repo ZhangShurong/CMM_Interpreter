@@ -49,6 +49,28 @@ public class Error {
                 + offset
                 +"\n");
     }
+    public static void unsupport_array_type_error(IOInterface io, String varname, int line, int offset)
+    {
+        io.stderr("error: unsupported array type in '"
+                + varname
+                + "'"
+                +"\n\tin line "
+                + line
+                +":"
+                + offset
+                +"\n");
+    }
+    public static void fatal_error(IOInterface io, String varname, int line, int offset)
+    {
+        io.stderr("error: fatal error in '"
+                + varname
+                + "'"
+                +"\n\tin line "
+                + line
+                +":"
+                + offset
+                +"\n");
+    }
     public  static  void out_of_boundary_error(IOInterface io, String varname, int line, int offset)
     {
         io.stderr("error: index out of boundary of array '"

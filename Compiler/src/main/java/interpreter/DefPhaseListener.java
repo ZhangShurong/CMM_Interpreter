@@ -70,8 +70,12 @@ public class DefPhaseListener extends CMMBaseListener {
             }else{
                 if(typeStr.equals("int")){
                     currentScope.define(new Symbol(name, Type.tIntArray, new int[size]));
-                }else{
+                }else if(typeStr.equals("double")){
                     currentScope.define(new Symbol(name, Type.tDoubleArray, new double[size]));
+                }
+                else {
+                    Token token = arrayContext.IDENT().getSymbol();
+                    Error.unsupport_array_type_error(io,token.getText(),token.getLine(),token.getCharPositionInLine());
                 }
             }
 
@@ -82,21 +86,27 @@ public class DefPhaseListener extends CMMBaseListener {
                 Error.conflict_declar_error(io, node.getSymbol().getText(), + node.getSymbol().getLine(),+ node.getSymbol().getCharPositionInLine());
                 return;
             }else{
+                Type type = gettypebystr(typeStr);
                 currentScope.define(new Symbol(node.getSymbol().getText(),
-                        typeStr.equals("int")? Type.tInt : Type.tDouble));
+                        type));
             }
         }
 
         // 声明时赋值
         for(CMMParser.DelassignContext decl_assignContext : ctx.delassign()){
-            //todo 顺序不对
             Token token = decl_assignContext.IDENT().getSymbol();
             if(currentScope.redundant(token.getText())){
                 Error.conflict_declar_error(io, token.getText(), token.getLine(),token.getCharPositionInLine());
                 return;
             }else{
-                currentScope.define(new Symbol(token.getText(),
-                        typeStr.equals("int")? Type.tInt : Type.tDouble));
+                Type type = gettypebystr(typeStr);
+                if(type!=null)
+                    currentScope.define(new Symbol(token.getText(), type));
+                else
+                {
+                    Error.fatal_error(io,token.getText(),token.getLine(),token.getCharPositionInLine());
+                }
+
             }
             /*
             ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
@@ -128,7 +138,27 @@ public class DefPhaseListener extends CMMBaseListener {
             */
 
         }
-
+    }
+    private Type gettypebystr(String typeStr)
+    {
+        Type type;
+        if(typeStr.equals("int")){
+            type = Type.tInt;
+        }
+        else if(typeStr.equals("double"))
+        {
+            type = Type.tDouble;
+        } else if (typeStr.equals("bool")) {
+            type = Type.tBool;
+        }
+        else if(typeStr.equals("string"))
+        {
+            type = Type.tString;
+        }
+        else{
+            type = null;
+        }
+        return type;
     }
 
     @Override
