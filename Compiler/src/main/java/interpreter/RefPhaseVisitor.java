@@ -109,9 +109,6 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                                 Warning.unmatched_type_warning(io,varName,token.getLine(),token.getCharPositionInLine() );
                             }
                         }
-//                        if(value.getValue() instanceof  Integer){
-//                            varArray[varIndex] = (Integer) value.getValue();
-//                        }
                         else{
                             Error.unmatched_type_error(io,varName,token.getLine(),token.getCharPositionInLine() );
                             return null;
@@ -131,11 +128,6 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                                 Warning.unmatched_type_warning(io,varName,token.getLine(),token.getCharPositionInLine() );
                             }
                         }
-//                        if(value.getValue() instanceof  Double){
-//                            varArray[varIndex] = (Double) value.getValue();
-//                        }else if(value.getValue() instanceof  Integer){
-//                            varArray[varIndex] = (Integer) value.getValue();
-//                        }
                         else{
                             Error.unmatched_type_error(io, varName,token.getLine(), token.getCharPositionInLine());
                             return null;
@@ -166,25 +158,8 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     return null;
                 }
                 else {
-//                    if(!currentScope.redundant(assign.getText())){
-//                        return null;
-//                    }else{
                      var.setValue(value.getValue(var.getType()));
-                 //   }
-//                    if(currentScope.redundant(assign.getText())){
-//                        var.setValue(value.getValue(var.getType()));
-//                    }
-
-                    //var.setValue(value.getValue(var.getType()));
                 }
-//
-//                if(var.getType() != value.getType()){
-//                    Token assign = ctx.EQUAL().getSymbol();
-//                    Error.unmatched_type_error(io, assign.getText(),assign.getLine(),assign.getCharPositionInLine());
-//                    return null;
-//                }else{
-//                    var.setValue(value.getValue());
-//                }
             }
         }
         return null;
