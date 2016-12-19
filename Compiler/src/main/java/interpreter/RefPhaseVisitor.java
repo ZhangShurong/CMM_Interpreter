@@ -329,6 +329,10 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         whilestack.push(true);
         while (isExprTrue(ctx.expr()) == 1)
         {
+            if(Constant.stop)
+            {
+                break;
+            }
             if(ctx.stmt() != null){
                 visit(ctx.stmt());
             }else{
@@ -340,7 +344,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         whilestack.pop();
         return null;
     }
-    //todo
+
     public ExprReturnVal visitBreakStmt(CMMParser.BreakStmtContext ctx)
     {
         whilestack.pop();

@@ -6,5 +6,5 @@ package interpreter;
 public class Constant {
 
     public static final boolean DEBUG = false;
-
+    public static boolean stop = false;
 }
