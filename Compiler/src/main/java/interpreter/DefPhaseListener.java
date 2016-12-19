@@ -89,7 +89,16 @@ public class DefPhaseListener extends CMMBaseListener {
 
         // 声明时赋值
         for(CMMParser.DelassignContext decl_assignContext : ctx.delassign()){
+            //todo 顺序不对
             Token token = decl_assignContext.IDENT().getSymbol();
+            if(currentScope.redundant(token.getText())){
+                Error.conflict_declar_error(io, token.getText(), token.getLine(),token.getCharPositionInLine());
+                return;
+            }else{
+                currentScope.define(new Symbol(token.getText(),
+                        typeStr.equals("int")? Type.tInt : Type.tDouble));
+            }
+            /*
             ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
             ExprReturnVal value = exprComputeVisitor.visit(decl_assignContext.expr());
             if(value.getType() != (typeStr.equals("int")? Type.tInt : Type.tDouble)){
@@ -97,9 +106,9 @@ public class DefPhaseListener extends CMMBaseListener {
                 if(typeStr.equals("int"))
                 {
                     if(value.getValue(Type.tInt) == null)
-                    {
-                        Warning.unmatched_type_warning(io, token.getText(), token.getLine(),token.getCharPositionInLine());
-                        return;
+                        {
+                            Warning.unmatched_type_warning(io, token.getText(), token.getLine(),token.getCharPositionInLine());
+                            return;
                     }
                     currentScope.define(new Symbol(token.getText(), Type.tInt,
                             value.getValue(Type.tInt)));
@@ -116,15 +125,8 @@ public class DefPhaseListener extends CMMBaseListener {
                 }
                 return;
             }
-//todo 顺序不对
-            if(currentScope.redundant(token.getText())){
-                Error.conflict_declar_error(io, token.getText(), token.getLine(),token.getCharPositionInLine());
-                return;
-            }else{
-                currentScope.define(new Symbol(token.getText(),
-                        typeStr.equals("int")? Type.tInt : Type.tDouble,
-                        value.getValue()));
-            }
+            */
+
         }
 
     }
