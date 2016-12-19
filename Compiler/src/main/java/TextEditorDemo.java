@@ -15,6 +15,15 @@ public class TextEditorDemo extends JFrame {
 
         RSyntaxTextArea textArea = new RSyntaxTextArea(20, 60);
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_C);
+
+        // 通过这里可以看到 RSTA 默认支持 括号补全 和 自动缩进
+        // 估计内置的语法实现跟这块绑定了
+        // 而在TokenMaker接口并没有暴露出这部分的相关操作
+        // 导致语法变了,不能自动识别
+        // TAT 我能怎么办,我也很绝望啊
+        textArea.setAutoIndentEnabled(false);
+        textArea.setCloseCurlyBraces(false);
+
         textArea.setCodeFoldingEnabled(true);
         RTextScrollPane sp = new RTextScrollPane(textArea);
         cp.add(sp);
