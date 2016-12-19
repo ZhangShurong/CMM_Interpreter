@@ -1,4 +1,4 @@
-// Generated from D:/GitOSChina/CMM_Interpreter/Compiler/src/main\CMM.g4 by ANTLR 4.5.3
+// Generated from /home/vergil/Projects/GitOSChina/CMM_Interpreter/Compiler/src/main/CMM.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -70,6 +70,18 @@ public interface CMMListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTypeDouble(CMMParser.TypeDoubleContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code TypeString}
+	 * labeled alternative in {@link CMMParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeString(CMMParser.TypeStringContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code TypeString}
+	 * labeled alternative in {@link CMMParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeString(CMMParser.TypeStringContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CMMParser#array}.
 	 * @param ctx the parse tree

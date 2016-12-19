@@ -1,6 +1,7 @@
 
 
 
+import interpreter.Constant;
 import interpreter.Interpreter;
 import io.EditorIO;
 
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.StringJoiner;
 
 
 /**
@@ -24,7 +26,7 @@ public class MainWindow extends JFrame {
     JPanel infoPanel;
 
     JTextArea codeArea;
-    JTextArea infoArea;
+    JTextPane infoArea;
 
     JScrollPane codeScrollPane;
     JScrollPane infoScrollPane;
@@ -40,7 +42,9 @@ public class MainWindow extends JFrame {
         Action [] actions = {
                 new OpenAction(),
                 new StartAction(),
-                new ShowTreeAction()
+                new ShowTreeAction(),
+                new StopAction(),
+                new ShowTokenAction()
         };
         toolBar = new JToolBar();
         for(int i = 0; i < actions.length; i++) {
@@ -62,8 +66,8 @@ public class MainWindow extends JFrame {
 
         infoPanel = new JPanel();
         infoPanel.setLayout(new BorderLayout());
-        infoArea = new JTextArea();
-        infoArea.setLineWrap(true);
+        infoArea = new JTextPane();
+        //infoArea.setLineWrap(true);
         infoScrollPane = new JScrollPane(infoArea);
         infoPanel.add(infoScrollPane, BorderLayout.CENTER);
         infoPanel.setSize(800,200);
@@ -100,11 +104,15 @@ public class MainWindow extends JFrame {
         {
             try {
                 infoArea.setText("");
-                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(codeArea));
+                /*
+                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(null));
                 interpreter.run();
+                */
+                MyThread myThread = new MyThread(codeArea.getText(), new EditorIO(infoArea), null);
+                myThread.run();
 
             } catch (Exception ex) {
-                infoArea.append(ex.getMessage());
+                infoArea.setText(ex.getMessage());
             }
         }
     }
@@ -114,12 +122,59 @@ public class MainWindow extends JFrame {
         }
         public void actionPerformed(ActionEvent e) {
             try {
-                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(codeArea));
+                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(null));
                 interpreter.showtree();
             }
             catch (Exception ex) {
-                infoArea.append(ex.getMessage());
+                //infoArea.append(ex.getMessage());
             }
         }
+    }
+    class StopAction extends  AbstractAction {
+        public StopAction() {
+            super("停止");
+        }
+        public void actionPerformed(ActionEvent e) {
+            try {
+                Constant.stop = true;
+            }
+            catch (Exception ex) {
+                //infoArea.append(ex.getMessage());
+            }
+        }
+    }
+
+    class ShowTokenAction extends  AbstractAction {
+        public ShowTokenAction() {
+            super("显示Token");
+        }
+        public void actionPerformed(ActionEvent e) {
+            try {
+                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(infoArea));
+                interpreter.showtoken();
+            }
+            catch (Exception ex) {
+                //infoArea.append(ex.getMessage());
+            }
+        }
+    }
+}
+class MyThread extends Thread {
+
+    private String code;
+    EditorIO infoAeraio;
+    EditorIO codeAeraio;
+    public MyThread(String code, EditorIO infoAeraio, EditorIO codeAeraio)
+    {
+        this.infoAeraio = infoAeraio;
+        this.code = code
+                ;
+        this.codeAeraio = codeAeraio
+                ;
+    }
+    @Override
+    public void run() {
+        Interpreter interpreter = new Interpreter(code, infoAeraio,codeAeraio);
+        interpreter.run();
     }
 }
