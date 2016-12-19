@@ -1,6 +1,6 @@
 package ui;
 
-import io.IOInterface;
+import org.fife.ui.autocomplete.*;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
@@ -11,11 +11,13 @@ import rsyntax.CmmTokenMaker;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * Created by pendragon on 16-12-3.
  */
-public class TextEditor extends JPanel implements IOInterface {
+public class TextEditor extends JPanel {
     RSyntaxTextArea textArea;
     private static final String SYNTAX_STYLE = "text/cmm";
 
@@ -23,7 +25,6 @@ public class TextEditor extends JPanel implements IOInterface {
         setLayout(new BorderLayout());
         //注册代码折叠
         FoldParserManager.get().addFoldParserMapping(SYNTAX_STYLE, new CmmFoldParser());
-
         textArea = new RSyntaxTextArea(40, 120);
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         //传入class全名，内部是反射
@@ -33,26 +34,33 @@ public class TextEditor extends JPanel implements IOInterface {
 
         RTextScrollPane sp = new RTextScrollPane(textArea);
         add(sp);
+
+        CompletionProvider provider = createCompletionProvider();
+        AutoCompletion ac = new AutoCompletion(provider);
+        //设置自动补全的组合键
+        ac.setTriggerKey(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_MASK));
+        ac.install(textArea);
     }
 
+    private CompletionProvider createCompletionProvider() {
+        DefaultCompletionProvider provider = new DefaultCompletionProvider();
 
-    @Override
-    public String stdin(String tips) {
-        return null;
-    }
+        provider.addCompletion(new BasicCompletion(provider, "read"));
+        provider.addCompletion(new BasicCompletion(provider, "write"));
+        provider.addCompletion(new BasicCompletion(provider, "if"));
+        provider.addCompletion(new BasicCompletion(provider, "else"));
+        provider.addCompletion(new BasicCompletion(provider, "while"));
+        provider.addCompletion(new BasicCompletion(provider, "break"));
+        provider.addCompletion(new BasicCompletion(provider, "int"));
+        provider.addCompletion(new BasicCompletion(provider, "double"));
+        provider.addCompletion(new BasicCompletion(provider, "true"));
+        provider.addCompletion(new BasicCompletion(provider, "false"));
 
-    @Override
-    public String stdin() {
-        return textArea.getText();
-    }
-
-    @Override
-    public void stdout(Object out) {
-
-    }
-
-    @Override
-    public void stderr(Object out) {
+        // Add a couple of "shorthand" completions. These completions don't
+        // require the input text to be the same thing as the replacement text.
+        provider.addCompletion(new ShorthandCompletion(provider, "{", "{\n\t\n}"));
+        provider.addCompletion(new ShorthandCompletion(provider, "/*", "/*\n *\n */"));
+        return provider;
 
     }
 }

@@ -12,6 +12,9 @@ repositories {
 dependencies {
 // https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea
     compile group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '2.6.0'
+// https://mvnrepository.com/artifact/com.fifesoft/autocomplete
+    compile group: 'com.fifesoft', name: 'autocomplete', version: '2.6.0'
+
 // https://mvnrepository.com/artifact/org.antlr/antlr4
     compile group: 'org.antlr', name: 'antlr4', version: '4.5.1'
 

@@ -22,7 +22,6 @@ public class IOWindow extends JFrame implements IOInterface {
         setVisible(true);
         setContentPane(ioPanel);
         setTitle(title);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         if (parent != null)
             setLocationRelativeTo(parent);
     }
@@ -60,7 +59,6 @@ public class IOWindow extends JFrame implements IOInterface {
             scrollPane.setViewportView(jTextPane);
             add(scrollPane, BorderLayout.CENTER);
         }
-
         void print(String s){
             StyledDocument styledDocument = jTextPane.getStyledDocument();
             SimpleAttributeSet attr = new SimpleAttributeSet();

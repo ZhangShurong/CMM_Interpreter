@@ -44,6 +44,31 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         return null;
     }
 
+    public ExprReturnVal visitDelassign(CMMParser.DelassignContext ctx)
+    {
+        super.visitDelassign(ctx);
+        Token token = ctx.IDENT().getSymbol();
+        String varName = token.getText();
+        Symbol var = currentScope.resolve(varName);
+        if(var == null){
+            Error.undeclared_var_error(io, varName, token.getLine(),token.getCharPositionInLine());
+            return null;
+        }else{
+            ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
+            ExprReturnVal value = exprComputeVisitor.visit(ctx.expr());
+            Token assign = ctx.EQUAL().getSymbol();
+            if(value.getValue(value.getType()) == null)
+            {
+                Error.unmatched_type_error(io, assign.getText(),assign.getLine(),assign.getCharPositionInLine());
+                return null;
+            }
+            else {
+
+                var.setValue(value.getValue(var.getType()));
+            }
+        }
+        return null;
+    }
     @Override
     public ExprReturnVal visitAssignStmt(CMMParser.AssignStmtContext ctx) {
         super.visitAssignStmt(ctx);
@@ -141,7 +166,16 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     return null;
                 }
                 else {
-                    var.setValue(value.getValue(var.getType()));
+//                    if(!currentScope.redundant(assign.getText())){
+//                        return null;
+//                    }else{
+                     var.setValue(value.getValue(var.getType()));
+                 //   }
+//                    if(currentScope.redundant(assign.getText())){
+//                        var.setValue(value.getValue(var.getType()));
+//                    }
+
+                    //var.setValue(value.getValue(var.getType()));
                 }
 //
 //                if(var.getType() != value.getType()){
