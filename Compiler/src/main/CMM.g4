@@ -19,6 +19,7 @@ varDecl : type varList SEMICOLON;
 
 type : INT #TypeInt
     |DOUBLE #TypeDouble
+    | STRING #TypeString
     ;
 //    |array #ToArray
 //    ;
@@ -47,7 +48,7 @@ writeStmt : WRITE LSBRACKET expr RSBRACKET SEMICOLON;
 assignStmt : value EQUAL expr SEMICOLON;
 delassign: IDENT EQUAL expr ;
 value : (IDENT)|(array) ;
-constant : (INTCONSTANT | DOUBLECONSTANT) //#NUM
+constant : (INTCONSTANT | DOUBLECONSTANT|STRINGCONSTANT) //#NUM
          | (TRUE | FALSE) //#BOOL
         ;
 
@@ -98,6 +99,7 @@ BREAK : 'break' ;
 
 INT : 'int' ;
 DOUBLE : 'double' ;
+STRING : 'string';
 
 COMMA : ',' ;
 
@@ -108,6 +110,39 @@ IDENT : [A-Za-z_][A-Za-z0-9_]* ;
 
 INTCONSTANT : '0' | [1-9][0-9]* ;
 DOUBLECONSTANT : INTCONSTANT('.'([0-9]+))? ;
+
+STRINGCONSTANT
+        :   EncodingPrefix? '"' SCharSequence? '"'
+        ;
+
+    fragment
+    EncodingPrefix
+        :   'u8'
+        |   'u'
+        |   'U'
+        |   'L'
+        ;
+
+    fragment
+    SCharSequence
+        :   SChar+
+        ;
+
+    fragment
+    SChar
+        :   ~["\\\r\n]
+        |   SimpleEscapeSequence
+        |   '\\\n'   // Added line
+        |   '\\\r\n' // Added line
+        ;
+
+
+fragment
+SimpleEscapeSequence
+    :   '\\' ['"?abfnrtv\\]
+    ;
+
+
 TRUE : 'true' ;
 FALSE : 'false' ;
 
