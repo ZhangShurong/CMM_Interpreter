@@ -241,9 +241,19 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 //int in = Integer.parseInt(io.stdin());
                 int in = Integer.parseInt(input);
                 var.setValue(in);
-            }else{
+            }
+            else if(var.getType() == Type.tDouble){
                 //Double in = Double.parseDouble(io.stdin());
                 Double in = Double.parseDouble(input);
+                var.setValue(in);
+            }
+            else if(var.getType() == Type.tString)
+            {
+                var.setValue("\"" + input + "\"");
+            }
+            else if (var.getType() == Type.tBool)
+            {
+                int in = Integer.parseInt(input);
                 var.setValue(in);
             }
 
