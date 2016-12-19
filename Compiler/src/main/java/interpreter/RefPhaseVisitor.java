@@ -160,6 +160,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     public ExprReturnVal visitReadStmt(CMMParser.ReadStmtContext ctx) {
         super.visitReadStmt(ctx);
         Token token;
+        String input = io.stdin(ctx.getText());
         if(ctx.IDENT() == null){
             token = ctx.array().IDENT().getSymbol();
             String varName = token.getText();
@@ -173,7 +174,8 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 int[] varArray = (int[]) var.getValue();
 
                 if(0 <= varIndex && varIndex < varArray.length){
-                    int in = Integer.parseInt(io.stdin());
+                    //int in = Integer.parseInt(io.stdin());
+                    int in = Integer.parseInt(input);
                     varArray[varIndex] = in;
                 }else{
                     Error.out_of_boundary_error(io,varName,token.getLine(),token.getCharPositionInLine());
@@ -185,7 +187,8 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
                 // 数组越界检查
                 if(0 <= varIndex && varIndex < varArray.length){
-                    Double in = Double.parseDouble(io.stdin());
+                    //Double in = Double.parseDouble(io.stdin());
+                    Double in = Double.parseDouble(input);
                     varArray[varIndex] = in;
                 }else{
                     Error.out_of_boundary_error(io,varName,token.getLine(),token.getCharPositionInLine());
@@ -201,10 +204,12 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 return null;
             }
             if(var.getType() == Type.tInt){
-                int in = Integer.parseInt(io.stdin());
+                //int in = Integer.parseInt(io.stdin());
+                int in = Integer.parseInt(input);
                 var.setValue(in);
             }else{
-                Double in = Double.parseDouble(io.stdin());
+                //Double in = Double.parseDouble(io.stdin());
+                Double in = Double.parseDouble(input);
                 var.setValue(in);
             }
 
