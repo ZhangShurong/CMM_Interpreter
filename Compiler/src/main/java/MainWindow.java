@@ -172,6 +172,7 @@ class MyThread extends Thread {
         this.codeAeraio = codeAeraio
                 ;
     }
+
     @Override
     public void run() {
         Interpreter interpreter = new Interpreter(code, infoAeraio,codeAeraio);

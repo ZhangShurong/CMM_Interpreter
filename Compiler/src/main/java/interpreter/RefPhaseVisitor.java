@@ -265,6 +265,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     public ExprReturnVal visitWriteStmt(CMMParser.WriteStmtContext ctx) {
         super.visitWriteStmt(ctx);
         ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
+        CMMParser.ExprContext m=ctx.expr();
         ExprReturnVal exprReturnVal =exprComputeVisitor.visit(ctx.expr());
         Object value = exprReturnVal.getValue();
         if(exprReturnVal.getType() == Type.tString)

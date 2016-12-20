@@ -57,10 +57,18 @@ public class Interpreter {
         }
         lexer.reset();
     }
+
+    public String processStringCat(String code){
+        if(code.contains("\"+\"")&&code.contains("write")){
+           code=code.replace("\"+\"","");
+        }
+        return code;
+    }
+
     public void run()
     {
         Constant.stop = false;
-        lexer = new CMMLexer(new ANTLRInputStream(sourcecode));
+        lexer = new CMMLexer(new ANTLRInputStream(processStringCat(sourcecode)));
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         CMMParser parser = new CMMParser(tokenStream);
         ParseTree parseTree = parser.program();
