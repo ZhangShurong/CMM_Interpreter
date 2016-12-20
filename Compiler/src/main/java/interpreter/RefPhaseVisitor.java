@@ -270,7 +270,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         Object value = exprReturnVal.getValue();
         if(exprReturnVal.getType() == Type.tString)
         {
-            io.stdout(value.toString().substring(1,value.toString().length()-1));
+            io.stdout(value.toString());
         }
         else {
             io.stdout(value);
