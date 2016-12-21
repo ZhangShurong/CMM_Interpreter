@@ -37,6 +37,7 @@ public class CmmTokenMaker extends AbstractTokenMaker {
 
         tokenMap.put("int", reservedWord);
         tokenMap.put("double", reservedWord);
+        tokenMap.put("string", reservedWord);
 
         tokenMap.put("true", reservedWord);
         tokenMap.put("false", reservedWord);

@@ -52,6 +52,7 @@ public class TextEditor extends JPanel {
         provider.addCompletion(new BasicCompletion(provider, "while"));
         provider.addCompletion(new BasicCompletion(provider, "break"));
         provider.addCompletion(new BasicCompletion(provider, "int"));
+        provider.addCompletion(new BasicCompletion(provider, "string"));
         provider.addCompletion(new BasicCompletion(provider, "double"));
         provider.addCompletion(new BasicCompletion(provider, "true"));
         provider.addCompletion(new BasicCompletion(provider, "false"));
