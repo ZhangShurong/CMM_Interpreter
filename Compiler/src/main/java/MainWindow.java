@@ -42,9 +42,7 @@ public class MainWindow extends JFrame {
         Action [] actions = {
                 new OpenAction(),
                 new StartAction(),
-                new ShowTreeAction(),
-                new StopAction(),
-                new ShowTokenAction()
+                new StopAction()
         };
         toolBar = new JToolBar();
         for(int i = 0; i < actions.length; i++) {
@@ -116,20 +114,7 @@ public class MainWindow extends JFrame {
             }
         }
     }
-    class ShowTreeAction extends  AbstractAction {
-        public ShowTreeAction() {
-            super("语法树");
-        }
-        public void actionPerformed(ActionEvent e) {
-            try {
-                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(null));
-                interpreter.showtree();
-            }
-            catch (Exception ex) {
-                //infoArea.append(ex.getMessage());
-            }
-        }
-    }
+
     class StopAction extends  AbstractAction {
         public StopAction() {
             super("停止");
@@ -144,20 +129,7 @@ public class MainWindow extends JFrame {
         }
     }
 
-    class ShowTokenAction extends  AbstractAction {
-        public ShowTokenAction() {
-            super("显示Token");
-        }
-        public void actionPerformed(ActionEvent e) {
-            try {
-                Interpreter interpreter = new Interpreter(codeArea.getText(), new EditorIO(infoArea), new EditorIO(infoArea));
-                interpreter.showtoken();
-            }
-            catch (Exception ex) {
-                //infoArea.append(ex.getMessage());
-            }
-        }
-    }
+
 }
 class MyThread extends Thread {
 
@@ -174,7 +146,7 @@ class MyThread extends Thread {
     }
     @Override
     public void run() {
-        Interpreter interpreter = new Interpreter(code, infoAeraio,codeAeraio);
+        Interpreter interpreter = new Interpreter(code, infoAeraio,codeAeraio,true,true);
         interpreter.run();
     }
 }

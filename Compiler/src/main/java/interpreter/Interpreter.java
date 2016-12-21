@@ -22,40 +22,34 @@ public class Interpreter {
     private IOInterface debugIO;
 
     private CMMLexer lexer;
+    private boolean showtree = false;
+    private boolean showtokens = false;
 
+    public Interpreter(String sourcecode,IOInterface ioInterface, IOInterface debugIO, boolean showtokens, boolean showtree)
+    {
+        this(sourcecode, ioInterface, debugIO);
+        this.showtokens = showtokens;
+        this.showtree = showtree;
+    }
     public Interpreter(String sourcecode,IOInterface ioInterface, IOInterface debugIO)
     {
         this.sourcecode = sourcecode;
         this.ioInterface = ioInterface;
         this.debugIO = debugIO;
     }
-    public void showtree()
+
+    public void setShowtree(boolean showtree)
     {
-        lexer = new CMMLexer(new ANTLRInputStream(sourcecode));
-        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        CMMParser parser = new CMMParser(tokenStream);
-        ParseTree parseTree = parser.program();
-        Trees.inspect(parseTree, parser);
+        this.showtree = showtree;
     }
     public void stop()
+
     {
         Constant.stop = true;
     }
-    public void showtoken()
+    public void setShowtoken(boolean showtokens)
     {
-        lexer = new CMMLexer(new ANTLRInputStream(sourcecode));
-        List<Token> tokenList = (List<Token>) lexer.getAllTokens();
-        int i = -1;
-        for(Token token : tokenList){
-            if(i != token.getLine())
-            {
-                i = token.getLine();
-                debugIO.stdout("line " + i + " : \n");
-            }
-            debugIO.stdout("\tText : " + token.getText() + "\tType : " + token.getType() + "\n");
-
-        }
-        lexer.reset();
+        this.showtokens = showtokens;
     }
     public void run()
     {
@@ -71,6 +65,24 @@ public class Interpreter {
                 defPhaseListener.scopes,
                 ioInterface);
         refPhaseVisitor.visit(parseTree);
+
+        if(showtree) {
+            Trees.inspect(parseTree, parser);
+        }
+        if(showtokens){
+            List<Token> tokenList = (List<Token>) lexer.getAllTokens();
+            int i = -1;
+            for(Token token : tokenList){
+                if(i != token.getLine())
+                {
+                    i = token.getLine();
+                    debugIO.stdout("line " + i + " : \n");
+                }
+                debugIO.stdout("\tText : " + token.getText() + "\tType : " + token.getType() + "\n");
+
+            }
+            lexer.reset();
+        }
     }
 
 }
