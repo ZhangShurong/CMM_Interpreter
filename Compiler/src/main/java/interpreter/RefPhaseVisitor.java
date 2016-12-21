@@ -158,7 +158,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     return null;
                 }
                 else {
-                     var.setValue(value.getValue(var.getType()));
+                    var.setValue(value.getValue(var.getType()));
                 }
             }
         }
@@ -354,9 +354,21 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         }
     }
 
+    public static int appearNumber(String srcText, String findText) {
+        int count = 0;
+        int index = 0;
+        while ((index = srcText.indexOf(findText, index)) != -1) {
+            index = index + findText.length();
+            count++;
+        }
+        return count;
+    }
+
+    boolean meetBreak=false;
     public ExprReturnVal visitWhileStmt(CMMParser.WhileStmtContext ctx)
     {
         whilestack.push(true);
+
         while (isExprTrue(ctx.expr()) == 1)
         {
             if(Constant.stop)
@@ -366,7 +378,13 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
             if(ctx.stmt() != null){
                 visit(ctx.stmt());
             }else{
-                visit(ctx.stmtBlock());
+                String c=ctx.stmtBlock().getText();
+                int len=appearNumber(c,";");
+                for(int i=0;i<len;i++){
+                    if(!meetBreak){
+                        visit(ctx.stmtBlock().stmt(i));
+                    }
+                }
             }
             if(!(boolean)whilestack.peek())
                 break;
@@ -377,7 +395,9 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
     public ExprReturnVal visitBreakStmt(CMMParser.BreakStmtContext ctx)
     {
+
         whilestack.pop();
+        meetBreak=true;
         whilestack.push(false);
         return super.visitBreakStmt(ctx);
     }
