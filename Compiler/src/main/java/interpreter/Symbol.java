@@ -12,12 +12,8 @@ public class Symbol {
     Scope scope;      // All symbols know what scope contains them.
     Object value;
 
-
-    public Symbol(String name) {
-        this.name = name;
-    }
     public Symbol(String name, Type type) {
-        this(name);
+        this.name=name;
         this.type = type;
     }
     public Symbol(String name, Type type, Object value){

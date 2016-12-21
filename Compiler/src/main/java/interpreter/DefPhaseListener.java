@@ -139,8 +139,8 @@ public class DefPhaseListener extends CMMBaseListener {
 
         }
     }
-    private Type gettypebystr(String typeStr)
-    {
+
+    private Type gettypebystr(String typeStr) {
         Type type;
         if(typeStr.equals("int")){
             type = Type.tInt;
@@ -160,6 +160,7 @@ public class DefPhaseListener extends CMMBaseListener {
         }
         return type;
     }
+
 
     @Override
     public void visitErrorNode(ErrorNode node) {

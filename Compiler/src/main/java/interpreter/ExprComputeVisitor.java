@@ -180,7 +180,8 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         }
         else if(ctx.constant().STRINGCONSTANT() != null)
         {
-            return new ExprReturnVal(Type.tString, ctx.constant().STRINGCONSTANT().toString());
+            String str = ctx.constant().STRINGCONSTANT().toString();
+            return new ExprReturnVal(Type.tString, str.substring(1,str.length()-1));
         }
         else{
             io.stderr("ERROR");
@@ -243,20 +244,30 @@ public class ExprComputeVisitor extends CMMBaseVisitor<ExprReturnVal> {
         ExprReturnVal left = visit(ctx.addMin());
         ExprReturnVal right = visit(ctx.mulDiv());
         ExprReturnVal returnVal = null;
-        if(left.getType() != Type.tBool && right.getType() != Type.tBool) {
+        if(left.getType() == Type.tString || right.getType() == Type.tString)
+        {
             returnVal = new ExprReturnVal();
-            if (left.getType() == Type.tDouble || right.getType() == Type.tDouble) {
-                returnVal.setType(Type.tDouble);
-                returnVal.setValue((Double) left.getValue() + (Double) right.getValue());
+            returnVal.setType(Type.tString);
+            returnVal.setValue(left.getValue().toString()+ right.getValue().toString());
+        }
+        else
+        {
+            if(left.getType() != Type.tBool && right.getType() != Type.tBool) {
+                returnVal = new ExprReturnVal();
+                if (left.getType() == Type.tDouble || right.getType() == Type.tDouble) {
+                    returnVal.setType(Type.tDouble);
+                    returnVal.setValue((Double) left.getValue() + (Double) right.getValue());
+                }
+                else {
+                    returnVal.setType(Type.tInt);
+                    returnVal.setValue((Integer) left.getValue() + (Integer) right.getValue());
+                }
             }
             else {
-                returnVal.setType(Type.tInt);
-                returnVal.setValue((Integer) left.getValue() + (Integer) right.getValue());
+                io.stderr("Bool error");
             }
         }
-        else {
-            io.stderr("Bool error");
-        }
+
         if(returnVal == null)
         {
             io.stderr("Error");

@@ -51,9 +51,11 @@ public class Interpreter {
     {
         this.showtokens = showtokens;
     }
+
     public void run()
     {
         Constant.stop = false;
+        //lexer = new CMMLexer(new ANTLRInputStream(processStringCat(sourcecode)));
         lexer = new CMMLexer(new ANTLRInputStream(sourcecode));
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         CMMParser parser = new CMMParser(tokenStream);

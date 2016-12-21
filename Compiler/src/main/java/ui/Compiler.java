@@ -5,10 +5,13 @@ import util.FileUtil;
 import util.StringUtil;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
 /**
  * Created by pendragon on 16-12-3.
@@ -17,11 +20,13 @@ public class Compiler extends JFrame {
     public static final String APP_NAME = "Text Editor Demo";
 
     private TextEditor textEditor;
+    private JTextArea tokenInfo;
     private JFileChooser fileChooser;
 
     public Compiler(){
         CompilerMenu menuBar = new CompilerMenu();
         textEditor = new TextEditor();
+        tokenInfo = new JTextArea();
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("."));
 
@@ -91,7 +96,20 @@ public class Compiler extends JFrame {
 
             @Override
             public void setDebugListener(ActionEvent event) {
+                System.out.println("DEBUG");
+                if (!tokenInfo.isVisible()){
+                    tokenInfo.setVisible(true);
+                    Compiler.this.pack();
+                }
 
+                tokenInfo.append("DEBUG: HAHAHAH");
+//                String str = textEditor.textArea.getText();
+//                if (!StringUtil.isEmpty(str)){
+//                    IOWindow ioWindow = new IOWindow(Compiler.this, "Console");
+//                    Interpreter interpreter = new Interpreter(str, ioWindow, ioWindow);
+//                    interpreter.run();
+//                    interpreter.showtree();
+//                }
             }
         });
 
@@ -99,14 +117,22 @@ public class Compiler extends JFrame {
         menuBar.addMenuHelpListener(new MenuInterface.MenuHelpListener() {
             @Override
             public void setAboutListener(ActionEvent event) {
-
+                JOptionPane.showMessageDialog(Compiler.this, "@Author 张树荣 何昊东 柯磊\n@Contact 卓越一班, ISS, WHU\n@Date 2016-12-21", "CMM Interpreter", INFORMATION_MESSAGE);
             }
         });
 
         //ui relative
+
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.add(textEditor, BorderLayout.EAST);
+        tokenInfo.setLineWrap(true);
+        tokenInfo.setSize(200, 800);
+        tokenInfo.setVisible(false);
+        contentPanel.add(tokenInfo, BorderLayout.WEST);
+
         setMenuBar(menuBar);
-        setContentPane(textEditor);
-        setTitle("Text Editor Demo");
+        setContentPane(contentPanel);
+        setTitle("Cmm Interpreter");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
