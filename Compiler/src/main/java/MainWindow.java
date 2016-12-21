@@ -147,7 +147,7 @@ class MyThread extends Thread {
 
     @Override
     public void run() {
-        Interpreter interpreter = new Interpreter(code, infoAeraio,codeAeraio,true,true);
+        Interpreter interpreter = new Interpreter(code, infoAeraio,infoAeraio,true,true);
         interpreter.run();
     }
 }

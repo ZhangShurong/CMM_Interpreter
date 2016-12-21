@@ -57,20 +57,6 @@ public class Interpreter {
         Constant.stop = false;
         //lexer = new CMMLexer(new ANTLRInputStream(processStringCat(sourcecode)));
         lexer = new CMMLexer(new ANTLRInputStream(sourcecode));
-        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        CMMParser parser = new CMMParser(tokenStream);
-        ParseTree parseTree = parser.program();
-        ParseTreeWalker walker = new ParseTreeWalker();
-        DefPhaseListener defPhaseListener = new DefPhaseListener(ioInterface, debugIO);
-        walker.walk(defPhaseListener, parseTree);
-        RefPhaseVisitor refPhaseVisitor = new RefPhaseVisitor(defPhaseListener.globals,
-                defPhaseListener.scopes,
-                ioInterface);
-        refPhaseVisitor.visit(parseTree);
-
-        if(showtree) {
-            Trees.inspect(parseTree, parser);
-        }
         if(showtokens){
             List<Token> tokenList = (List<Token>) lexer.getAllTokens();
             int i = -1;
@@ -85,6 +71,21 @@ public class Interpreter {
             }
             lexer.reset();
         }
+        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+        CMMParser parser = new CMMParser(tokenStream);
+        ParseTree parseTree = parser.program();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        DefPhaseListener defPhaseListener = new DefPhaseListener(ioInterface, debugIO);
+        walker.walk(defPhaseListener, parseTree);
+        RefPhaseVisitor refPhaseVisitor = new RefPhaseVisitor(defPhaseListener.globals,
+                defPhaseListener.scopes,
+                ioInterface);
+        refPhaseVisitor.visit(parseTree);
+
+        if(showtree) {
+            Trees.inspect(parseTree, parser);
+        }
+
     }
 
 }
