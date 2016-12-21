@@ -1,7 +1,6 @@
 package ui;
 
 import interpreter.Interpreter;
-import io.IOInterface;
 import util.FileUtil;
 import util.StringUtil;
 
@@ -17,17 +16,17 @@ import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 /**
  * Created by pendragon on 16-12-3.
  */
-public class Compiler extends JFrame implements IOInterface {
+public class Compiler extends JFrame {
     public static final String APP_NAME = "Text Editor Demo";
 
     private TextEditor textEditor;
-    private JTextArea tokenInfo;
+    private TokenWindow tokenInfo;
     private JFileChooser fileChooser;
 
     public Compiler(){
         CompilerMenu menuBar = new CompilerMenu();
         textEditor = new TextEditor();
-        tokenInfo = new JTextArea();
+        tokenInfo = new TokenWindow();
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("."));
 
@@ -36,6 +35,12 @@ public class Compiler extends JFrame implements IOInterface {
             @Override
             public void setNewFileListener(ActionEvent event) {
                 textEditor.textArea.setText(null);
+
+                tokenInfo.clear();
+                if (tokenInfo.isVisible()){
+                    tokenInfo.setVisible(false);
+                    Compiler.this.pack();
+                }
             }
 
             @Override
@@ -105,7 +110,7 @@ public class Compiler extends JFrame implements IOInterface {
                 String str = textEditor.textArea.getText();
                 if (!StringUtil.isEmpty(str)){
                     IOWindow ioWindow = new IOWindow(Compiler.this, "Console");
-                    Interpreter interpreter = new Interpreter(str, ioWindow, Compiler.this);
+                    Interpreter interpreter = new Interpreter(str, ioWindow, tokenInfo);
                     interpreter.setShowtree(true);
                     interpreter.setShowtoken(true);
                     interpreter.run();
@@ -125,8 +130,7 @@ public class Compiler extends JFrame implements IOInterface {
 
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.add(textEditor, BorderLayout.EAST);
-        tokenInfo.setLineWrap(true);
-        tokenInfo.setSize(200, 800);
+        tokenInfo.setSize(300, 800);
         tokenInfo.setVisible(false);
         contentPanel.add(tokenInfo, BorderLayout.WEST);
 
@@ -136,26 +140,6 @@ public class Compiler extends JFrame implements IOInterface {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
-    }
-
-    @Override
-    public String stdin(String tips) {
-        return null;
-    }
-
-    @Override
-    public String stdin() {
-        return null;
-    }
-
-    @Override
-    public void stdout(Object out) {
-        tokenInfo.append(out.toString());
-    }
-
-    @Override
-    public void stderr(Object out) {
-        tokenInfo.append(out.toString());
     }
 
     public static void main(String[] args) {
