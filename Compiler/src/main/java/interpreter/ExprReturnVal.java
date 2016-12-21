@@ -40,10 +40,7 @@ public class ExprReturnVal {
             {
                 return this.value;
             }
-            else
-            {
-                return (Integer)this.value == 0?0:1;
-            }
+            return (Integer)this.value == 0?0:1;
         }
         switch (_type)
         {

@@ -58,13 +58,6 @@ public class Interpreter {
         lexer.reset();
     }
 
-    public String processStringCat(String code){
-        if(code.contains("\"+\"")&&code.contains("write")){
-           code=code.replace("\"+\"","");
-        }
-        return code;
-    }
-
     public void run()
     {
         Constant.stop = false;
