@@ -1,6 +1,7 @@
 package ui;
 
 import interpreter.Interpreter;
+import io.IOInterface;
 import util.FileUtil;
 import util.StringUtil;
 
@@ -16,7 +17,7 @@ import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 /**
  * Created by pendragon on 16-12-3.
  */
-public class Compiler extends JFrame {
+public class Compiler extends JFrame implements IOInterface {
     public static final String APP_NAME = "Text Editor Demo";
 
     private TextEditor textEditor;
@@ -96,20 +97,19 @@ public class Compiler extends JFrame {
 
             @Override
             public void setDebugListener(ActionEvent event) {
-                System.out.println("DEBUG");
                 if (!tokenInfo.isVisible()){
                     tokenInfo.setVisible(true);
                     Compiler.this.pack();
                 }
 
-                tokenInfo.append("DEBUG: HAHAHAH");
-//                String str = textEditor.textArea.getText();
-//                if (!StringUtil.isEmpty(str)){
-//                    IOWindow ioWindow = new IOWindow(Compiler.this, "Console");
-//                    Interpreter interpreter = new Interpreter(str, ioWindow, ioWindow);
-//                    interpreter.run();
-//                    interpreter.showtree();
-//                }
+                String str = textEditor.textArea.getText();
+                if (!StringUtil.isEmpty(str)){
+                    IOWindow ioWindow = new IOWindow(Compiler.this, "Console");
+                    Interpreter interpreter = new Interpreter(str, ioWindow, Compiler.this);
+                    interpreter.setShowtree(true);
+                    interpreter.setShowtoken(true);
+                    interpreter.run();
+                }
             }
         });
 
@@ -136,6 +136,26 @@ public class Compiler extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
+    }
+
+    @Override
+    public String stdin(String tips) {
+        return null;
+    }
+
+    @Override
+    public String stdin() {
+        return null;
+    }
+
+    @Override
+    public void stdout(Object out) {
+        tokenInfo.append(out.toString());
+    }
+
+    @Override
+    public void stderr(Object out) {
+        tokenInfo.append(out.toString());
     }
 
     public static void main(String[] args) {
