@@ -1,7 +1,4 @@
-
-
-
-        double R[6] ;
+    double R[6] ;
 	R[1] = -0.99;
 	R[2] = -1.0;
 	R[3] = 5;
@@ -12,13 +9,12 @@
 	int j;
 	int swap;
         i = 6;
-        while (i <> 1)
+        while (i != 1)
         {
 	    swap = 0;
             j = 1;
             while (j < i-1)
             {
-		//交换数组元素
                 if ( R[j+1] < R[j])
                 {
 		    swap = 1;
