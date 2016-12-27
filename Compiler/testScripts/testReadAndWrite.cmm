@@ -1,5 +1,0 @@
-read i;
-read i[3];
-write (i);
-write (i+1);
-write (i==1);
