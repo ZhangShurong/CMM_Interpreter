@@ -360,7 +360,7 @@ public class ExprCalculator extends CMMBaseVisitor<ReturnValue> {
         ReturnValue returnVal = new ReturnValue();
         returnVal.setType(Type.tBool);
         int res = comp(left,right);
-        if(res == 1 || res == 1)
+        if(res == 0 || res == 1)
             returnVal.setValue(1);
         else
             returnVal.setValue(0);

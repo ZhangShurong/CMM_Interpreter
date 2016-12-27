@@ -246,6 +246,8 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             return null;
         }
         Object value = returnValue.getValue();
+        if(value == null)
+            value = "";
         if(returnValue.getType() == Type.tString)
         {
             io.stdout(value.toString());

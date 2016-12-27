@@ -1,0 +1,158 @@
+int ARR_ROW=20;
+int ARR_COL=40;
+int TAB_N=256;
+double PI=3.1415926535897932384626433832795028841971;
+double SIN_TAB[65];
+
+SIN_TAB[0]=0;
+SIN_TAB[1]=0.0245;
+SIN_TAB[2]=0.0491;
+SIN_TAB[3]=0.0736;
+SIN_TAB[4]=0.0980;
+SIN_TAB[5]=0.1224;
+SIN_TAB[6]=0.1467;
+SIN_TAB[7]=0.1710;
+SIN_TAB[8]=0.1951;
+SIN_TAB[9]=0.2191;
+SIN_TAB[10]=0.2430;
+SIN_TAB[11]=0.2667;
+SIN_TAB[12]=0.2903;
+SIN_TAB[13]=0.3137;
+SIN_TAB[14]=0.3369;
+SIN_TAB[15]=0.3599;
+SIN_TAB[16]=0.3827;
+SIN_TAB[17]=0.4052;
+SIN_TAB[18]=0.4276;
+SIN_TAB[19]=0.4496;
+SIN_TAB[20]=0.4714;
+SIN_TAB[21]=0.4929;
+SIN_TAB[22]=0.5141;
+SIN_TAB[23]=0.5350;
+SIN_TAB[24]=0.5556;
+SIN_TAB[25]=0.5758;
+SIN_TAB[26]=0.5957;
+SIN_TAB[27]=0.6152;
+SIN_TAB[28]=0.6344;
+SIN_TAB[29]=0.6532;
+SIN_TAB[30]=0.6716;
+SIN_TAB[31]=0.6895;
+SIN_TAB[32]=0.7071;
+SIN_TAB[33]=0.7242;
+SIN_TAB[34]=0.7410;
+SIN_TAB[35]=0.7572;
+SIN_TAB[36]=0.7730;
+SIN_TAB[37]=0.7883;
+SIN_TAB[38]=0.8032;
+SIN_TAB[39]=0.8176;
+SIN_TAB[40]=0.8315;
+SIN_TAB[41]=0.8449;
+SIN_TAB[42]=0.8577;
+SIN_TAB[43]=0.8701;
+SIN_TAB[44]=0.8819;
+SIN_TAB[45]=0.8932;
+SIN_TAB[46]=0.9040;
+SIN_TAB[47]=0.9142;
+SIN_TAB[48]=0.9239;
+SIN_TAB[49]=0.9330;
+SIN_TAB[50]=0.9415;
+SIN_TAB[51]=0.9495;
+SIN_TAB[52]=0.9569;
+SIN_TAB[53]=0.9638;
+SIN_TAB[54]=0.9700;
+SIN_TAB[55]=0.9757;
+SIN_TAB[56]=0.9808;
+SIN_TAB[57]=0.9853;
+SIN_TAB[58]=0.9892;
+SIN_TAB[59]=0.9925;
+SIN_TAB[60]=0.9952;
+SIN_TAB[61]=0.9973;
+SIN_TAB[62]=0.9988;
+SIN_TAB[63]=0.9997;
+SIN_TAB[64]=1.0000;
+
+
+double pi;
+read(pi);
+int n;
+double a;
+
+n=pi*TAB_N/2/PI; 
+if(n>=0)
+{
+if(n<=TAB_N/4){
+        a=SIN_TAB[n];
+    }
+    else {
+    	if(n<TAB_N/2) {
+		n= n -TAB_N/4;
+		a=SIN_TAB[TAB_N/4-n];
+		}
+	else {
+		if(n<3*TAB_N/4){
+		n= n -TAB_N/2;
+		a=-SIN_TAB[n];
+		}
+		else {
+			if(n<TAB_N) {
+				n=TAB_N-n;
+				a=-SIN_TAB[n];
+				}
+				else
+				{
+				write("please input a number smaller than 2*pi");
+				}
+		}
+	}
+	}
+	write("sin(pi) is ");
+	write(a);
+}
+else {
+	write("please input a number grater than 0");
+}
+
+read(pi);
+
+double pi2;
+pi2=pi+PI/2;
+if(pi2>2*PI)
+{
+       pi2= pi2 - 2*PI;
+}
+ 
+pi = pi2;
+n=pi*TAB_N/2/PI; 
+if(n>=0)
+{
+	if(n<=TAB_N/4){
+        a=SIN_TAB[n];
+    }
+    else {
+    	if(n<TAB_N/2) {
+		n= n -TAB_N/4;
+		a=SIN_TAB[TAB_N/4-n];
+		}
+	else {
+		if(n<3*TAB_N/4){
+		n= n -TAB_N/2;
+		a=-SIN_TAB[n];
+		}
+		else {
+			if(n<TAB_N) {
+				n=TAB_N-n;
+				a=-SIN_TAB[n];
+				}
+				else
+				{
+				write("please input a number smaller than 2*pi");
+				}
+		}
+	}
+	}
+	write("cos(pi) is ");
+	write(a);
+}
+else {
+	write("please input a number grater than 0");
+}
+
