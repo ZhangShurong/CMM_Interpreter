@@ -12,7 +12,7 @@ import java.util.Stack;
 /**
  * Created by vergil on 2016/12/7.
  */
-public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
+public class RefPhase extends CMMBaseVisitor<ReturnValue> {
 
     private IOInterface io;
 
@@ -22,7 +22,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
     Stack whilestack;
 
-    public RefPhaseVisitor(Scope globals, ParseTreeProperty<Scope> scopes, IOInterface io) {
+    public RefPhase(Scope globals, ParseTreeProperty<Scope> scopes, IOInterface io) {
         this.io = io;
         this.globals = globals;
         this.scopes = scopes;
@@ -30,21 +30,21 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     }
 
     @Override
-    public ExprReturnVal visitProgram(CMMParser.ProgramContext ctx) {
+    public ReturnValue visitProgram(CMMParser.ProgramContext ctx) {
         currentScope = globals;
         super.visitProgram(ctx);
         return null;
     }
 
     @Override
-    public ExprReturnVal visitStmtBlock(CMMParser.StmtBlockContext ctx) {
+    public ReturnValue visitStmtBlock(CMMParser.StmtBlockContext ctx) {
         currentScope = scopes.get(ctx);
         super.visitStmtBlock(ctx);
         currentScope = currentScope.getEnclosingScope();
         return null;
     }
 
-    public ExprReturnVal visitDelassign(CMMParser.DelassignContext ctx)
+    public ReturnValue visitDelassign(CMMParser.DelassignContext ctx)
     {
         super.visitDelassign(ctx);
         Token token = ctx.IDENT().getSymbol();
@@ -54,8 +54,8 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
             Error.undeclared_var_error(io, varName, token.getLine(),token.getCharPositionInLine());
             return null;
         }else{
-            ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
-            ExprReturnVal value = exprComputeVisitor.visit(ctx.expr());
+            ExprCalculator exprCalculator = new ExprCalculator(currentScope, io);
+            ReturnValue value = exprCalculator.visit(ctx.expr());
             Token assign = ctx.EQUAL().getSymbol();
             if(value.getValue(value.getType()) == null)
             {
@@ -70,7 +70,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         return null;
     }
     @Override
-    public ExprReturnVal visitAssignStmt(CMMParser.AssignStmtContext ctx) {
+    public ReturnValue visitAssignStmt(CMMParser.AssignStmtContext ctx) {
         super.visitAssignStmt(ctx);
         if(ctx.value().IDENT() == null){
             //数组
@@ -81,16 +81,16 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 Error.undeclared_var_error(io, varName, token.getLine(), token.getCharPositionInLine());
                 return null;
             }else{
-                ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
-                ExprReturnVal value = exprComputeVisitor.visit(ctx.expr());//得到表达式右边的值
+                ExprCalculator exprCalculator = new ExprCalculator(currentScope, io);
+                ReturnValue value = exprCalculator.visit(ctx.expr());//得到表达式右边的值
 
                 //计算数组index
                 int varIndex;
                 if(ctx.value().array().INTCONSTANT() != null){
                     varIndex = Integer.parseInt(ctx.value().array().INTCONSTANT().getText());
                 }else{
-                    ExprComputeVisitor indexComputeVisitor = new ExprComputeVisitor(currentScope, io);
-                    ExprReturnVal indexValue = indexComputeVisitor.visit(ctx.value().array().expr());
+                    ExprCalculator indexComputeVisitor = new ExprCalculator(currentScope, io);
+                    ReturnValue indexValue = indexComputeVisitor.visit(ctx.value().array().expr());
                     if(indexValue.getType() != Type.tInt){
                         Error.invalid_type_error(io, varName,token.getLine(),token.getCharPositionInLine());
                         return null;
@@ -149,8 +149,8 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                 Error.undeclared_var_error(io, varName, token.getLine(),token.getCharPositionInLine());
                 return null;
             }else{
-                ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
-                ExprReturnVal value = exprComputeVisitor.visit(ctx.expr());
+                ExprCalculator exprCalculator = new ExprCalculator(currentScope, io);
+                ReturnValue value = exprCalculator.visit(ctx.expr());
                 Token assign = ctx.EQUAL().getSymbol();
                 if(value.getValue(value.getType()) == null)
                 {
@@ -166,7 +166,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     }
 
     @Override
-    public ExprReturnVal visitReadStmt(CMMParser.ReadStmtContext ctx) {
+    public ReturnValue visitReadStmt(CMMParser.ReadStmtContext ctx) {
         super.visitReadStmt(ctx);
         Token token;
         String input = io.stdin(ctx.getText());
@@ -237,16 +237,16 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     }
 
     @Override
-    public ExprReturnVal visitWriteStmt(CMMParser.WriteStmtContext ctx) {
+    public ReturnValue visitWriteStmt(CMMParser.WriteStmtContext ctx) {
         super.visitWriteStmt(ctx);
-        ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
+        ExprCalculator exprCalculator = new ExprCalculator(currentScope, io);
         CMMParser.ExprContext m=ctx.expr();
-        ExprReturnVal exprReturnVal =exprComputeVisitor.visit(ctx.expr());
-        if(exprReturnVal==null){
+        ReturnValue returnValue = exprCalculator.visit(ctx.expr());
+        if(returnValue ==null){
             return null;
         }
-        Object value = exprReturnVal.getValue();
-        if(exprReturnVal.getType() == Type.tString)
+        Object value = returnValue.getValue();
+        if(returnValue.getType() == Type.tString)
         {
             io.stdout(value.toString());
         }
@@ -259,7 +259,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
 
 
 
-    public ExprReturnVal visitONLYIF(CMMParser.ONLYIFContext ctx)
+    public ReturnValue visitONLYIF(CMMParser.ONLYIFContext ctx)
     {
         if(isExprTrue(ctx.expr()) == 1){
             if(ctx.stmtBlock() != null)
@@ -270,7 +270,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         return null;
     }
 
-    public ExprReturnVal visitIFELSE(CMMParser.IFELSEContext ctx)
+    public ReturnValue visitIFELSE(CMMParser.IFELSEContext ctx)
     {
         if(isExprTrue(ctx.expr()) == 1) {
             if(ctx.stmtBlock(0)!=null)
@@ -287,7 +287,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         return null;
     }
 
-    public ExprReturnVal visitIFELSELIST(CMMParser.IFELSELISTContext ctx)
+    public ReturnValue visitIFELSELIST(CMMParser.IFELSELISTContext ctx)
     {
         if(isExprTrue(ctx.expr()) == 1)
         {
@@ -302,7 +302,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         return null;
     }
 
-    public ExprReturnVal visitIFELSELISTELSE(CMMParser.IFELSELISTELSEContext ctx)
+    public ReturnValue visitIFELSELISTELSE(CMMParser.IFELSELISTELSEContext ctx)
     {
         if(isExprTrue(ctx.expr()) == 1)
         {
@@ -322,11 +322,11 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         }
         return null;
     }
-    public  ExprReturnVal visitElseiflist(CMMParser.ElseiflistContext ctx)
+    public ReturnValue visitElseiflist(CMMParser.ElseiflistContext ctx)
     {
-        ExprReturnVal exprReturnVal = new ExprReturnVal();
-        exprReturnVal.setType(Type.tBool);
-        exprReturnVal.setValue((int)0);
+        ReturnValue returnValue = new ReturnValue();
+        returnValue.setType(Type.tBool);
+        returnValue.setValue((int)0);
         for(int i = 0; i < ctx.elseif().size(); i++)
         {
             if(isExprTrue(ctx.elseif(i).expr()) == 1)
@@ -335,15 +335,15 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
                     visit(ctx.elseif(i).stmtBlock());
                 else
                     visit(ctx.elseif(i).stmt());
-                exprReturnVal.setValue((int)1);
+                returnValue.setValue((int)1);
                 break;
             }
         }
-        return exprReturnVal;
+        return returnValue;
     }
     private Integer isExprTrue(CMMParser.ExprContext ctx){
-        ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
-        ExprReturnVal value = exprComputeVisitor.visit(ctx);
+        ExprCalculator exprCalculator = new ExprCalculator(currentScope, io);
+        ReturnValue value = exprCalculator.visit(ctx);
         if(value.getType() == Type.tBool){
             return (Integer) value.getValue();
         }else{
@@ -365,7 +365,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
     }
 
     boolean meetBreak=false;
-    public ExprReturnVal visitWhileStmt(CMMParser.WhileStmtContext ctx)
+    public ReturnValue visitWhileStmt(CMMParser.WhileStmtContext ctx)
     {
         whilestack.push(true);
 
@@ -393,7 +393,7 @@ public class RefPhaseVisitor extends CMMBaseVisitor<ExprReturnVal> {
         return null;
     }
 
-    public ExprReturnVal visitBreakStmt(CMMParser.BreakStmtContext ctx)
+    public ReturnValue visitBreakStmt(CMMParser.BreakStmtContext ctx)
     {
 
         whilestack.pop();

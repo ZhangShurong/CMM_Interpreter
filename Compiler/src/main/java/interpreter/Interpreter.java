@@ -75,12 +75,12 @@ public class Interpreter {
         CMMParser parser = new CMMParser(tokenStream);
         ParseTree parseTree = parser.program();
         ParseTreeWalker walker = new ParseTreeWalker();
-        DefPhaseListener defPhaseListener = new DefPhaseListener(ioInterface, debugIO);
-        walker.walk(defPhaseListener, parseTree);
-        RefPhaseVisitor refPhaseVisitor = new RefPhaseVisitor(defPhaseListener.globals,
-                defPhaseListener.scopes,
+        DefPhase defPhase = new DefPhase(ioInterface, debugIO);
+        walker.walk(defPhase, parseTree);
+        RefPhase refPhase = new RefPhase(defPhase.globals,
+                defPhase.scopes,
                 ioInterface);
-        refPhaseVisitor.visit(parseTree);
+        refPhase.visit(parseTree);
 
         if(showtree) {
             Trees.inspect(parseTree, parser);

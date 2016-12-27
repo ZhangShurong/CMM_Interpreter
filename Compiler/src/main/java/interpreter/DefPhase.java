@@ -12,12 +12,12 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 /**
  * Created by vergil on 2016/12/7.
  */
-public class DefPhaseListener extends CMMBaseListener {
+public class DefPhase extends CMMBaseListener {
 
     private IOInterface io;
     private IOInterface debugIO;
 
-    public DefPhaseListener(IOInterface io,IOInterface debugIO){
+    public DefPhase(IOInterface io, IOInterface debugIO){
         this.io = io;
         this.debugIO = debugIO;
     }
@@ -108,34 +108,6 @@ public class DefPhaseListener extends CMMBaseListener {
                 }
 
             }
-            /*
-            ExprComputeVisitor exprComputeVisitor = new ExprComputeVisitor(currentScope, io);
-            ExprReturnVal value = exprComputeVisitor.visit(decl_assignContext.expr());
-            if(value.getType() != (typeStr.equals("int")? Type.tInt : Type.tDouble)){
-                Warning.unmatched_type_warning(io, token.getText(), token.getLine(),token.getCharPositionInLine());
-                if(typeStr.equals("int"))
-                {
-                    if(value.getValue(Type.tInt) == null)
-                        {
-                            Warning.unmatched_type_warning(io, token.getText(), token.getLine(),token.getCharPositionInLine());
-                            return;
-                    }
-                    currentScope.define(new Symbol(token.getText(), Type.tInt,
-                            value.getValue(Type.tInt)));
-                }
-                else
-                {
-                    if(value.getValue(Type.tDouble) == null)
-                    {
-                        Warning.unmatched_type_warning(io, token.getText(), token.getLine(),token.getCharPositionInLine());
-                        return;
-                    }
-                    currentScope.define(new Symbol(token.getText(), Type.tDouble,
-                            value.getValue(Type.tDouble)));
-                }
-                return;
-            }
-            */
 
         }
     }

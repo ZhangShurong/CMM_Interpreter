@@ -1,17 +1,17 @@
 package interpreter;
 
 /**
- * Created by vergil on 2016/12/7.
+ * Created by vergil on 16-12-27.
  */
+public class BaseSymbol {
+    protected Type type;
+    protected Object value;
 
-public class ExprReturnVal {
-    private Type type;
-    private Object value;
+    public BaseSymbol()
+    {
 
-    public ExprReturnVal() {
     }
-
-    public ExprReturnVal(Type type, Object value) {
+    public BaseSymbol(Type type, Object value) {
         this.type = type;
         this.value = value;
     }
