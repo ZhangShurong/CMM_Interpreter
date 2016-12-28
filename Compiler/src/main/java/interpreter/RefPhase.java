@@ -36,10 +36,23 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
         return null;
     }
 
+    boolean meetBreak=false;
     @Override
     public ReturnValue visitStmtBlock(CMMParser.StmtBlockContext ctx) {
         currentScope = scopes.get(ctx);
-        super.visitStmtBlock(ctx);
+//        super.visitStmtBlock(ctx);
+        String c=ctx.getText();
+        int len=appearNumber(c,";");
+        if(c.contains("break")){
+            for(int i=0;i<len;i++){
+                if(!meetBreak){
+                    super.visit(ctx.stmt(i));
+                }
+            }
+        }else {
+            super.visitStmtBlock(ctx);
+        }
+
         currentScope = currentScope.getEnclosingScope();
         return null;
     }
@@ -366,7 +379,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
         return count;
     }
 
-    boolean meetBreak=false;
+
     public ReturnValue visitWhileStmt(CMMParser.WhileStmtContext ctx)
     {
         whilestack.push(true);
@@ -382,11 +395,15 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             }else{
                 visit(ctx.stmtBlock());
 //                String c=ctx.stmtBlock().getText();
-//                int len=appearNumber(c,";");
-//                for(int i=0;i<len;i++){
-//                    if(!meetBreak){
-//                        visit(ctx.stmtBlock().stmt(i));
+//                if(c.contains("break")){
+//                    int len=appearNumber(c,";");
+//                    for(int i=0;i<len;i++){
+//                        if(!meetBreak){
+//                            visit(ctx.stmtBlock().stmt(i));
+//                        }
 //                    }
+//                }else {
+//                    visit(ctx.stmtBlock());
 //                }
             }
             if(!(boolean)whilestack.peek())
