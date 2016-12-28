@@ -101,6 +101,11 @@ public class ExprCalculator extends CMMBaseVisitor<ReturnValue> {
         Token op = ctx.DIV().getSymbol();
         ReturnValue leftValue = visit(ctx.mulDiv());
         ReturnValue rightValue = visit(ctx.unaryMinus());
+        if((Integer)rightValue.getValue(Type.tInt) == 0)
+        {
+            Error.divide_by_zero_error(io,op.getText(),op.getLine(),op.getCharPositionInLine());
+            return null;
+        }
         ReturnValue returnVal = new ReturnValue();
 
         if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tInt){
@@ -116,14 +121,8 @@ public class ExprCalculator extends CMMBaseVisitor<ReturnValue> {
             returnVal.setType(Type.tInt);
             returnVal.setValue((Integer)leftValue.getValue() / (Integer) rightValue.getValue());
         }else{
-            io.stderr("ERROR: unmatched or uncast type on two side of <"
-                    + op.getText()
-                    + "> in line "
-                    + op.getLine()
-                    +":"
-                    + op.getCharPositionInLine());
+            Error.unmatched_type_error(io,op.getText(),op.getLine(),op.getCharPositionInLine());
         }
-
         return returnVal;
     }
 
@@ -157,7 +156,7 @@ public class ExprCalculator extends CMMBaseVisitor<ReturnValue> {
         if(varSymbol != null ){
             return new ReturnValue(varSymbol.getType(), varSymbol.getValue());
         }else{
-            io.stderr("ERROR");
+            Error.undeclared_var_error(io,indent.getText(), indent.getLine(),indent.getCharPositionInLine());
             return null;
         }
     }

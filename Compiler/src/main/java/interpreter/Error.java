@@ -82,5 +82,16 @@ public class Error {
                 + offset
                 +"\n");
     }
+    public static void divide_by_zero_error(IOInterface io, String varname, int line, int offset)
+    {
+        io.stderr("error: divide by zore '"
+                + varname
+                + "'"
+                +"\n\tin line "
+                + line
+                +":"
+                + offset
+                +"\n");
+    }
 
 }
