@@ -14,7 +14,7 @@ else
    a=5;
    write(a);
 } 
-write(r);
+//write(r);
 int aa = 3;
 if(aa < 4)
 	if(2 < aa)
