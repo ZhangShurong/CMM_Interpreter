@@ -67,7 +67,6 @@ public class Interpreter {
                     debugIO.stdout("line " + i + " : \n");
                 }
                 debugIO.stdout("\tText : " + token.getText() + "\tType : " + token.getType() + "\n");
-
             }
             lexer.reset();
         }
@@ -77,6 +76,7 @@ public class Interpreter {
         ParseTreeWalker walker = new ParseTreeWalker();
         DefPhase defPhase = new DefPhase(ioInterface, debugIO);
         walker.walk(defPhase, parseTree);
+
         RefPhase refPhase = new RefPhase(defPhase.globals,
                 defPhase.scopes,
                 ioInterface);

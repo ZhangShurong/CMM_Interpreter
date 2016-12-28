@@ -1,4 +1,4 @@
-// Generated from D:/GitOSChina/CMM_Interpreter/Compiler/src/main\CMM.g4 by ANTLR 4.5.3
+// Generated from C:/Users/kelei/Desktop/newest/CMM_Interpreter/CMM_Interpreter/Compiler/src/main\CMM.g4 by ANTLR 4.5.3
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -94,6 +94,18 @@ public class CMMBaseListener implements CMMListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitTypeString(CMMParser.TypeStringContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTypeBool(CMMParser.TypeBoolContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTypeBool(CMMParser.TypeBoolContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

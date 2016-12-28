@@ -57,13 +57,13 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             ExprCalculator exprCalculator = new ExprCalculator(currentScope, io);
             ReturnValue value = exprCalculator.visit(ctx.expr());
             Token assign = ctx.EQUAL().getSymbol();
-            if(value.getValue(value.getType()) == null)
+            if(value == null || value.getType() == null || value.getValue(value.getType()) == null)
             {
+                Error.unmatched_type_error(io, assign.getText(),assign.getLine(),assign.getCharPositionInLine());
                 Error.unmatched_type_error(io, assign.getText(),assign.getLine(),assign.getCharPositionInLine());
                 return null;
             }
             else {
-
                 var.setValue(value.getValue(var.getType()));
             }
         }
@@ -380,13 +380,14 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             if(ctx.stmt() != null){
                 visit(ctx.stmt());
             }else{
-                String c=ctx.stmtBlock().getText();
-                int len=appearNumber(c,";");
-                for(int i=0;i<len;i++){
-                    if(!meetBreak){
-                        visit(ctx.stmtBlock().stmt(i));
-                    }
-                }
+                visit(ctx.stmtBlock());
+//                String c=ctx.stmtBlock().getText();
+//                int len=appearNumber(c,";");
+//                for(int i=0;i<len;i++){
+//                    if(!meetBreak){
+//                        visit(ctx.stmtBlock().stmt(i));
+//                    }
+//                }
             }
             if(!(boolean)whilestack.peek())
                 break;

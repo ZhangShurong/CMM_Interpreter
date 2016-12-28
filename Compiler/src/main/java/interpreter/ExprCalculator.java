@@ -152,8 +152,21 @@ public class ExprCalculator extends CMMBaseVisitor<ReturnValue> {
     {
         Token indent = ctx.IDENT().getSymbol();
         String varname = indent.getText();
+        if(varname.equals("true"))
+        {
+            return new ReturnValue(Type.tBool, 1);
+        }
+        if(varname.equals("false"))
+        {
+            return new ReturnValue(Type.tBool, 0);
+        }
         Symbol varSymbol = currentScope.resolve(varname);
         if(varSymbol != null ){
+            if(varSymbol.getValue() == null)
+            {
+                Error.uninitialized_error(io,indent.getText(),indent.getLine(),indent.getCharPositionInLine());
+                return null;
+            }
             return new ReturnValue(varSymbol.getType(), varSymbol.getValue());
         }else{
             Error.undeclared_var_error(io,indent.getText(), indent.getLine(),indent.getCharPositionInLine());
@@ -163,29 +176,42 @@ public class ExprCalculator extends CMMBaseVisitor<ReturnValue> {
 
     public ReturnValue visitToConstant(CMMParser.ToConstantContext ctx)
     {
-        if(ctx.constant().INTCONSTANT() != null){
-            return new ReturnValue(Type.tInt,
-                    Integer.valueOf(ctx.constant().INTCONSTANT().getText()));
-        }
-        else if(ctx.constant().DOUBLECONSTANT() != null) {
-            return new ReturnValue(Type.tDouble,
-                    Double.valueOf(ctx.constant().DOUBLECONSTANT().getText()));
-        }
-        else if(ctx.constant().FALSE() != null) {
-            return new ReturnValue(Type.tInt,0);
-        }
-        else if(ctx.constant().TRUE() != null) {
-            return new ReturnValue(Type.tInt,1);
-        }
-        else if(ctx.constant().STRINGCONSTANT() != null)
-        {
-            String str = ctx.constant().STRINGCONSTANT().toString();
-            return new ReturnValue(Type.tString, str.substring(1,str.length()-1));
-        }
-        else{
-            io.stderr("ERROR");
-            return new ReturnValue(Type.tInt,0);
-        }
+
+            if(ctx.constant().INTCONSTANT() != null){
+                try {
+                    return new ReturnValue(Type.tInt,
+                            Integer.valueOf(ctx.constant().INTCONSTANT().getText()));
+                }catch (NumberFormatException e) {
+                    Token token = ctx.constant().INTCONSTANT().getSymbol();
+                    Error.variableoverflow_error(io, ctx.getText(),token.getLine(),token.getCharPositionInLine());
+                }
+            }
+            else if(ctx.constant().DOUBLECONSTANT() != null) {
+                Token token = ctx.constant().DOUBLECONSTANT().getSymbol();
+                try {
+                    return new ReturnValue(Type.tDouble,
+                            Double.valueOf(ctx.constant().DOUBLECONSTANT().getText()));
+                }catch (NumberFormatException e)
+                {
+                    Error.variableoverflow_error(io, ctx.getText(),token.getLine(),token.getCharPositionInLine());
+                }
+            }
+            else if(ctx.constant().FALSE() != null) {
+                return new ReturnValue(Type.tInt,0);
+            }
+            else if(ctx.constant().TRUE() != null) {
+                return new ReturnValue(Type.tInt,1);
+            }
+            else if(ctx.constant().STRINGCONSTANT() != null)
+            {
+                String str = ctx.constant().STRINGCONSTANT().toString();
+                return new ReturnValue(Type.tString, str.substring(1,str.length()-1));
+            }
+            else{
+                io.stderr("ERROR");
+                return new ReturnValue(Type.tInt,0);
+            }
+        return null;
     }
     public ReturnValue visitToArray(CMMParser.ToArrayContext ctx)
     {

@@ -1,4 +1,4 @@
-package gen;// Generated from D:/GitOSChina/CMM_Interpreter/Compiler/src/main\CMM.g4 by ANTLR 4.5.3
+package gen;// Generated from C:/Users/kelei/Desktop/newest/CMM_Interpreter/CMM_Interpreter/Compiler/src/main\CMM.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -59,6 +59,13 @@ public class CMMBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CM
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitTypeString(CMMParser.TypeStringContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitTypeBool(CMMParser.TypeBoolContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

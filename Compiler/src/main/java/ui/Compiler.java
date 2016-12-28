@@ -1,6 +1,7 @@
 package ui;
 
 import interpreter.Interpreter;
+import interpreter.StopException;
 import util.FileUtil;
 import util.StringUtil;
 

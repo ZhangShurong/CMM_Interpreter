@@ -1,4 +1,4 @@
-// Generated from D:/GitOSChina/CMM_Interpreter/Compiler/src/main\CMM.g4 by ANTLR 4.5.3
+// Generated from C:/Users/kelei/Desktop/newest/CMM_Interpreter/CMM_Interpreter/Compiler/src/main\CMM.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -82,6 +82,18 @@ public interface CMMListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTypeString(CMMParser.TypeStringContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code TypeBool}
+	 * labeled alternative in {@link CMMParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeBool(CMMParser.TypeBoolContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code TypeBool}
+	 * labeled alternative in {@link CMMParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeBool(CMMParser.TypeBoolContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CMMParser#array}.
 	 * @param ctx the parse tree

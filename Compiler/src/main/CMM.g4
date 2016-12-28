@@ -20,6 +20,7 @@ varDecl : type varList SEMICOLON;
 type : INT #TypeInt
     |DOUBLE #TypeDouble
     | STRING #TypeString
+    | BOOlEAN #TypeBool
     ;
 //    |array #ToArray
 //    ;
@@ -100,7 +101,7 @@ BREAK : 'break' ;
 INT : 'int' ;
 DOUBLE : 'double' ;
 STRING : 'string';
-
+BOOlEAN:'bool';
 COMMA : ',' ;
 
 //----------------------------

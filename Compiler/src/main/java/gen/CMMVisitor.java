@@ -1,4 +1,4 @@
-package gen;// Generated from D:/GitOSChina/CMM_Interpreter/Compiler/src/main\CMM.g4 by ANTLR 4.5.3
+package gen;// Generated from C:/Users/kelei/Desktop/newest/CMM_Interpreter/CMM_Interpreter/Compiler/src/main\CMM.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -54,6 +54,13 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitTypeString(CMMParser.TypeStringContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code TypeBool}
+	 * labeled alternative in {@link CMMParser#type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeBool(CMMParser.TypeBoolContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CMMParser#array}.
 	 * @param ctx the parse tree

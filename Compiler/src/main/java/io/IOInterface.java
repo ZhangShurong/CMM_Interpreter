@@ -14,5 +14,4 @@ public interface IOInterface {
     void stdout(Object out);
 
     void stderr(Object out);
-
 }
