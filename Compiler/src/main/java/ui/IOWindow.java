@@ -27,6 +27,11 @@ public class IOWindow extends JFrame implements IOInterface {
     }
 
     @Override
+    public void close(){
+        this.dispose();
+    }
+
+    @Override
     public String stdin() {
         return JOptionPane.showInputDialog("请输入");
     }

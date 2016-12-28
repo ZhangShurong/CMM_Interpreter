@@ -29,6 +29,11 @@ public class TokenWindow extends JPanel implements IOInterface {
     }
 
     @Override
+    public void close() {
+
+    }
+
+    @Override
     public String stdin(String tips) {
         return null;
     }

@@ -5,6 +5,8 @@ package io;
  */
 public interface IOInterface {
 
+    void close();
+
     String stdin(String tips);
 
     String stdin();

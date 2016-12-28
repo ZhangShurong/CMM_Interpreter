@@ -8,6 +8,11 @@ import javax.swing.*;
 public class ConsoleIO implements IOInterface {
 
     @Override
+    public void close() {
+
+    }
+
+    @Override
     public String stdin(String tips) {
         return null;
     }

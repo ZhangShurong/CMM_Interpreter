@@ -23,6 +23,8 @@ public class Compiler extends JFrame {
     private TokenWindow tokenInfo;
     private JFileChooser fileChooser;
 
+    private IOWindow ioWindow;
+
     public Compiler(){
         CompilerMenu menuBar = new CompilerMenu();
         textEditor = new TextEditor();
@@ -41,6 +43,9 @@ public class Compiler extends JFrame {
                     tokenInfo.setVisible(false);
                     Compiler.this.pack();
                 }
+
+                if (ioWindow != null)
+                    ioWindow.close();
             }
 
             @Override
@@ -49,6 +54,15 @@ public class Compiler extends JFrame {
                 if (i == JFileChooser.APPROVE_OPTION) {
                     File f = fileChooser.getSelectedFile();
                     try {
+                        tokenInfo.clear();
+                        if (tokenInfo.isVisible()){
+                            tokenInfo.setVisible(false);
+                            Compiler.this.pack();
+                        }
+
+                        if (ioWindow != null)
+                            ioWindow.close();
+
                         setTitle(APP_NAME + " : " + (f.getName().length() > 13 ? f.getName() : f.getName().substring(0, 10) + "..."));
                         FileReader fileReader = new FileReader(f);
                         textEditor.textArea.read(fileReader, null);
@@ -94,7 +108,9 @@ public class Compiler extends JFrame {
             public void setRunListener(ActionEvent event) {
                 String str = textEditor.textArea.getText();
                 if (!StringUtil.isEmpty(str)){
-                    IOWindow ioWindow = new IOWindow(Compiler.this, "Console");
+                    if (ioWindow != null)
+                        ioWindow.close();
+                    ioWindow = new IOWindow(Compiler.this, "Console");
                     Interpreter interpreter = new Interpreter(str, ioWindow, ioWindow);
                     interpreter.run();
                 }
@@ -109,7 +125,9 @@ public class Compiler extends JFrame {
 
                 String str = textEditor.textArea.getText();
                 if (!StringUtil.isEmpty(str)){
-                    IOWindow ioWindow = new IOWindow(Compiler.this, "Console");
+                    if (ioWindow != null)
+                        ioWindow.close();
+                    ioWindow = new IOWindow(Compiler.this, "Console");
                     Interpreter interpreter = new Interpreter(str, ioWindow, tokenInfo);
                     interpreter.setShowtree(true);
                     interpreter.setShowtoken(true);
@@ -137,6 +155,7 @@ public class Compiler extends JFrame {
         setMenuBar(menuBar);
         setContentPane(contentPanel);
         setTitle("Cmm Interpreter");
+        setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
