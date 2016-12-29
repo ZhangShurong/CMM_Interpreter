@@ -1,7 +1,6 @@
 package ui;
 
 import interpreter.Interpreter;
-import interpreter.StopException;
 import util.FileUtil;
 import util.StringUtil;
 
@@ -26,7 +25,7 @@ public class Compiler extends JFrame {
 
     private IOWindow ioWindow;
 
-    public Compiler(){
+    public Compiler() {
         CompilerMenu menuBar = new CompilerMenu();
         textEditor = new TextEditor();
         tokenInfo = new TokenWindow();
@@ -40,7 +39,7 @@ public class Compiler extends JFrame {
                 textEditor.textArea.setText(null);
 
                 tokenInfo.clear();
-                if (tokenInfo.isVisible()){
+                if (tokenInfo.isVisible()) {
                     tokenInfo.setVisible(false);
                     Compiler.this.pack();
                 }
@@ -56,7 +55,7 @@ public class Compiler extends JFrame {
                     File f = fileChooser.getSelectedFile();
                     try {
                         tokenInfo.clear();
-                        if (tokenInfo.isVisible()){
+                        if (tokenInfo.isVisible()) {
                             tokenInfo.setVisible(false);
                             Compiler.this.pack();
                         }
@@ -64,7 +63,7 @@ public class Compiler extends JFrame {
                         if (ioWindow != null)
                             ioWindow.close();
 
-                        setTitle(APP_NAME + " : " + (f.getName().length() > 13 ? f.getName() : f.getName().substring(0, 10) + "..."));
+                        setTitle(APP_NAME + " : " + (f.getName().length() > 25 ? f.getName().substring(0, 25) + "..." : f.getName()));
                         FileReader fileReader = new FileReader(f);
                         textEditor.textArea.read(fileReader, null);
                     } catch (Exception ex) {
@@ -77,7 +76,7 @@ public class Compiler extends JFrame {
             public void setSaveFileListener(ActionEvent event) {
                 //check if default name is duplicated
                 File file = new File("untitled1.cmm");
-                while (FileUtil.isDuplicate(file, fileChooser.getCurrentDirectory())){
+                while (FileUtil.isDuplicate(file, fileChooser.getCurrentDirectory())) {
                     String tem = file.getName().split("\\.")[0];
                     file = new File("untitled" + (Integer.parseInt(tem.substring(8, tem.length())) + 1) + ".cmm");
                 }
@@ -108,7 +107,7 @@ public class Compiler extends JFrame {
             @Override
             public void setRunListener(ActionEvent event) {
                 String str = textEditor.textArea.getText();
-                if (!StringUtil.isEmpty(str)){
+                if (!StringUtil.isEmpty(str)) {
                     if (ioWindow != null)
                         ioWindow.close();
                     ioWindow = new IOWindow(Compiler.this, "Console");
@@ -119,13 +118,13 @@ public class Compiler extends JFrame {
 
             @Override
             public void setDebugListener(ActionEvent event) {
-                if (!tokenInfo.isVisible()){
+                if (!tokenInfo.isVisible()) {
                     tokenInfo.setVisible(true);
                     Compiler.this.pack();
                 }
 
                 String str = textEditor.textArea.getText();
-                if (!StringUtil.isEmpty(str)){
+                if (!StringUtil.isEmpty(str)) {
                     if (ioWindow != null)
                         ioWindow.close();
                     ioWindow = new IOWindow(Compiler.this, "Console");
@@ -164,11 +163,10 @@ public class Compiler extends JFrame {
 
     public static void main(String[] args) {
         // Start all Swing applications on the EDT.
-        try{
+        try {
             UIManager.setLookAndFeel(UIManager.
                     getSystemLookAndFeelClassName());
-        }
-        catch (Exception ignored) {
+        } catch (Exception ignored) {
         }
         SwingUtilities.invokeLater(() -> new Compiler().setVisible(true));
     }
