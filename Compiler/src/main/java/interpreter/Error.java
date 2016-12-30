@@ -1,108 +1,134 @@
 package interpreter;
 
 import io.IOInterface;
+import org.antlr.v4.runtime.Token;
 
 /**
  * Created by vergil on 2016/12/15.
  */
 public class Error {
 
-    public static void conflict_declar_error(IOInterface io, String varname, int line, int offset) {
+    public static void conflict_declar_error(IOInterface io, Token token) {
         io.stderr("error:conflicting declaration variable in '"
-                + varname
+                + token.getText()
                 + "'\n\tin line "
-                + line
+                + token.getLine()
                 +":"
-                + offset
+                + token.getCharPositionInLine()
                 +"\n");
     }
-    public static void undeclared_var_error(IOInterface io, String varname, int line, int offset) {
+    public static void undeclared_var_error(IOInterface io, Token token) {
         io.stderr("error:'"
-                        + varname
+                        + token.getText()
                 +"'undeclared in '"
                 + "'\n\tin line "
-                + line
+                + token.getLine()
                 +":"
-                + offset
+                + token.getCharPositionInLine()
                 +"\n");
     }
-    public static void invalid_type_error(IOInterface io, String varname, int line, int offset) {
+    public static void invalid_type_error(IOInterface io, Token token) {
         io.stderr("error:invalid types for array '"
-                + varname
+                + token.getText()
                 +"'in '"
                 + "'\n\tin line "
-                + line
+                + token.getLine()
                 +":"
-                + offset
+                + token.getCharPositionInLine()
                 +"\n");
     }
-    public static void unmatched_type_error(IOInterface io, String varname, int line, int offset){
+    public static void unmatched_type_error(IOInterface io, Token token){
         io.stderr("error: unmatched type in '"
-                + varname
+                + token.getText()
                 + "'\n\tin line "
-                + line
+                + token.getLine()
                 +":"
-                + offset
+                + token.getCharPositionInLine()
                 +"\n");
     }
-    public static void unsupport_array_type_error(IOInterface io, String varname, int line, int offset) {
+    public static void unsupport_array_type_error(IOInterface io, Token token) {
         io.stderr("error: unsupported array type in '"
-                + varname
+                + token.getText()
                 + "'"
                 +"\n\tin line "
-                + line
+                + token.getLine()
                 +":"
-                + offset
+                + token.getCharPositionInLine()
                 +"\n");
     }
-    public static void fatal_error(IOInterface io, String varname, int line, int offset) {
+    public static void fatal_error(IOInterface io, Token token) {
         io.stderr("error: fatal error in '"
-                + varname
+                + token.getText()
                 + "'"
                 +"\n\tin line "
-                + line
+                + token.getLine()
                 +":"
-                + offset
+                + token.getCharPositionInLine()
                 +"\n");
     }
-    public  static  void out_of_boundary_error(IOInterface io, String varname, int line, int offset) {
+    public  static  void out_of_boundary_error(IOInterface io, Token token) {
         io.stderr("error: index out of boundary of array '"
-                + varname
+                + token.getText()
                 + "'"
                 +"\n\tin line "
-                + line
+                + token.getLine()
                 +":"
-                + offset
+                + token.getCharPositionInLine()
                 +"\n");
     }
-    public static void divide_by_zero_error(IOInterface io, String varname, int line, int offset)  {
+    public static void divide_by_zero_error(IOInterface io, Token token)  {
         io.stderr("error: divide by zore '"
-                + varname
+                + token.getText()
                 + "'"
                 +"\n\tin line "
-                + line
+                + token.getLine()
                 +":"
-                + offset
+                + token.getCharPositionInLine()
                 +"\n");
     }
-    public static void uninitialized_error(IOInterface io, String varname, int line, int offset) {
+    public static void uninitialized_error(IOInterface io, Token token) {
         io.stderr("error: uninitialized variable '"
-                + varname
+                + token.getText()
                 + "'"
                 +"\n\tin line "
-                + line
+                + token.getLine()
                 +":"
-                + offset
+                + token.getCharPositionInLine()
                 +"\n");
     }
-    public static void variableoverflow_error(IOInterface io, String varname, int line, int offset){
+    public static void variableoverflow_error(IOInterface io, Token token){
         io.stderr("error: variable overflow '"
-                + varname
+                + token.getText()
                 + "'"
                 +"\n\tin line "
-                + line
+                + token.getLine()
                 +":"
-                + offset
+                + token.getCharPositionInLine()
                 +"\n");
     }
+    public static void fatal_unknown_error(IOInterface io, Token token)
+    {
+        io.stderr("fatal error: unknown error '"
+                + token.getText()
+                + "'"
+                +"\n\tin line "
+                + token.getLine()
+                +":"
+                + token.getCharPositionInLine()
+                +"\n");
+        throw new RuntimeException("fatal error: unknown error");
+    }
+    public static void fatal_null_error(IOInterface io, Token token)
+    {
+        io.stderr("fatal error: null error '"
+                + token.getText()
+                + "'"
+                +"\n\tin line "
+                + token.getLine()
+                +":"
+                + token.getCharPositionInLine()
+                +"\n");
+        throw new RuntimeException("fatal error: null value error");
+    }
+
 }

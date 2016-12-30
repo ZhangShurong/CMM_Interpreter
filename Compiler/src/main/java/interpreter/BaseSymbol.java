@@ -9,7 +9,6 @@ public class BaseSymbol {
 
     public BaseSymbol()
     {
-
     }
     public BaseSymbol(Type type, Object value) {
         this.type = type;

@@ -3,6 +3,7 @@ package interpreter;
 import gen.CMMLexer;
 import gen.CMMParser;
 import io.IOInterface;
+import javafx.scene.paint.Stop;
 import org.antlr.v4.gui.Trees;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -42,11 +43,7 @@ public class Interpreter {
     {
         this.showtree = showtree;
     }
-    public void stop()
 
-    {
-        Constant.stop = true;
-    }
     public void setShowtoken(boolean showtokens)
     {
         this.showtokens = showtokens;
@@ -54,7 +51,6 @@ public class Interpreter {
 
     public void run()
     {
-        Constant.stop = false;
         //lexer = new CMMLexer(new ANTLRInputStream(processStringCat(sourcecode)));
         lexer = new CMMLexer(new ANTLRInputStream(sourcecode));
         if(showtokens){
@@ -72,19 +68,21 @@ public class Interpreter {
         }
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         CMMParser parser = new CMMParser(tokenStream);
-        ParseTree parseTree = parser.program();
-        ParseTreeWalker walker = new ParseTreeWalker();
-        DefPhase defPhase = new DefPhase(ioInterface, debugIO);
-        walker.walk(defPhase, parseTree);
 
-        RefPhase refPhase = new RefPhase(defPhase.globals,
-                defPhase.scopes,
-                ioInterface);
-        refPhase.visit(parseTree);
+    parser.removeErrorListeners();
+    parser.addErrorListener(new CMMErrorListener(ioInterface));//注册监听器
+    parser.setErrorHandler(new CMMErrorStrategy());
+    parser.addParseListener(new DefPhase(ioInterface));
 
-        if(showtree) {
-            Trees.inspect(parseTree, parser);
-        }
+    ParseTree parseTree = parser.program();
+    RefPhase refPhase = new RefPhase(ioInterface);
+
+    refPhase.visit(parseTree);
+
+
+    if (showtree) {
+        Trees.inspect(parseTree, parser);
+    }
 
     }
 
