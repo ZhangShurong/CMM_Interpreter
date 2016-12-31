@@ -291,7 +291,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
     public ReturnValue visitReadStmt(CMMParser.ReadStmtContext ctx) {
         super.visitReadStmt(ctx);
         Token token;
-
+        String input = "";
         if(ctx.IDENT() == null){
             token = ctx.array().IDENT().getSymbol();
             String varName = token.getText();
@@ -314,7 +314,12 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                 //TODO 当value为空时没有测试
                 int[] varArray = (int[]) var.getValue();
                 if(0 <= varIndex && varIndex < varArray.length){
-                    String input = io.stdin("请输入一个整数");
+                    input = io.stdin("请输入一个整数");
+                    if(input == null)
+                    {
+                        io.stderr("You canceled the input, input was set to ZERO\n");
+                        input = "0";
+                    }
                     int in;
                     try {
                         in = Integer.parseInt(input);
@@ -333,7 +338,12 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                 double[] varArray = (double[]) var.getValue();
 
                 if(0 <= varIndex && varIndex < varArray.length){
-                    String input = io.stdin("请输入一个双精度数");
+                    input = io.stdin("请输入一个双精度数");
+                    if(input == null)
+                    {
+                        io.stderr("You canceled the input, input was set to ZERO\n");
+                        input = "0.0";
+                    }
                     Double in;
                     try {
                         in = Double.parseDouble(input);
@@ -361,7 +371,12 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                 return null;
             }
             if(var.getType() == Type.tInt){
-                String input = io.stdin("请输入一个整数");
+                input = io.stdin("请输入一个整数");
+                if(input == null)
+                {
+                    io.stderr("You canceled the input, input was set to ZERO\n");
+                    input = "0";
+                }
                 int in;
                 try {
                  in = Integer.parseInt(input);
@@ -373,7 +388,12 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                 var.setValue(in);
             }
             else if(var.getType() == Type.tDouble){
-                String input = io.stdin("请输入一个浮点数");
+                input = io.stdin("请输入一个浮点数");
+                if(input == null)
+                {
+                    io.stderr("You canceled the input, input was set to ZERO\n");
+                    input = "0";
+                }
                 Double in;
                 try {
                     in = Double.parseDouble(input);
@@ -387,12 +407,22 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             }
             else if(var.getType() == Type.tString)
             {
-                String input = io.stdin("请输入：");
+                input = io.stdin("请输入：");
+                if(input == null)
+                {
+                    io.stderr("You canceled the input, input was set to NULL\n");
+                    input = "";
+                }
                 var.setValue("\"" + input + "\"");
             }
             else if (var.getType() == Type.tBool)
             {
-                String input = io.stdin("请输入一个0或1");
+                input = io.stdin("请输入一个0或1");
+                if(input == null)
+                {
+                    io.stderr("You canceled the input, input was set to ZERO\n");
+                    input = "0";
+                }
                 int in;
                 try {
                     in = Integer.parseInt(input);
