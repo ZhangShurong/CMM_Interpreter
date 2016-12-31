@@ -7,14 +7,14 @@ import org.antlr.v4.runtime.Token;
  * Created by vergil on 2016/12/15.
  */
 public class Warning {
-    public static void unmatched_type_warning(IOInterface io, String varname, int line, int offset)
+    public static void unmatched_type_warning(IOInterface io,Token token)
     {
         io.stderr("warning: unmatched type in '"
-                + varname
+                + token.getText()
                 + "'\n\tin line "
-                + line
+                + token.getLine()
                 +":"
-                + offset
+                + token.getCharPositionInLine()
                 +"\n");
     }
     public static void force_zore_warning(IOInterface io, Token token)

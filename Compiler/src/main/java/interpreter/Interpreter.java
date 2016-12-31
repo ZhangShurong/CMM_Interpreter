@@ -1,5 +1,6 @@
 package interpreter;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import gen.CMMLexer;
 import gen.CMMParser;
 import io.IOInterface;
@@ -11,7 +12,9 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by vergil on 2016/12/7.
@@ -25,6 +28,7 @@ public class Interpreter {
     private CMMLexer lexer;
     private boolean showtree = false;
     private boolean showtokens = false;
+
 
     public Interpreter(String sourcecode,IOInterface ioInterface, IOInterface debugIO, boolean showtokens, boolean showtree)
     {
@@ -51,6 +55,7 @@ public class Interpreter {
 
     public void run()
     {
+        Error.init_keyword_hashMap();
         //lexer = new CMMLexer(new ANTLRInputStream(processStringCat(sourcecode)));
         lexer = new CMMLexer(new ANTLRInputStream(sourcecode));
         if(showtokens){
@@ -71,7 +76,7 @@ public class Interpreter {
 
     parser.removeErrorListeners();
     parser.addErrorListener(new CMMErrorListener(ioInterface));//注册监听器
-    parser.setErrorHandler(new CMMErrorStrategy());
+    parser.setErrorHandler(new CMMErrorStrategy(ioInterface));
     parser.addParseListener(new DefPhase(ioInterface));
 
     ParseTree parseTree = parser.program();

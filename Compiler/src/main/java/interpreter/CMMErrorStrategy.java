@@ -1,5 +1,6 @@
 package interpreter;
 
+import io.IOInterface;
 import org.antlr.v4.runtime.*;
 
 /**
@@ -11,8 +12,18 @@ public class CMMErrorStrategy extends DefaultErrorStrategy {
      * rule function catches. Exception e is the "cause" of the
      * RuntimeException.
      */
+    IOInterface io;
+    public CMMErrorStrategy(IOInterface io)
+    {this.io = io;}
+
     @Override
     public void recover(Parser recognizer, RecognitionException e) {
+        if(recognizer != null) {
+            io.stderr(recognizer.toString());
+            io.stderr("InputMismatchException caught: please check the source code!! at line " + recognizer.getCurrentToken().getLine());
+        }
+        else
+            io.stderr("InputMismatchException caught: please check the source code!!");
         throw new RuntimeException(e);
     }
 
@@ -23,6 +34,9 @@ public class CMMErrorStrategy extends DefaultErrorStrategy {
     public Token recoverInline(Parser recognizer)
             throws RecognitionException
     {
+        io.stderr("Fatal Error: InputMismatchException caught: please check the source code!!");
+        if(recognizer != null)
+            io.stderr(recognizer.toString());
         throw new RuntimeException(new InputMismatchException(recognizer));
     }
     /** Make sure we don't attempt to recover from problems in subrules. */

@@ -28,8 +28,9 @@ public class CMMErrorListener extends BaseErrorListener{
     {
         List<String> stack = ((Parser)recognizer).getRuleInvocationStack();
         Collections.reverse(stack);
-        io.stderr("rule stack: "+stack+"\n");
-        io.stderr("line "+line+":"+charPositionInLine+" at "+
+        //io.stderr("rule stack: "+stack+"\n");
+        io.stderr("line "+line+":"+charPositionInLine+" at "+ ": "+msg+"\n");
+        System.out.print("line "+line+":"+charPositionInLine+" at "+
                 offendingSymbol+": "+msg+"\n");
     }
 }

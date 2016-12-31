@@ -27,12 +27,36 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
     SymbolTab symbolTab;
 
     Stack whilestack;
+    boolean meetBreak=false;
 
     public RefPhase(IOInterface io) {
         this.io = io;
         whilestack = new Stack();
     }
 
+    private Integer isExprTrue(CMMParser.ExprContext ctx){
+        ReturnValue value = visit(ctx);
+        if(value == null)
+        {
+            Error.fatal_null_error(io,ctx.getStart());
+        }
+        if(value.getValue() == null)
+        {
+            Error.fatal_null_error(io,ctx.getStart());
+        }
+        if(value.getType() == Type.tBool){
+            return (Integer) value.getValue();
+        }else{
+            if(value.getType() == Type.tDouble)
+                return (Double)value.getValue() != 0?1:0;
+            else if(value.getType() == Type.tInt)
+                return (Integer)value.getValue() != 0?1:0;
+            else {
+                Error.fatal_unknown_error(io,ctx.getStart());
+            }
+        }
+        return 0;
+    }
     @Override
     public ReturnValue visitProgram(CMMParser.ProgramContext ctx) {
         symbolTab = scopes.get(ctx);
@@ -40,7 +64,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
         return null;
     }
 
-    boolean meetBreak=false;
+
     @Override
     public ReturnValue visitStmtBlock(CMMParser.StmtBlockContext ctx) {
         symbolTab = scopes.get(ctx);
@@ -149,65 +173,84 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
         }
         return null;
     }
+
+    //形如 a = 3; 或者 a[1] = 4;
     @Override
     public ReturnValue visitAssignStmt(CMMParser.AssignStmtContext ctx) {
         super.visitAssignStmt(ctx);
-        if(ctx.value().IDENT() == null){
+        if(ctx.value().IDENT() == null){//说明左边是数组
             Token token = ctx.value().array().IDENT().getSymbol();
             String varName = token.getText();
-            Symbol var = symbolTab.resolve(varName);
-            if(var == null){
+            Symbol leftValue = symbolTab.resolve(varName);
+            if(leftValue == null){
                 Error.undeclared_var_error(io, token);
                 return null;
             }else{
-                ReturnValue value = visit(ctx.expr());//得到表达式右边的值
-
+                ReturnValue rightValue = visit(ctx.expr());
+                if(rightValue == null)
+                {
+                    Error.fatal_null_error(io,ctx.EQUAL().getSymbol());
+                }
+                else if(rightValue.getType() == Type.tString)
+                {
+                    io.stderr("Fatla Error: Try to assign a array with string!");
+                    throw new RuntimeException("Fatla Error: Try to assign a array with string!");
+                }
                 //计算数组index
                 int varIndex;
                 if(ctx.value().array().INTCONSTANT() != null){
-                    varIndex = Integer.parseInt(ctx.value().array().INTCONSTANT().getText());
+                    try {
+                        varIndex = Integer.parseInt(ctx.value().array().INTCONSTANT().getText());
+                    }
+                    catch (NumberFormatException e) {
+                        Error.variableoverflow_error(io, ctx.value().array().INTCONSTANT().getSymbol());
+                        Warning.force_zore_warning(io, ctx.value().array().INTCONSTANT().getSymbol());
+                        varIndex = 0;
+                    }
                 }else{
                     ReturnValue indexValue = visit(ctx.value().array().expr());
+                    if(indexValue == null) {
+                        Error.fatal_null_error(io,ctx.EQUAL().getSymbol());
+                    }
                     if(indexValue.getType() != Type.tInt){
                         Error.invalid_type_error(io,token);
-                        return null;
+                        io.stderr("Warning: The index will be set to zero!");
+                        varIndex = 0;
                     }
-                    varIndex = (Integer) indexValue.getValue();
+                    else
+                        varIndex = (Integer) indexValue.getValue();
                 }
 
                 //开始赋值
-                if(var.getType() == Type.tIntArray){
-                    int[] varArray = (int[]) var.getValue();
+                if(leftValue.getType() == Type.tIntArray){
+                    int[] varArray = (int[]) leftValue.getValue();
                     if(0 <= varIndex && varIndex < varArray.length){
-                        if(value.getValue(Type.tInt) != null)
+                        if(rightValue.getValue(Type.tInt) != null)
                         {
-                            varArray[varIndex] = (Integer) value.getValue(Type.tInt);
-                            if(!(value.getValue() instanceof  Integer)){
-                                Warning.unmatched_type_warning(io,varName,token.getLine(),token.getCharPositionInLine() );
+                            if(!(rightValue.getValue() instanceof  Integer)){
+                                Warning.unmatched_type_warning(io,token);
                             }
+                            varArray[varIndex] = (Integer) rightValue.getValue(Type.tInt);
                         }
                         else{
-                            Error.unmatched_type_error(io,token);
-                            return null;
+                            Error.fatal_null_error(io,ctx.EQUAL().getSymbol());
                         }
                     }else{
                         Error.out_of_boundary_error(io, token);
                         return null;
                     }
-
-                }else if(var.getType() == Type.tDoubleArray){
-                    double[] varArray = (double[]) var.getValue();
+                }else if(leftValue.getType() == Type.tDoubleArray){
+                    double[] varArray = (double[]) leftValue.getValue();
                     if(0 <= varIndex && varIndex < varArray.length){
-                        if(value.getValue(Type.tDouble) != null)
+                        if(rightValue.getValue(Type.tDouble) != null)
                         {
-                            varArray[varIndex] = (Double) value.getValue(Type.tDouble);
-                            if(!(value.getValue() instanceof  Double)){
-                                Warning.unmatched_type_warning(io,varName,token.getLine(),token.getCharPositionInLine() );
+                            if(!(rightValue.getValue() instanceof  Double)){
+                                Warning.unmatched_type_warning(io,token);
                             }
+                            varArray[varIndex] = (Double) rightValue.getValue(Type.tDouble);
                         }
                         else{
-                            Error.unmatched_type_error(io, token);
-                            return null;
+                            Error.fatal_null_error(io,ctx.EQUAL().getSymbol());
                         }
                     }else{
                         Error.out_of_boundary_error(io, token);
@@ -215,26 +258,29 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                     }
                 }
                 else {
-
+                    Error.fatal_unknown_error(io,ctx.EQUAL().getSymbol());
                 }
             }
         }else{
             Token token = ctx.value().IDENT().getSymbol();
             String varName = token.getText();
-            Symbol var = symbolTab.resolve(varName);
-            if(var == null){
+            Symbol leftValue = symbolTab.resolve(varName);
+            if(leftValue == null){
                 Error.undeclared_var_error(io,token);
                 return null;
             }else{
                 ReturnValue value = visit(ctx.expr());
+                if(value == null)
+                {
+                    Error.fatal_null_error(io,ctx.EQUAL().getSymbol());
+                }
                 Token assign = ctx.EQUAL().getSymbol();
                 if(value.getValue(value.getType()) == null)
                 {
-                    Error.unmatched_type_error(io, assign);
-                    return null;
+                    Error.fatal_unknown_error(io,assign);
                 }
                 else {
-                    var.setValue(value.getValue(var.getType()));
+                    leftValue.setValue(value.getValue(leftValue.getType()));
                 }
             }
         }
@@ -369,14 +415,16 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
     @Override
     public ReturnValue visitWriteStmt(CMMParser.WriteStmtContext ctx) {
         super.visitWriteStmt(ctx);
-        CMMParser.ExprContext m=ctx.expr();
+
         ReturnValue returnValue = visit(ctx.expr());
         if(returnValue ==null){
-            return null;
+            Error.fatal_null_error(io,ctx.LSBRACKET().getSymbol());
         }
         Object value = returnValue.getValue();
         if(value == null)
-            value = "";
+        {
+            Error.fatal_null_error(io,ctx.LSBRACKET().getSymbol());
+        }
         if(returnValue.getType() == Type.tString)
         {
             io.stdout(value.toString());
@@ -470,17 +518,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
         }
         return returnValue;
     }
-    private Integer isExprTrue(CMMParser.ExprContext ctx){
-        ReturnValue value = visit(ctx);
-        if(value.getType() == Type.tBool){
-            return (Integer) value.getValue();
-        }else{
-            if(value.getType() == Type.tDouble)
-                return (Double)value.getValue() != 0?1:0;
-            else
-                return (Integer)value.getValue() != 0?1:0;
-        }
-    }
+
 
     public static int appearNumber(String srcText, String findText) {
         int count = 0;
@@ -508,6 +546,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                 break;
         }
         whilestack.pop();
+        symbolTab.clear();
         return null;
     }
 
@@ -534,6 +573,11 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
     //比较left与right的大小
     private int comp(ReturnValue left, ReturnValue right)
     {
+        if(left == null || right ==null)
+        {
+            io.stderr("Fatal error: In function comp");
+            throw new RuntimeException("Fatal error: In function comp");
+        }
         double leftvalue = 0.0;
         double rightvalue = 0.0;
         if(left.getType() == Type.tBool)
@@ -574,34 +618,39 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
         Token op = ctx.MULT().getSymbol();
         ReturnValue leftValue = visit(ctx.mulDiv());
         ReturnValue rightValue = visit(ctx.unaryMinus());
-
+        if(leftValue == null
+                || rightValue == null
+                || leftValue.getValue() == null
+                || rightValue.getValue() == null)
+        {
+            Error.fatal_null_error(io,op);
+        }
         ReturnValue returnVal = new ReturnValue();
 
         assert (op.getText().equals("*"));
-
+        if(leftValue.getType() == Type.tString || rightValue.getType() == Type.tString)
+        {
+            Error.fatal_unsupported_arithmetic_error(io,ctx.MULT().getSymbol());
+        }
+        else
+            {
         if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tInt){
             returnVal.setType(Type.tDouble);
-
-            returnVal.setValue((Double)leftValue.getValue() * (Integer) rightValue.getValue());
+            returnVal.setValue((Double)leftValue.getValue(Type.tDouble) * (Double) rightValue.getValue(Type.tDouble));
         }else if(leftValue.getType() == Type.tInt && rightValue.getType() == Type.tDouble){
-
             returnVal.setType(Type.tDouble);
-            returnVal.setValue((Integer)leftValue.getValue() * (Double) rightValue.getValue());
+            returnVal.setValue((Double)leftValue.getValue(Type.tDouble) * (Double) rightValue.getValue(Type.tDouble));
         }else if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tDouble){
             returnVal.setType(Type.tDouble);
-            returnVal.setValue((Double)leftValue.getValue() * (Double) rightValue.getValue());
+            returnVal.setValue((Double)leftValue.getValue(Type.tDouble) * (Double) rightValue.getValue(Type.tDouble));
         }else if(leftValue.getType() == Type.tInt && rightValue.getType() == Type.tInt){
             returnVal.setType(Type.tInt);
             returnVal.setValue((Integer)leftValue.getValue() * (Integer) rightValue.getValue());
         }else{
-            io.stderr("ERROR: unmatched or uncast type on two side of <"
-                    + op.getText()
-                    + "> in line "
-                    + op.getLine()
-                    +":"
-                    + op.getCharPositionInLine());
+            Error.fatal_unsupported_arithmetic_error(io,op);
         }
-
+        }
+        Error._is_fatal_returnval_null_error(io,op,returnVal);
         return returnVal;
     }
 
@@ -610,6 +659,13 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
         Token op = ctx.DIV().getSymbol();
         ReturnValue leftValue = visit(ctx.mulDiv());
         ReturnValue rightValue = visit(ctx.unaryMinus());
+        if(leftValue == null
+                || rightValue == null
+                || leftValue.getValue() == null
+                || rightValue.getValue() == null)
+        {
+            Error.fatal_null_error(io,op);
+        }
         if(leftValue == null || rightValue == null)
         {
             Error.fatal_null_error(io,op);
@@ -625,10 +681,10 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
 
         if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tInt){
             returnVal.setType(Type.tDouble);
-            returnVal.setValue((Double)leftValue.getValue() / (Integer) rightValue.getValue());
+            returnVal.setValue((Double)leftValue.getValue(Type.tDouble) / (Double) rightValue.getValue(Type.tDouble));
         }else if(leftValue.getType() == Type.tInt && rightValue.getType() == Type.tDouble){
             returnVal.setType(Type.tDouble);
-            returnVal.setValue((Integer)leftValue.getValue() / (Double) rightValue.getValue());
+            returnVal.setValue((Double)leftValue.getValue(Type.tDouble) / (Double) rightValue.getValue(Type.tDouble));
         }else if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tDouble){
             returnVal.setType(Type.tDouble);
             returnVal.setValue((Double)leftValue.getValue() / (Double) rightValue.getValue());
@@ -636,8 +692,9 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             returnVal.setType(Type.tInt);
             returnVal.setValue((Integer)leftValue.getValue() / (Integer) rightValue.getValue());
         }else{
-            Error.unmatched_type_error(io,op);
+            Error.fatal_unsupported_arithmetic_error(io,op);
         }
+        Error._is_fatal_returnval_null_error(io,op,returnVal);
         return returnVal;
     }
 
@@ -648,14 +705,21 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
 
     public ReturnValue visitChangeSign(CMMParser.ChangeSignContext ctx) {
         ReturnValue rightvalue = visit(ctx.unaryMinus());
+        if(rightvalue == null
+                || rightvalue.getValue() == null
+                || rightvalue.getType() == null)
+        {
+            Error.fatal_null_error(io,ctx.unaryMinus().getStop());
+        }
         if(rightvalue.getType() == Type.tDouble)
             rightvalue.setValue(-(Double)rightvalue.getValue());
         else if(rightvalue.getType() == Type.tInt) {
-            rightvalue.setValue(-(Integer) rightvalue.getValue());
+            rightvalue.setValue(-(Integer) rightvalue.getValue(Type.tInt));
         }
         else{
-            io.stderr("ERROR");
+            Error.fatal_unsupported_arithmetic_error(io,ctx.getStart());
         }
+        Error._is_fatal_returnval_null_error(io,ctx.getStart(),rightvalue);
         return rightvalue;
     }
     public ReturnValue visitToAtom(CMMParser.ToAtomContext ctx)
@@ -679,14 +743,15 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
         if(varSymbol != null ){
             if(varSymbol.getValue() == null)
             {
-                Error.uninitialized_error(io,indent);
-                return null;
+                Error.fatal_null_error(io,indent);
             }
-            return new ReturnValue(varSymbol.getType(), varSymbol.getValue());
+
         }else{
-            Error.undeclared_var_error(io,indent);
-            return null;
+            Error.fatal_null_error(io,indent);
         }
+        ReturnValue returnValue = new ReturnValue(varSymbol.getType(), varSymbol.getValue());
+        Error._is_fatal_returnval_null_error(io,indent,returnValue);
+        return returnValue;
     }
 
     public ReturnValue visitToConstant(CMMParser.ToConstantContext ctx)
@@ -699,6 +764,8 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             }catch (NumberFormatException e) {
                 Token token = ctx.constant().INTCONSTANT().getSymbol();
                 Error.variableoverflow_error(io, token);
+                Warning.force_zore_warning(io,token);
+                return new ReturnValue(Type.tInt, 0);
             }
         }
         else if(ctx.constant().DOUBLECONSTANT() != null) {
@@ -709,6 +776,8 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             }catch (NumberFormatException e)
             {
                 Error.variableoverflow_error(io, token);
+                Warning.force_zore_warning(io,token);
+                return new ReturnValue(Type.tDouble, 0);
             }
         }
         else if(ctx.constant().FALSE() != null) {
@@ -723,63 +792,100 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             return new ReturnValue(Type.tString, str.substring(1,str.length()-1));
         }
         else{
-            io.stderr("ERROR");
+            Error.fatal_null_error(io,ctx.getStart());
             return new ReturnValue(Type.tInt,0);
         }
-        return null;
     }
     public ReturnValue visitToArray(CMMParser.ToArrayContext ctx)
     {
         Token token = ctx.array().IDENT().getSymbol();
         String varname = token.getText();
-        int varIndex;
+        int varIndex = -1;
 
         //like a[3]
         if(ctx.array().INTCONSTANT() != null){
-            varIndex = Integer.parseInt(ctx.array().INTCONSTANT().getText());
+            try {
+                varIndex = Integer.parseInt(ctx.array().INTCONSTANT().getText());
+            }
+            catch (NumberFormatException e)
+            {
+                Error.variableoverflow_error(io,token
+                );
+                io.stderr("Warning: index will be set to ZERO! in line :"
+                +token.getLine()
+                +":" + token.getCharPositionInLine());
+                varIndex = 0;
+            }
         }else{//like a[3+b]
             ReturnValue indexValue = visit(ctx.array().expr());
-            varIndex = (Integer) indexValue.getValue();
+            if(indexValue != null)
+            {
+                if(indexValue.getType() != null && indexValue.getValue() !=null)
+                    varIndex = (Integer) indexValue.getValue();
+                else
+                    Error.fatal_null_error(io,ctx.array().expr().getStart());
+            }
+            else
+            {
+                Error.fatal_null_error(io,ctx.array().expr().getStart());
+            }
+
         }
 
         Symbol varSymbol = symbolTab.resolve(varname);
         if(varSymbol != null ){
             if(varSymbol.getType() == Type.tIntArray){ // int数组
                 int[] varArray = (int[]) varSymbol.getValue();
-                if(varIndex < varArray.length){
+                if(varIndex < varArray.length && varIndex >= 0){
                     return new ReturnValue(Type.tInt, varArray[varIndex]);
                 }else{
-                    io.stderr("ERROR");
-                    return null;
+                    io.stderr("FATAL ERROR");
+                    throw  new RuntimeException("FATAL ERROR");
                 }
-
-            }else{ // double数组
-
+            }else if(varSymbol.getType() == Type.tDoubleArray){ // double数组
                 double[] varArray = (double[]) varSymbol.getValue();
 
                 // 数组越界检查
-                if(varIndex < varArray.length){
+                if(varIndex < varArray.length&& varIndex >= 0){
                     return new ReturnValue(Type.tDouble, varArray[varIndex]);
                 }else{
-                    io.stderr("ERROR");
-                    return null;
+                    io.stderr("FATAL ERROR");
+                    throw  new RuntimeException("FATAL ERROR");
                 }
 
             }
         }else{
-            io.stderr("ERROR");
-            return null;
+            Error.unsupport_array_type_error(io,token);
+            io.stderr("FATAL ERROR");
+            throw new RuntimeException("FATAL ERROR");
         }
+        Error._is_fatal_returnval_null_error(io,token,null);
+        return null;
     }
     public ReturnValue visitToExpr(CMMParser.ToExprContext ctx)
     {
         ReturnValue returnvalue = visit(ctx.expr());
+        Error._is_fatal_returnval_null_error(io,ctx.expr().getStart(),returnvalue);
         return returnvalue;
     }
 
     public ReturnValue visitPlus(CMMParser.PlusContext ctx) {
         ReturnValue left = visit(ctx.addMin());
         ReturnValue right = visit(ctx.mulDiv());
+        if(left == null || right == null)
+        {
+            Error.fatal_null_error(io,ctx.getStart());
+        }
+        else
+        {
+            if(left.getValue() == null
+                    ||right.getValue() == null
+                    || left.getType() == null
+                    || right.getType() == null)
+            {
+                Error.fatal_null_error(io,ctx.getStart());
+            }
+        }
         ReturnValue returnVal = null;
         if(left.getType() == Type.tString || right.getType() == Type.tString)
         {
@@ -801,14 +907,10 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                 }
             }
             else {
-                io.stderr("Bool error");
+               Error.fatal_unsupported_arithmetic_error(io,ctx.PLUS().getSymbol());
             }
         }
-
-        if(returnVal == null)
-        {
-            io.stderr("Error");
-        }
+        Error._is_fatal_returnval_null_error(io,ctx.PLUS().getSymbol(),returnVal);
         return  returnVal;
     }
 
@@ -816,25 +918,40 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
     {
         ReturnValue left = visit(ctx.addMin());
         ReturnValue right = visit(ctx.mulDiv());
+        if(left == null || right == null)
+        {
+            Error.fatal_null_error(io,ctx.getStart());
+        }
+        else
+        {
+            if(left.getValue() == null
+                    ||right.getValue() == null
+                    || left.getType() == null
+                    || right.getType() == null)
+            {
+                Error.fatal_null_error(io,ctx.getStart());
+            }
+        }
         ReturnValue returnVal = null;
-        if(left.getType() != Type.tBool && right.getType() != Type.tBool) {
-            returnVal = new ReturnValue();
-            if (left.getType() == Type.tDouble || right.getType() == Type.tDouble) {
-                returnVal.setType(Type.tDouble);
-                returnVal.setValue((Double) left.getValue(Type.tDouble) - (Double) right.getValue(Type.tDouble));
-            }
-            else {
-                returnVal.setType(Type.tInt);
-                returnVal.setValue((Integer) left.getValue() - (Integer) right.getValue());
-            }
+        if(left.getType() == Type.tString || right.getType() == Type.tString)
+        {
+            Error.fatal_unsupported_arithmetic_error(io,ctx.MINUS().getSymbol());
         }
         else {
-            io.stderr("Bool error");
+            if (left.getType() != Type.tBool && right.getType() != Type.tBool) {
+                returnVal = new ReturnValue();
+                if (left.getType() == Type.tDouble || right.getType() == Type.tDouble) {
+                    returnVal.setType(Type.tDouble);
+                    returnVal.setValue((Double) left.getValue(Type.tDouble) - (Double) right.getValue(Type.tDouble));
+                } else {
+                    returnVal.setType(Type.tInt);
+                    returnVal.setValue((Integer) left.getValue() - (Integer) right.getValue());
+                }
+            } else {
+                Error.fatal_unsupported_arithmetic_error(io,ctx.MINUS().getSymbol());
+            }
         }
-        if(returnVal == null)
-        {
-            io.stderr("Error");
-        }
+        Error._is_fatal_returnval_null_error(io,ctx.MINUS().getSymbol(),returnVal);
         return  returnVal;
     }
 
@@ -849,6 +966,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             returnVal.setValue(1);
         else
             returnVal.setValue(0);
+        Error._is_fatal_returnval_null_error(io,ctx.DEQUAL().getSymbol(),returnVal);
         return returnVal;
     }
     //小于等于
@@ -863,6 +981,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             returnVal.setValue(1);
         else
             returnVal.setValue(0);
+        Error._is_fatal_returnval_null_error(io,ctx.SEQUAL().getSymbol(),returnVal);
         return returnVal;
     }
     //小于
@@ -876,6 +995,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             returnVal.setValue(1);
         else
             returnVal.setValue(0);
+        Error._is_fatal_returnval_null_error(io,ctx.SMALLER().getSymbol(),returnVal);
         return returnVal;
     }
     //大于
@@ -889,6 +1009,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             returnVal.setValue(1);
         else
             returnVal.setValue(0);
+        Error._is_fatal_returnval_null_error(io,ctx.GREATER().getSymbol(),returnVal);
         return returnVal;
     }
     //大于等于
@@ -902,6 +1023,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             returnVal.setValue(1);
         else
             returnVal.setValue(0);
+        Error._is_fatal_returnval_null_error(io,ctx.GEQUAL().getSymbol(),returnVal);
         return returnVal;
     }
 
@@ -916,6 +1038,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             returnVal.setValue(0);
         else
             returnVal.setValue(1);
+        Error._is_fatal_returnval_null_error(io,ctx.NEQUAL().getSymbol(),returnVal);
         return returnVal; }
 
 

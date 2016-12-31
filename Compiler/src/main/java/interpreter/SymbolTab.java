@@ -40,5 +40,9 @@ public class SymbolTab {
         if ( enclosingSymbolTab != null ) return enclosingSymbolTab.resolve(name);
         return null;
     }
+    public void clear()
+    {
+        symbolsMap.clear();
+    }
 
 }
