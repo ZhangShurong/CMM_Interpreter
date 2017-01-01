@@ -54,9 +54,9 @@ public class TextEditor extends JPanel {
         provider.addCompletion(new BasicCompletion(provider, "int"));
         provider.addCompletion(new BasicCompletion(provider, "string"));
         provider.addCompletion(new BasicCompletion(provider, "double"));
+        provider.addCompletion(new BasicCompletion(provider, "bool"));
         provider.addCompletion(new BasicCompletion(provider, "true"));
         provider.addCompletion(new BasicCompletion(provider, "false"));
-
         // Add a couple of "shorthand" completions. These completions don't
         // require the input text to be the same thing as the replacement text.
         provider.addCompletion(new ShorthandCompletion(provider, "{", "{\n\t\n}"));
