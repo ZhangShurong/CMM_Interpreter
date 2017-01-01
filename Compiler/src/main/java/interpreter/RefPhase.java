@@ -784,6 +784,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
         return returnValue;
     }
 
+    Token temptoken;
     public ReturnValue visitToConstant(CMMParser.ToConstantContext ctx)
     {
 
@@ -793,9 +794,15 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                         Integer.valueOf(ctx.constant().INTCONSTANT().getText()));
             }catch (NumberFormatException e) {
                 Token token = ctx.constant().INTCONSTANT().getSymbol();
-                Error.variableoverflow_error(io, token);
-                Warning.force_zore_warning(io,token);
-                return new ReturnValue(Type.tInt, 0);
+                if((temptoken!=null)&&(temptoken.equals(token))){
+
+                }else{
+                    Error.variableoverflow_error(io, token);
+                    Warning.force_zore_warning(io,token);
+                }
+
+                temptoken=token;
+                return new ReturnValue(Type.tInt, Integer.valueOf(0));
             }
         }
         else if(ctx.constant().DOUBLECONSTANT() != null) {
