@@ -79,6 +79,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
         }else {
             super.visitStmtBlock(ctx);
         }
+        symbolTab.clear();
         symbolTab = symbolTab.getEnclosingSymbolTab();
         return null;
     }
@@ -576,7 +577,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                 break;
         }
         whilestack.pop();
-        symbolTab.clear();
+
         return null;
     }
 
