@@ -380,7 +380,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                 }
                 int in;
                 try {
-                 in = Integer.parseInt(input);
+                    in = Integer.parseInt(input);
                 }catch (NumberFormatException e) {
                     Error.variableoverflow_error(io, token);
                     Warning.force_zore_warning(io, token);
@@ -583,7 +583,9 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
 
     public ReturnValue visitBreakStmt(CMMParser.BreakStmtContext ctx)
     {
-        whilestack.pop();
+        if(!whilestack.empty()){
+            whilestack.pop();
+        }
         meetBreak=true;
         whilestack.push(false);
         return super.visitBreakStmt(ctx);
@@ -664,22 +666,22 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
             Error.fatal_unsupported_arithmetic_error(io,ctx.MULT().getSymbol());
         }
         else
-            {
-        if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tInt){
-            returnVal.setType(Type.tDouble);
-            returnVal.setValue((Double)leftValue.getValue(Type.tDouble) * (Double) rightValue.getValue(Type.tDouble));
-        }else if(leftValue.getType() == Type.tInt && rightValue.getType() == Type.tDouble){
-            returnVal.setType(Type.tDouble);
-            returnVal.setValue((Double)leftValue.getValue(Type.tDouble) * (Double) rightValue.getValue(Type.tDouble));
-        }else if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tDouble){
-            returnVal.setType(Type.tDouble);
-            returnVal.setValue((Double)leftValue.getValue(Type.tDouble) * (Double) rightValue.getValue(Type.tDouble));
-        }else if(leftValue.getType() == Type.tInt && rightValue.getType() == Type.tInt){
-            returnVal.setType(Type.tInt);
-            returnVal.setValue((Integer)leftValue.getValue() * (Integer) rightValue.getValue());
-        }else{
-            Error.fatal_unsupported_arithmetic_error(io,op);
-        }
+        {
+            if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tInt){
+                returnVal.setType(Type.tDouble);
+                returnVal.setValue((Double)leftValue.getValue(Type.tDouble) * (Double) rightValue.getValue(Type.tDouble));
+            }else if(leftValue.getType() == Type.tInt && rightValue.getType() == Type.tDouble){
+                returnVal.setType(Type.tDouble);
+                returnVal.setValue((Double)leftValue.getValue(Type.tDouble) * (Double) rightValue.getValue(Type.tDouble));
+            }else if(leftValue.getType() == Type.tDouble && rightValue.getType() == Type.tDouble){
+                returnVal.setType(Type.tDouble);
+                returnVal.setValue((Double)leftValue.getValue(Type.tDouble) * (Double) rightValue.getValue(Type.tDouble));
+            }else if(leftValue.getType() == Type.tInt && rightValue.getType() == Type.tInt){
+                returnVal.setType(Type.tInt);
+                returnVal.setValue((Integer)leftValue.getValue() * (Integer) rightValue.getValue());
+            }else{
+                Error.fatal_unsupported_arithmetic_error(io,op);
+            }
         }
         Error._is_fatal_returnval_null_error(io,op,returnVal);
         return returnVal;
@@ -785,6 +787,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
         return returnValue;
     }
 
+    Token temptoken;
     public ReturnValue visitToConstant(CMMParser.ToConstantContext ctx)
     {
 
@@ -794,9 +797,15 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                         Integer.valueOf(ctx.constant().INTCONSTANT().getText()));
             }catch (NumberFormatException e) {
                 Token token = ctx.constant().INTCONSTANT().getSymbol();
-                Error.variableoverflow_error(io, token);
-                Warning.force_zore_warning(io,token);
-                return new ReturnValue(Type.tInt, 0);
+                if((temptoken!=null)&&(temptoken.equals(token))){
+
+                }else{
+                    Error.variableoverflow_error(io, token);
+                    Warning.force_zore_warning(io,token);
+                }
+
+                temptoken=token;
+                return new ReturnValue(Type.tInt, Integer.valueOf(0));
             }
         }
         else if(ctx.constant().DOUBLECONSTANT() != null) {
@@ -843,8 +852,8 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                 Error.variableoverflow_error(io,token
                 );
                 io.stderr("Warning: index will be set to ZERO! in line :"
-                +token.getLine()
-                +":" + token.getCharPositionInLine());
+                        +token.getLine()
+                        +":" + token.getCharPositionInLine());
                 varIndex = 0;
             }
         }else{//like a[3+b]
@@ -938,7 +947,7 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
                 }
             }
             else {
-               Error.fatal_unsupported_arithmetic_error(io,ctx.PLUS().getSymbol());
+                Error.fatal_unsupported_arithmetic_error(io,ctx.PLUS().getSymbol());
             }
         }
         Error._is_fatal_returnval_null_error(io,ctx.PLUS().getSymbol(),returnVal);
