@@ -4,9 +4,6 @@ package interpreter;
 import gen.CMMBaseVisitor;
 import gen.CMMParser;
 import io.IOInterface;
-import org.antlr.v4.runtime.FailedPredicateException;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.RuntimeMetaData;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -583,9 +580,13 @@ public class RefPhase extends CMMBaseVisitor<ReturnValue> {
 
     public ReturnValue visitBreakStmt(CMMParser.BreakStmtContext ctx)
     {
-        whilestack.pop();
-        meetBreak=true;
-        whilestack.push(false);
+        if (!whilestack.isEmpty()){
+            whilestack.pop();
+            meetBreak=true;
+            whilestack.push(false);
+        } else {
+
+        }
         return super.visitBreakStmt(ctx);
     }
 

@@ -17,7 +17,7 @@ import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
  * Created by pendragon on 16-12-3.
  */
 public class Compiler extends JFrame {
-    public static final String APP_NAME = "Text Editor Demo";
+    public static final String APP_NAME = "Cmm Interpreter";
 
     private TextEditor textEditor;
     private TokenWindow tokenInfo;
@@ -154,7 +154,7 @@ public class Compiler extends JFrame {
 
         setMenuBar(menuBar);
         setContentPane(contentPanel);
-        setTitle("Cmm Interpreter");
+        setTitle(APP_NAME);
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
